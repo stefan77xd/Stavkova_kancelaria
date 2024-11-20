@@ -1,16 +1,17 @@
-version: '3.8'
-
 services:
-  db:
-    image: mysql:8.0.39
-    container_name: mysql_container
+  mysql:
+    image: mysql:8.4.2
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: Stavkova_kancelaria
+      MYSQL_DATABASE: stavkova
     ports:
-      - "3307:3307"
+      - "3307:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s # default is 30s
+      timeout: 5s   # default is 30s
+      retries: 5    # default is 3
 
-volumes:
-  db_data:
+
