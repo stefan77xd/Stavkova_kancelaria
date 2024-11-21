@@ -1,7 +1,6 @@
 package org.example;
 
 public enum StatusForEvent {
-    SCHEDULED,
-    ONGOING,
+    UPCOMING,
     FINISHED,
 }
