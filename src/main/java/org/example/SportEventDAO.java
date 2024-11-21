@@ -38,7 +38,8 @@ public class SportEventDAO {
                 event.setEventName(record.getValue("event_name", String.class));
                 event.setStartTime(record.getValue("start_time", LocalDateTime.class));
                 event.setSportType(record.getValue("sport_type", String.class));
-                //event.setStatus(StatusForEvent.valueOf(record.getValue("status", String.class))); // Konverzia String na enum
+                event.setStatus(record.getValue("status", StatusForEvent.class));
+
 
 
                 events.add(event);
