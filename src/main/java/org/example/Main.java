@@ -1,28 +1,15 @@
 package org.example;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+import org.jooq.codegen.maven.example.tables.Users; // Adjust based on your actual package path
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-public class Main extends Application {
-    @Override
-    public void start(Stage stage) throws Exception {
-        var loader = new FXMLLoader(getClass().getResource("view.fxml"));
-        Parent rootPane = loader.load();
-        var scene = new Scene(rootPane);
-        stage.setTitle("Stavkova kancelaria");
-        stage.setScene(scene);
-        stage.show();
-    }
-
+public class Main {
     public static void main(String[] args) {
         // Define database connection parameters
         String url = "jdbc:mysql://localhost:3307/stavkova"; // Adjust for your Docker setup
@@ -33,34 +20,21 @@ public class Main extends Application {
             if (connection != null) {
                 System.out.println("Connection to the database was successful!");
 
-                // Ensure you're using the correct database
-                String useDatabaseQuery = "USE stavkova";
-                try (Statement stmt = connection.createStatement()) {
-                    stmt.execute(useDatabaseQuery);
-                }
+                // Create a DSLContext for jOOQ
+                DSLContext create = DSL.using(connection, SQLDialect.MYSQL);
 
-                // Test query to check if data is accessible
-                String query = "SELECT * FROM users"; // Select all users
-                try (Statement stmt = connection.createStatement();
-                     ResultSet rs = stmt.executeQuery(query)) {
-                    if (rs.next()) {
-                        System.out.println("Data is accessible!");
-                        // Optionally, print the first column's value to verify data
-                        System.out.println("First column value: " + rs.getString(1));
-                    } else {
-                        System.out.println("No data found in the table.");
-                    }
-                } catch (SQLException e) {
-                    System.err.println("Query execution failed: " + e.getMessage());
-                }
+                // jOOQ query to fetch all users
+                create.selectFrom(Users.USERS) // Adjust to your actual table class
+                        .fetch()
+                        .forEach(record -> {
+                            System.out.println("User ID: " + record.getValue(Users.USERS.USER_ID)); // Replace with your actual column names
+                            System.out.println("Username: " + record.getValue(Users.USERS.USERNAME)); // Adjust accordingly
+                        });
             } else {
                 System.out.println("Failed to connect to the database!");
             }
         } catch (SQLException e) {
             System.err.println("Database connection failed: " + e.getMessage());
         }
-
-        launch(args);
     }
-
 }
