@@ -18,29 +18,25 @@ public class SportEventDAO {
     public List<SportEvent> getAllSportEvents() {
         List<SportEvent> events = new ArrayList<>();
 
-        // Načítanie konfigurácie z config.properties
+        // Load configuration from config.properties
         Properties config = ConfigReader.loadProperties("config.properties");
         String dbUrl = config.getProperty("db.url");
-        String dbUsername = config.getProperty("db.username");
-        String dbPassword = config.getProperty("db.password");
 
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+        try (Connection connection = DriverManager.getConnection(dbUrl)) {
+            // Use jOOQ with SQLite connection
             DSLContext create = DSL.using(connection);
 
+            // Fetch data from the SQLite sport_events table
             Result<Record> result = create.fetch("SELECT event_id, event_name, start_time, sport_type, status FROM sport_events");
 
             for (Record record : result) {
-
                 SportEvent event = new SportEvent();
-
 
                 event.setEventId(record.getValue("event_id", Long.class));
                 event.setEventName(record.getValue("event_name", String.class));
                 event.setStartTime(record.getValue("start_time", LocalDateTime.class));
                 event.setSportType(record.getValue("sport_type", String.class));
                 event.setStatus(record.getValue("status", StatusForEvent.class));
-
-
 
                 events.add(event);
             }
