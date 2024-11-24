@@ -1,84 +1,99 @@
 package org.example;
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.collections.FXCollections;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Controller {
 
     @FXML
-    private ListView<SportEvent> AllSportEvents;
-
-    private SportEventDAO sportEventDAO = new SportEventDAO();
+    private TabPane sportTabPane;
+    private SportEventDAO sportEventDAO = new SportEventDAO(); // DAO na načítanie športových udalostí
 
     @FXML
     public void initialize() {
-        // Fetch the list of SportEvent objects
+        // Načítame všetky športové udalosti
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
 
-        // Populate the ListView with SportEvent objects
-        AllSportEvents.setItems(FXCollections.observableArrayList(sportEvents));
+        // Roztriedime udalosti podľa športového typu (napr. "Football", "Basketball")
+        Map<String, List<SportEvent>> groupedEvents = sportEvents.stream()
+                .collect(Collectors.groupingBy(SportEvent::getSportType));
+        sportTabPane.setStyle("-fx-background-color: #212121;");
 
-        // Set a fixed cell size for each item in the ListView
-        AllSportEvents.setFixedCellSize(24);  // Example fixed height for each cell (adjust as needed)
+        // Pre každý športový typ vytvoríme záložku (Tab)
+        for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
+            String sportType = entry.getKey(); // Typ športu
+            List<SportEvent> events = entry.getValue(); // Udalosti pre daný šport
 
-        // Dynamically set the height of the ListView to fit all items
-        AllSportEvents.setPrefHeight(sportEvents.size() * AllSportEvents.getFixedCellSize() + 2);  // +2 for padding
+            // Vytvoríme novú záložku
+            Tab sportTab = new Tab(sportType);
+            sportTab.setStyle("-fx-background-color: #212121; -fx-text-fill: #FFFFFF;");
 
-        // Set a custom cell factory for the ListView
-        AllSportEvents.setCellFactory(lv -> new ListCell<SportEvent>() {
-            @Override
-            protected void updateItem(SportEvent sportEvent, boolean empty) {
-                super.updateItem(sportEvent, empty);
+            // Vytvoríme ListView pre udalosti tohto športu
+            ListView<SportEvent> listView = new ListView<>(FXCollections.observableArrayList(events));
+            listView.setCellFactory(lv -> new ListCell<SportEvent>() {
+                @Override
+                protected void updateItem(SportEvent sportEvent, boolean empty) {
+                    super.updateItem(sportEvent, empty);
 
-                if (empty || sportEvent == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    // Set the text directly on the ListCell using SportEvent's toString() method
-                    setText(sportEvent.toString());
+                    if (empty || sportEvent == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        setText(sportEvent.toString());
+                        setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
 
-                    // Set background and text color
-                    setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
-
-                    // Add hover effect
-                    setOnMouseEntered(event -> setStyle("-fx-background-color: #212121; -fx-text-fill: white;"));
-                    setOnMouseExited(event -> setStyle("-fx-background-color: #303030; -fx-text-fill: white;"));
+                        // Hover efekt
+                        setOnMouseEntered(event -> setStyle("-fx-background-color: #212121; -fx-text-fill: white;"));
+                        setOnMouseExited(event -> setStyle("-fx-background-color: #303030; -fx-text-fill: white;"));
+                    }
                 }
-            }
-        });
+            });
+
+            // Pridáme ListView do záložky
+            sportTab.setContent(listView);
+
+            // Pridáme záložku do TabPane
+            sportTabPane.getTabs().add(sportTab);
+        }
     }
 
-    // Method to open the new Ticket View
+    // Otvorenie novej scény pre Tikety
     @FXML
     public void openTicketView() {
         try {
-            // Load the ticketView.fxml layout
+            // Načítame FXML pre Ticket View
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ticketView.fxml"));
             Parent root = fxmlLoader.load();
 
-            // Create a new Stage (window)
+            // Vytvoríme nové okno (Stage)
             Stage stage = new Stage();
             stage.setTitle("Tickets");
             stage.setScene(new Scene(root));
 
-            // Set the modality to WINDOW_MODAL to block input to the main window
+            // Nastavíme, že nové okno je modal (blokuje hlavné okno)
             stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
 
-            // Set the owner of the new window to the main window
-            stage.initOwner(AllSportEvents.getScene().getWindow());
+            // Nastavíme hlavné okno ako vlastníka nového okna
+            stage.initOwner(sportTabPane.getScene().getWindow());
 
+            // Nastavíme ikonu okna
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/ticket.png")));
 
-            // Show the stage and wait for it to close (modal behavior)
+            // Zobrazíme nové okno a čakáme, kým sa zavrie
             stage.showAndWait();
 
         } catch (IOException e) {

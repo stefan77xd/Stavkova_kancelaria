@@ -2,57 +2,55 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controller">
-   <children>
-      <HBox maxHeight="1.7976931348623157E308" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #212121;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <GridPane HBox.hgrow="ALWAYS">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="Kurzy" textFill="WHITE" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                   <Button mnemonicParsing="false" onAction="#openTicketView" style="-fx-background-color: transparent;" text="Tikety" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                       <cursor>
-                           <Cursor fx:constant="HAND" />
-                       </cursor>
-                   </Button>
-                   <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="Štatistika" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children>
-            </GridPane>
-         </children>
-      </HBox>
-      <ListView fx:id="AllSportEvents" layoutX="210.0" layoutY="110.0" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefWidth="200.0" style="-fx-background-color: #424242;" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></ListView>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controller">
+    <children>
+        <HBox maxHeight="1.7976931348623157E308" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #212121;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <GridPane HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="Kurzy" textFill="WHITE" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#openTicketView" style="-fx-background-color: transparent;" text="Tikety" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="Štatistika" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                        <Button mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </children>
+                </GridPane>
+            </children>
+        </HBox>
+        <TabPane fx:id="sportTabPane" style="-fx-background-color: transparent;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+        </TabPane>
+    </children>
 </AnchorPane>
