@@ -1,0 +1,80 @@
+/* TabPane styling */
+.tab-pane {
+    -fx-background-color: #303030; /* Dark background for the TabPane */
+}
+
+.tab-header-background {
+    -fx-background-color: #303030; /* Dark background for the tab headers */
+}
+
+/* Styling for individual tabs */
+.tab {
+    -fx-background-color: #212121; /* Tab background */
+    -fx-text-base-color: white; /* Text color for tabs */
+}
+
+/* Style for the selected tab */
+.tab:selected {
+    -fx-background-color: #121212; /* Tab background color when selected */
+    -fx-border-color: #121212; /* Custom border for selected tab */
+    -fx-border-width: 1; /* Border width */
+    -fx-border-radius: 5;
+}
+
+/* Remove blue focus border on the selected tab */
+.tab:selected:focused {
+    -fx-focus-color: transparent; /* Remove blue focus border */
+    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
+    -fx-border-color: #121212; /* Maintain custom border color */
+    -fx-border-width: 1; /* Maintain border width */
+    -fx-border-radius: 5;
+}
+
+/* Remove focus border for all tabs */
+.tab:focused {
+    -fx-focus-color: transparent; /* Remove focus color */
+    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
+    -fx-border-color: transparent; /* No border when focused */
+    -fx-border-width: 0; /* Eliminate focus border */
+}
+
+/* Additional hover styling for tabs */
+.tab:hover {
+    -fx-background-color: #121212; /* Slightly darker background on hover */
+}
+
+/* Remove focus styling from the tab header area */
+.tab-header-area .tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent; /* Fully transparent focus border */
+    -fx-border-width: 0;
+}
+
+/* ListView styling */
+.list-view {
+    -fx-background-color: #303030; /* Dark background for the ListView */
+    -fx-control-inner-background: #303030; /* Ensure inner background is also dark */
+    -fx-text-fill: white; /* White text for list items */
+}
+
+/* ListCell styling */
+.list-cell {
+    -fx-background-color: #212121; /* Match app background */
+    -fx-text-fill: white; /* White text for list cells */
+}
+
+/* Change background on hover for list cells */
+.list-cell:hover {
+    -fx-background-color: #303030; /* Slightly lighter background on hover */
+}
+
+/* Styling for selected list cells */
+.list-cell:filled:selected {
+    -fx-background-color: #424242; /* Even lighter background when selected */
+    -fx-text-fill: white; /* Ensure text stays white */
+}
+.root {
+    -fx-focus-color: transparent; /* Removes the blue focus color globally */
+    -fx-faint-focus-color: transparent; /* Removes faint focus glow globally */
+}
