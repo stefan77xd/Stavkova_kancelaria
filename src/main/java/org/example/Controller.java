@@ -119,13 +119,10 @@ public class Controller {
         });
     }
 
-    @FXML
-    void showOdds(ActionEvent event) {
 
+    public void showOdds(javafx.event.ActionEvent actionEvent) {
     }
 
-    @FXML
-    void showResults(ActionEvent event) {
-
+    public void showResults(javafx.event.ActionEvent actionEvent) {
     }
 }
