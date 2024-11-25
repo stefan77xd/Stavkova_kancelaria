@@ -62,6 +62,7 @@
 .list-cell {
     -fx-background-color: #212121; /* Match app background */
     -fx-text-fill: white; /* White text for list cells */
+    -fx-cursor: hand;
 }
 
 /* Change background on hover for list cells */
