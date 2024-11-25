@@ -24,7 +24,7 @@ public class Controller {
     @FXML
     private TabPane sportTabPane;
 
-    private SportEventDAO sportEventDAO = new SportEventDAO(); // DAO for loading sports events
+    private SportEventDAO sportEventDAO = new SportEventDAO();
 
     @FXML
     public void openTicketView() {
@@ -41,68 +41,6 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    public void initialize() {
-        sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                newScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
-            }
-        });
-
-        sportTabPane.setStyle("-fx-background-color: #212121;");
-        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
-        Map<String, List<SportEvent>> groupedEvents = sportEvents.stream()
-                .collect(Collectors.groupingBy(SportEvent::getSportType));
-
-        Tab allTab = new Tab("All");
-        ListView<SportEvent> allListView = new ListView<>();
-        setupListView(allListView, sportEvents);
-        VBox allVBox = new VBox(allListView);
-        allVBox.setFillWidth(true);
-        allVBox.setStyle("-fx-background-color: #303030;");
-        allTab.setContent(allVBox);
-        sportTabPane.getTabs().add(allTab);
-
-        for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
-            Tab sportTab = new Tab(entry.getKey());
-            ListView<SportEvent> listView = new ListView<>();
-            setupListView(listView, entry.getValue());
-            VBox vbox = new VBox(listView);
-            vbox.setFillWidth(true);
-            vbox.setStyle("-fx-background-color: #303030;");
-            sportTab.setContent(vbox);
-            sportTabPane.getTabs().add(sportTab);
-        }
-    }
-
-    private void setupListView(ListView<SportEvent> listView, List<SportEvent> sportEvents) {
-        listView.setItems(FXCollections.observableArrayList(sportEvents));
-        listView.setFixedCellSize(24);
-        listView.setPrefHeight(sportEvents.size() * listView.getFixedCellSize() + 2);
-        listView.setCellFactory(lv -> new ListCell<SportEvent>() {
-            @Override
-            protected void updateItem(SportEvent sportEvent, boolean empty) {
-                super.updateItem(sportEvent, empty);
-                if (empty || sportEvent == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setText(sportEvent.toString());
-                    setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
-                    setOnMouseEntered(event -> setStyle("-fx-background-color: #212121; -fx-text-fill: white;"));
-                    setOnMouseExited(event -> setStyle("-fx-background-color: #303030; -fx-text-fill: white;"));
-                }
-            }
-        });
-
-        listView.setOnMouseClicked(event -> {
-            SportEvent selectedEvent = listView.getSelectionModel().getSelectedItem();
-            if (selectedEvent != null) {
-                openMatchScene(selectedEvent);
-            }
-        });
     }
 
     private void openMatchScene(SportEvent sportEvent) {
@@ -122,5 +60,61 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void initialize() {
+        sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            }
+        });
+
+        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
+        Map<String, List<SportEvent>> groupedEvents = sportEvents.stream()
+                .collect(Collectors.groupingBy(SportEvent::getSportType));
+
+        Tab allTab = new Tab("All");
+        ListView<SportEvent> allListView = new ListView<>();
+        setupListView(allListView, sportEvents);
+        VBox allVBox = new VBox(allListView);
+        allVBox.setFillWidth(true);
+        allTab.setContent(allVBox);
+        sportTabPane.getTabs().add(allTab);
+
+        for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
+            Tab sportTab = new Tab(entry.getKey());
+            ListView<SportEvent> listView = new ListView<>();
+            setupListView(listView, entry.getValue());
+            VBox vbox = new VBox(listView);
+            vbox.setFillWidth(true);
+            sportTab.setContent(vbox);
+            sportTabPane.getTabs().add(sportTab);
+        }
+    }
+
+    private void setupListView(ListView<SportEvent> listView, List<SportEvent> sportEvents) {
+        listView.setItems(FXCollections.observableArrayList(sportEvents));
+        listView.setFixedCellSize(24);
+        listView.setPrefHeight(sportEvents.size() * listView.getFixedCellSize() + 2);
+        listView.setCellFactory(lv -> new ListCell<SportEvent>() {
+            @Override
+            protected void updateItem(SportEvent sportEvent, boolean empty) {
+                super.updateItem(sportEvent, empty);
+                if (empty || sportEvent == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(sportEvent.toString());
+                }
+            }
+        });
+
+        listView.setOnMouseClicked(event -> {
+            SportEvent selectedEvent = listView.getSelectionModel().getSelectedItem();
+            if (selectedEvent != null) {
+                openMatchScene(selectedEvent);
+            }
+        });
     }
 }

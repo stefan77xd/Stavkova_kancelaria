@@ -60,14 +60,14 @@
 
 /* ListCell styling */
 .list-cell {
-    -fx-background-color: #212121; /* Match app background */
+    -fx-background-color: #303030; /* Match app background */
     -fx-text-fill: white; /* White text for list cells */
     -fx-cursor: hand;
 }
 
 /* Change background on hover for list cells */
 .list-cell:hover {
-    -fx-background-color: #303030; /* Slightly lighter background on hover */
+    -fx-background-color: #212121; /* Slightly lighter background on hover */
 }
 
 /* Styling for selected list cells */
