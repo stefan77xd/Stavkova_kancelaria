@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +117,15 @@ public class Controller {
                 openMatchScene(selectedEvent);
             }
         });
+    }
+
+    @FXML
+    void showOdds(ActionEvent event) {
+
+    }
+
+    @FXML
+    void showResults(ActionEvent event) {
+
     }
 }
