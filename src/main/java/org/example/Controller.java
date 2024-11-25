@@ -14,8 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,28 +71,10 @@ public class Controller {
             }
         });
 
-        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
-        Map<String, List<SportEvent>> groupedEvents = sportEvents.stream()
-                .collect(Collectors.groupingBy(SportEvent::getSportType));
-
-        Tab allTab = new Tab("All");
-        ListView<SportEvent> allListView = new ListView<>();
-        setupListView(allListView, sportEvents);
-        VBox allVBox = new VBox(allListView);
-        allVBox.setFillWidth(true);
-        allTab.setContent(allVBox);
-        sportTabPane.getTabs().add(allTab);
-
-        for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
-            Tab sportTab = new Tab(entry.getKey());
-            ListView<SportEvent> listView = new ListView<>();
-            setupListView(listView, entry.getValue());
-            VBox vbox = new VBox(listView);
-            vbox.setFillWidth(true);
-            sportTab.setContent(vbox);
-            sportTabPane.getTabs().add(sportTab);
-        }
+        // Zavolanie metódy showOdds na inicializáciu tabov
+        showOdds(null);
     }
+
 
     private void setupListView(ListView<SportEvent> listView, List<SportEvent> sportEvents) {
         listView.setItems(FXCollections.observableArrayList(sportEvents));
@@ -119,10 +101,45 @@ public class Controller {
         });
     }
 
-
-    public void showOdds(javafx.event.ActionEvent actionEvent) {
-    }
-
     public void showResults(javafx.event.ActionEvent actionEvent) {
+        updateEvents(StatusForEvent.finished);
     }
-}
+    public void showOdds(javafx.event.ActionEvent actionEvent) {
+        updateEvents(StatusForEvent.upcoming);
+
+    }
+
+
+    public void updateEvents(Enum<StatusForEvent> status) {
+        sportTabPane.getTabs().clear();
+        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
+        List<SportEvent> Events= new ArrayList<>();
+        for (SportEvent sportEvent : sportEvents) {
+            if (sportEvent.getStatus()==status) {
+                Events.add(sportEvent);
+            }
+        }
+        Map<String, List<SportEvent>> groupedEvents = Events.stream()
+                .collect(Collectors.groupingBy(SportEvent::getSportType));
+        Tab allTab = new Tab("All");
+        ListView<SportEvent> allListView = new ListView<>();
+        setupListView(allListView, Events);
+        VBox allVBox = new VBox(allListView);
+        allVBox.setFillWidth(true);
+        allTab.setContent(allVBox);
+        sportTabPane.getTabs().add(allTab);
+
+        for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
+            Tab sportTab = new Tab(entry.getKey());
+            ListView<SportEvent> listView = new ListView<>();
+            setupListView(listView, entry.getValue());
+            VBox vbox = new VBox(listView);
+            vbox.setFillWidth(true);
+            sportTab.setContent(vbox);
+            sportTabPane.getTabs().add(sportTab);
+        }
+    }
+
+    }
+
+
