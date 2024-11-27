@@ -22,6 +22,7 @@ public class LoginController {
 
     @FXML
     void Login(ActionEvent event) {
+
         var usernameOrEmail = usernameTextField.getText();
         var password = passwordTextField.getText();
 

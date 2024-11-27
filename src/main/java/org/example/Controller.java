@@ -55,16 +55,24 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
             Parent root = loader.load();
 
+            // Create a new scene with the root node
+            Scene scene = new Scene(root);
+
+            // Add the dark theme CSS stylesheet to the scene
+            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+
+            // Create the stage and set the scene
             Stage stage = new Stage();
             stage.setTitle("Login View");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL); // Modalita okna
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL); // Modal window
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void openMatchScene(SportEvent sportEvent) {
         try {

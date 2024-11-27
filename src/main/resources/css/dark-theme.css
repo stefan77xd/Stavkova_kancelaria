@@ -75,3 +75,15 @@
     -fx-focus-color: transparent; /* Removes the blue focus color globally */
     -fx-faint-focus-color: transparent; /* Removes faint focus glow globally */
 }
+
+.root {
+    -fx-background-color: #303030;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-background-color: #212121;
+    -fx-text-fill: white;
+}
+
+
