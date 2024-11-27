@@ -41,7 +41,7 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </Button>
-                        <Button mnemonicParsing="false" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                        <Button mnemonicParsing="false" onAction="#openLoginView" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>

@@ -1,6 +1,7 @@
 package org.example;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -42,6 +43,23 @@ public class Controller {
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/ticket.png")));
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void openLoginView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Login View");
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Modalita okna
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,6 +161,7 @@ public class Controller {
             sportTabPane.getTabs().add(sportTab);
         }
     }
+
 
     }
 
