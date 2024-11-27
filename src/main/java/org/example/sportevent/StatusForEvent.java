@@ -1,4 +1,4 @@
-package org.example;
+package org.example.sportevent;
 
 public enum StatusForEvent {
     upcoming,

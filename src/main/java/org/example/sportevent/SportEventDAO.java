@@ -1,5 +1,6 @@
-package org.example;
+package org.example.sportevent;
 
+import org.example.ConfigReader;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;

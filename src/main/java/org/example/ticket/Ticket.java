@@ -1,4 +1,4 @@
-package org.example;
+package org.example.ticket;
 import lombok.Data;
 
 

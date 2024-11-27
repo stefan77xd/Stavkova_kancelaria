@@ -1,6 +1,4 @@
-package org.example;
-import lombok.Data;
-
+package org.example.user;
 
 
 public class User {

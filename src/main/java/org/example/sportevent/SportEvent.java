@@ -1,4 +1,4 @@
-package org.example;
+package org.example.sportevent;
 
 import lombok.Data;
 import java.time.LocalDateTime;

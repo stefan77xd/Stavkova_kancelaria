@@ -13,6 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.sportevent.MatchController;
+import org.example.sportevent.SportEvent;
+import org.example.sportevent.SportEventDAO;
+import org.example.sportevent.StatusForEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;

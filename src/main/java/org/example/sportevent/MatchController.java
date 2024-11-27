@@ -1,8 +1,10 @@
-package org.example;
+package org.example.sportevent;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.example.possibleoutcome.PossibleOutcome;
+import org.example.possibleoutcome.PossibleOutcomeDAO;
 
 import java.util.List;
 
