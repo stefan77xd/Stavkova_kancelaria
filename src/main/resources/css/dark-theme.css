@@ -88,6 +88,17 @@
 
 .text-field {
     -fx-background-color: #212121;
+    -fx-text-fill: white;
 }
+
+#invalidLogin {
+    -fx-text-fill: red;
+}
+
+#panel {
+    -fx-background-color: #212121;
+}
+
+
 
 

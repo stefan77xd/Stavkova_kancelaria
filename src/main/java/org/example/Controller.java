@@ -6,14 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.security.Auth;
 import org.example.sportevent.MatchController;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
@@ -33,15 +31,26 @@ public class Controller {
     private SportEventDAO sportEventDAO = new SportEventDAO();
 
     @FXML
+    private Button loginoruser;
+
+    public void onLoginSuccess() {
+        loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername());
+    }
+
+    @FXML
     public void openTicketView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ticketView.fxml"));
             Parent root = loader.load();
 
+            // Add the stylesheet to the ticket view explicitly
+            Scene ticketScene = new Scene(root);
+            ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+
             Stage stage = new Stage();
             stage.setTitle("Ticket View");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/ticket.png")));
-            stage.setScene(new Scene(root));
+            stage.setScene(ticketScene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
@@ -49,11 +58,18 @@ public class Controller {
         }
     }
 
+
     @FXML
     public void openLoginView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
             Parent root = loader.load();
+
+            // Get the LoginController from the loader
+            LoginController loginController = loader.getController();
+
+            // Pass the main controller to the login controller
+            loginController.setMainController(this);
 
             // Create a new scene with the root node
             Scene scene = new Scene(root);
@@ -72,6 +88,7 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
 
 
     private void openMatchScene(SportEvent sportEvent) {
