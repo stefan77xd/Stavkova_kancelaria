@@ -9,9 +9,11 @@ import org.jooq.impl.DSL;
 import org.mindrot.jbcrypt.BCrypt;
 
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.Properties;
 
 public class SQLiteAuthDAO implements AuthDao {
@@ -55,18 +57,18 @@ public class SQLiteAuthDAO implements AuthDao {
             throw new RuntimeException("Failed to authenticate user: " + e.getMessage(), e);
         }
 
-        // Verify password
-//        if (principalWithPassword == null || !BCrypt.checkpw(password, principalWithPassword.getPassword())) {
-//            throw new AuthenticationException("Invalid credentials.");
-//        }
-        if (!password.equals(principalWithPassword.getPassword())) {
-            System.out.println("INVALID");
+        //Verify password
+        if (principalWithPassword == null || !BCrypt.checkpw(password, principalWithPassword.getPassword())) {
             throw new AuthenticationException("Invalid credentials.");
-        } else {
-            System.out.println("GOOD");
         }
-        System.out.println(principalWithPassword.getPrincipal());
+        System.out.println("GREAT SUCCESS");
+
 
         return principalWithPassword.getPrincipal();
     }
+    // Method to encrypt a password using bcrypt
+//    public void encryptPassword(String plainPassword) {
+//        System.out.println(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
+//    }
+
 }

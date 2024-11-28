@@ -86,4 +86,8 @@
     -fx-text-fill: white;
 }
 
+.text-field {
+    -fx-background-color: #212121;
+}
+
 
