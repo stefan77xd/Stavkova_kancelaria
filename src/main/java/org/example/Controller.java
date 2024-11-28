@@ -61,33 +61,36 @@ public class Controller {
 
     @FXML
     public void openLoginView() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
-            Parent root = loader.load();
+        if (Auth.INSTANCE.getPrincipal() == null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
+                Parent root = loader.load();
 
-            // Get the LoginController from the loader
-            LoginController loginController = loader.getController();
+                // Get the LoginController from the loader
+                LoginController loginController = loader.getController();
 
-            // Pass the main controller to the login controller
-            loginController.setMainController(this);
+                // Pass the main controller to the login controller
+                loginController.setMainController(this);
 
-            // Create a new scene with the root node
-            Scene scene = new Scene(root);
+                // Create a new scene with the root node
+                Scene scene = new Scene(root);
 
-            // Add the dark theme CSS stylesheet to the scene
-            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+                // Add the dark theme CSS stylesheet to the scene
+                scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
-            // Create the stage and set the scene
-            Stage stage = new Stage();
-            stage.setTitle("Login View");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL); // Modal window
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+                // Create the stage and set the scene
+                Stage stage = new Stage();
+                stage.setTitle("Login View");
+                stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL); // Modal window
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
+        }
+
 
 
 
