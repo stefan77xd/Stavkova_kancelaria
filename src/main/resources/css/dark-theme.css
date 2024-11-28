@@ -107,11 +107,6 @@
     -fx-underline: true;
 }
 
-.custom-alert {
-    -fx-background-color: lightblue;
-    -fx-font-family: 'Arial';
-}
-
 .label {
     -fx-text-fill: white;
 }
