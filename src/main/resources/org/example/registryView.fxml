@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.RegistryController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.RegistryController">
    <children>
       <TextField fx:id="RegistryUsernameTextField" layoutX="120.0" layoutY="63.0" promptText="username" />
       <TextField fx:id="RegistryEmailTextField" layoutX="120.0" layoutY="23.0" promptText="email" />
       <TextField fx:id="RegistryPassword1TextField" layoutX="120.0" layoutY="100.0" promptText="password" />
       <TextField fx:id="RegistryPassword2TextField" layoutX="120.0" layoutY="141.0" promptText="password again" />
-      <Text layoutX="17.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vytvorte si účet!" />
       <Button layoutX="40.0" layoutY="100.0" mnemonicParsing="false" onAction="#SubmitValues" text="Potvrdiť" />
+      <Label layoutX="17.0" layoutY="40.0" text="Vytvorte si účet!" />
    </children>
 </AnchorPane>

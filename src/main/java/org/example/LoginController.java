@@ -76,7 +76,6 @@ public class LoginController {
 
 
     public void OpenRegistryWindow(MouseEvent mouseEvent) {
-        System.out.println("otvori sa ");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/registryView.fxml"));
             Parent root = loader.load();
@@ -105,9 +104,18 @@ public class LoginController {
         }
     }
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
-        alert.setContentText(message);
+        alert.setHeaderText(message);
+        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+            }
+        });
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/warning.png")));
         alert.showAndWait();
     }
 }
