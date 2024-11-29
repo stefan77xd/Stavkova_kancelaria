@@ -1,13 +1,13 @@
 package org.example.ticket;
 
+
 import org.example.ConfigReader;
-import org.example.sportevent.SportEvent;
-import org.example.sportevent.StatusForEvent;
 import org.jooq.DSLContext;
-import org.jooq.Record;
+import org.jooq.Record11;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static org.jooq.codegen.maven.example.Tables.*;
+
 public class TicketDAO {
-    public List<Ticket> getUsersTickets(Long userId) {
+    public List<Ticket> getUsersTickets(Integer userId) {
         List<Ticket> tickets = new ArrayList<>();
 
         // Load configuration from config.properties
@@ -29,22 +31,39 @@ public class TicketDAO {
             DSLContext create = DSL.using(connection);
 
             // Fetch data from the SQLite sport_events table
-            Result<Record> result = create.fetch(
-                    "SELECT ticket_id, user_id, outcome_id, status, stake FROM tickets WHERE user_id = ?",
-                    userId
-            );
+            Result<Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String>> result = create.select(
+                            TICKETS.TICKET_ID,
+                            TICKETS.USER_ID,
+                            TICKETS.OUTCOME_ID,
+                            TICKETS.STATUS.as("ticket_status"),
+                            TICKETS.STAKE,
+                            POSSIBLE_OUTCOMES.RESULT_NAME.as("outcome_name"),
+                            POSSIBLE_OUTCOMES.EVENT_ID,
+                            SPORT_EVENTS.EVENT_NAME,
+                            SPORT_EVENTS.START_TIME,
+                            SPORT_EVENTS.SPORT_TYPE,
+                            SPORT_EVENTS.STATUS.as("event_status")
+                    )
+                    .from(TICKETS)
+                    .join(POSSIBLE_OUTCOMES).on(TICKETS.OUTCOME_ID.eq(POSSIBLE_OUTCOMES.OUTCOME_ID))
+                    .join(SPORT_EVENTS).on(POSSIBLE_OUTCOMES.EVENT_ID.eq(SPORT_EVENTS.EVENT_ID))
+                    .where(TICKETS.USER_ID.eq(userId))
+                    .fetch();
 
-            for (Record record : result) {
-                Ticket event = new Ticket();
+            for (Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String> record : result) {
+                Ticket ticket = new Ticket();
 
-                event.setTicketId(record.getValue("ticket_id", Long.class));
-                event.setUserId(record.getValue("user_id", Long.class));
-                event.setOutcomeId(record.getValue("outcome_id", Long.class));
-                event.setStatus(record.getValue("status", StatusForTicket.class));
-                event.setStake(record.getValue("stake", Double.class));
+                ticket.setTicketId(record.get(TICKETS.TICKET_ID));
+                ticket.setUserId(record.get(TICKETS.USER_ID));
+                ticket.setOutcomeId(record.get(TICKETS.OUTCOME_ID));
+                ticket.setStatus(StatusForTicket.valueOf((String) record.get("ticket_status")));
+                ticket.setStake(record.get(TICKETS.STAKE).doubleValue());
+                ticket.setResultName((String) record.get("outcome_name"));
+                ticket.setEventName(record.get(SPORT_EVENTS.EVENT_NAME));
 
-                tickets.add(event);
+                tickets.add(ticket);
             }
+
         } catch (SQLException e) {
             System.err.println("Failed to fetch tickets: " + e.getMessage());
         }

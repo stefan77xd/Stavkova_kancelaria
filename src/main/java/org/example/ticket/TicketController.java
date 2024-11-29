@@ -36,7 +36,7 @@ public class TicketController {
         // Check if the user is logged in and populate the ListViews accordingly
         if (Auth.INSTANCE.getPrincipal() != null) {
             // If user is logged in, fetch the user's tickets and populate the ListViews
-            List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId());
+            List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId().intValue());
 
             // Now, for each tab, add the user's tickets to the ListView corresponding to the status
             for (Tab tab : ticketPane.getTabs()) {

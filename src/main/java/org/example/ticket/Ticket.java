@@ -8,10 +8,12 @@ public class Ticket {
     private long outcomeId;
     private StatusForTicket status;
     private double stake;
+    private String eventName;
+    private String resultName;
 
     @Override
     public String toString() {
-        return ticketId + ", " + userId + ", "
-                + outcomeId + ", " + stake + ", " + status;
+        return eventName + ", "
+                + resultName + ", " + stake + ", " + status;
     }
 }
