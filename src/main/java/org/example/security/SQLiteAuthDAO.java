@@ -35,7 +35,7 @@ public class SQLiteAuthDAO implements AuthDao {
 
             // Query to find the user by username or email
             Record record = create.fetchOne(
-                    "SELECT user_id, email, username, role, password FROM users WHERE username = ? OR email = ?",
+                    "SELECT user_id, email, username, role, password, balance FROM users WHERE username = ? OR email = ?",
                     usernameOrEmail, usernameOrEmail
             );
 
@@ -49,6 +49,7 @@ public class SQLiteAuthDAO implements AuthDao {
             principal.setEmail(record.getValue("email", String.class));
             principal.setUsername(record.getValue("username", String.class));
             principal.setRole(Role.valueOf(record.getValue("role", String.class)));
+            principal.setBalance(record.getValue("balance", Double.class));
 
             principalWithPassword = new PrincipalWithPassword();
             principalWithPassword.setPrincipal(principal);

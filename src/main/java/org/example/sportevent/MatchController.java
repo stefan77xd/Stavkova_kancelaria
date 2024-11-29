@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
+import org.example.security.Auth;
 
 import java.util.List;
 
@@ -19,9 +20,15 @@ public class MatchController {
     @FXML
     private long eventId;
 
+    @FXML
+    private Label userInfo;
+
     private PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
 
     public void setSportEvent(SportEvent sportEvent) {
+        if (Auth.INSTANCE.getPrincipal() != null) {
+            userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
+        }
         if (sportEvent != null) {
             eventNameLabel.setText(sportEvent.getEventName());
             eventId = sportEvent.getEventId();

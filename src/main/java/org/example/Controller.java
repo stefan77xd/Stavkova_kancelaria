@@ -34,7 +34,7 @@ public class Controller {
     private Button loginoruser;
 
     public void onLoginSuccess() {
-        loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername());
+        loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
     }
 
     @FXML
@@ -190,7 +190,10 @@ public class Controller {
         }
     }
 
-
+    @FXML
+    public void openStatView(ActionEvent actionEvent) {
+        System.out.println("STATS");
     }
+}
 
 

@@ -18,6 +18,9 @@ public class TicketController {
     private TabPane ticketPane;
 
     @FXML
+    private Label testLabel;
+
+    @FXML
     public void initialize() {
         // Create tabs for each status
         for (StatusForTicket status : StatusForTicket.values()) {
@@ -36,6 +39,7 @@ public class TicketController {
         // Check if the user is logged in and populate the ListViews accordingly
         if (Auth.INSTANCE.getPrincipal() != null) {
             // If user is logged in, fetch the user's tickets and populate the ListViews
+            testLabel.setText("Tikety");
             List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId().intValue());
 
             // Now, for each tab, add the user's tickets to the ListView corresponding to the status
@@ -57,7 +61,7 @@ public class TicketController {
             }
         } else {
             // If the user is not logged in, show a message in each ListView (optional)
-            System.out.println("Please log in to view your tickets.");
+            testLabel.setText("Prosím prihláste sa pre zobrazenie tiketov.");
         }
     }
 

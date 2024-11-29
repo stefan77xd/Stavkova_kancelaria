@@ -20,7 +20,7 @@
                         <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="ALWAYS" minWidth="120.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="120.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -36,12 +36,12 @@
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </Button>
-                        <Button mnemonicParsing="false" style="-fx-background-color: transparent;" text="Štatistika" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                        <Button mnemonicParsing="false" onAction="#openStatView" style="-fx-background-color: transparent;" text="Štatistika" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </Button>
-                        <Button fx:id="loginoruser" mnemonicParsing="false" onAction="#openLoginView" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                        <Button fx:id="loginoruser" mnemonicParsing="false" onAction="#openLoginView" pickOnBounds="false" style="-fx-background-color: transparent;" text="Login/Register" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>

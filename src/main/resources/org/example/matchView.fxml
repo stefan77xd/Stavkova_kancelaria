@@ -13,13 +13,14 @@
         <GridPane prefHeight="60.0" prefWidth="340.0" style="-fx-background-color: #212121;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="262.0" minWidth="10.0" prefWidth="233.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="285.0" minWidth="10.0" prefWidth="106.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="285.0" minWidth="10.0" prefWidth="106.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <Label fx:id="eventNameLabel" style="-fx-text-fill: white; -fx-font-size: 18;" text="Event Name" />
+            <Label id="userInfo" fx:id="userInfo" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" />
             </children>
         </GridPane>
     </children>

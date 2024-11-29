@@ -10,5 +10,6 @@ public class Principal {
     private String email;
     private String username;
     private Role role;
+    private double balance;
 
 }
