@@ -88,6 +88,8 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("Open settings");
         }
         }
 

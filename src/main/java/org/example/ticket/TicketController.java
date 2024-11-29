@@ -23,18 +23,21 @@ public class TicketController {
     @FXML
     public void initialize() {
         // Create tabs for each status
-        for (StatusForTicket status : StatusForTicket.values()) {
-            Tab tab = new Tab(status.name());
-            ticketPane.getTabs().add(tab);
+        if (Auth.INSTANCE.getPrincipal() != null) {
+            for (StatusForTicket status : StatusForTicket.values()) {
+                Tab tab = new Tab(status.name());
+                ticketPane.getTabs().add(tab);
 
-            // Create a ListView for each tab, initially empty
-            ListView<Ticket> listView = new ListView<>();
+                // Create a ListView for each tab, initially empty
+                ListView<Ticket> listView = new ListView<>();
 
-            // Add the ListView to the tab inside a VBox
-            VBox vbox = new VBox(listView);
-            vbox.setFillWidth(true);
-            tab.setContent(vbox);
+                // Add the ListView to the tab inside a VBox
+                VBox vbox = new VBox(listView);
+                vbox.setFillWidth(true);
+                tab.setContent(vbox);
+            }
         }
+
 
         // Check if the user is logged in and populate the ListViews accordingly
         if (Auth.INSTANCE.getPrincipal() != null) {

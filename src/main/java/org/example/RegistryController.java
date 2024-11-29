@@ -16,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegistryController {
 
@@ -45,6 +47,11 @@ public class RegistryController {
         // Validate inputs
         if (username.isEmpty() || email.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             showAlert("Chyba", "Vyplnte všetky polia");
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            showAlert("Chyba", "Zadajte platnú e-mailovú adresu.");
             return;
         }
 
@@ -129,5 +136,12 @@ public class RegistryController {
 
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         stage.close();
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
