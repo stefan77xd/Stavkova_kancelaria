@@ -1,8 +1,7 @@
-package org.example;
+package org.example.statistics;
 import lombok.Data;
-
+@Data
 public class Statistics {
-    private long statisticId;
     private long UserId;
     private int totalBets;
     private double totalStakes;

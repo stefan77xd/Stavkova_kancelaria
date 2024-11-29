@@ -192,7 +192,23 @@ public class Controller {
 
     @FXML
     public void openStatView(ActionEvent actionEvent) {
-        System.out.println("STATS");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/statView.fxml"));
+            Parent root = loader.load();
+
+            // Add the stylesheet to the ticket view explicitly
+            Scene ticketScene = new Scene(root);
+            ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setTitle("Ticket View");
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/statistics.png")));
+            stage.setScene(ticketScene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
