@@ -133,3 +133,23 @@
 .bet-button:hover {
     -fx-background-color: #67c66d;
 }
+
+.dropdown-menu {
+    -fx-background-color: #212121;
+}
+
+.dropdown-item {
+    -fx-cursor: hand;
+}
+
+.dropdown-item:hover {
+    -fx-background-color: #303030;
+}
+
+.dropdown-item:selected {
+    -fx-background-color: #303030;
+}
+
+.dropdown-item:focused {
+    -fx-background-color: #303030;
+}

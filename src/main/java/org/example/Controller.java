@@ -34,8 +34,48 @@ public class Controller {
     private Button loginoruser;
 
     public void onLoginSuccess() {
+        // Update the button text
         loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
+
+        // Create a context menu for the dropdown
+        ContextMenu dropdownMenu = new ContextMenu();
+        dropdownMenu.getStyleClass().add("dropdown-menu");
+
+        // Create "Profile" menu item
+        MenuItem profileMenuItem = new MenuItem("Profil");
+        profileMenuItem.getStyleClass().add("dropdown-item");
+        MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
+        logoutMenuItem.getStyleClass().add("dropdown-item");
+
+        // Set event handlers for menu items
+        //profileMenuItem.setOnAction(event -> openProfileView());
+        //logoutMenuItem.setOnAction(event -> handleLogout());
+
+        // Add menu items to the dropdown
+        dropdownMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
+
+        // Attach the context menu to the button
+        loginoruser.setOnMouseClicked(event -> {
+            if (event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
+                // Get button width
+                double buttonWidth = loginoruser.getWidth();
+
+                // Apply a fixed width to the context menu using CSS
+                dropdownMenu.setStyle("-fx-pref-width: " + buttonWidth + "px;");
+
+                // Show the dropdown aligned with the button
+                double buttonStartX = loginoruser.localToScreen(0, 0).getX();
+                double buttonBottomY = loginoruser.localToScreen(0, loginoruser.getHeight()).getY()+6;
+                dropdownMenu.show(loginoruser, buttonStartX, buttonBottomY);
+            }
+        });
     }
+
+
+
+
+
+
 
     @FXML
     public void openTicketView() {
@@ -88,8 +128,6 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("Open settings");
         }
         }
 
