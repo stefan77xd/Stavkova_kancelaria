@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.security.Auth;
+import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;

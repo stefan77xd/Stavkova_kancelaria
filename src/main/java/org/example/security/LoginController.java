@@ -1,6 +1,4 @@
-package org.example;
-import javafx.scene.input.KeyEvent;
-import lombok.Data;
+package org.example.security;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,11 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Setter;
-import org.example.exceptions.AuthenticationException;
-import org.example.security.Auth;
-import org.example.security.AuthDao;
-import org.example.security.Principal;
-import org.example.security.SQLiteAuthDAO;
+import org.example.Controller;
 import org.example.exceptions.AuthenticationException;
 
 import java.io.IOException;
