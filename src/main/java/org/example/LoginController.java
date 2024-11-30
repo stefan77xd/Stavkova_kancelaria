@@ -1,4 +1,5 @@
 package org.example;
+import javafx.scene.input.KeyEvent;
 import lombok.Data;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -94,7 +95,7 @@ public class LoginController {
 
             // Create the stage and set the scene
             Stage stage = new Stage();
-            stage.setTitle("Registry View");
+            stage.setTitle("Register");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); // Modal window

@@ -22,39 +22,48 @@ public class TicketController {
 
     @FXML
     public void initialize() {
-        // Create tabs for each status
-        if (Auth.INSTANCE.getPrincipal() != null) {
-            for (StatusForTicket status : StatusForTicket.values()) {
-                Tab tab = new Tab(status.name());
-                ticketPane.getTabs().add(tab);
+        // Create a custom order for the StatusForTicket enums
+        StatusForTicket[] orderedStatuses = {
+                StatusForTicket.pending, // assuming 'pending' is the lowercase enum constant
+                StatusForTicket.won,     // assuming 'won' is the lowercase enum constant
+                StatusForTicket.lost     // assuming 'lost' is the lowercase enum constant
+        };
 
-                // Create a ListView for each tab, initially empty
+        // Create tabs in the defined order
+        if (Auth.INSTANCE.getPrincipal() != null) {
+            for (StatusForTicket status : orderedStatuses) {
+                // Capitalize the first letter of each tab's name for display
+                String capitalizedLabel = capitalizeFirstLetter(status.name());
+                Tab tab = new Tab(capitalizedLabel);
+
+                // Create a ListView for each tab
                 ListView<Ticket> listView = new ListView<>();
 
                 // Add the ListView to the tab inside a VBox
                 VBox vbox = new VBox(listView);
                 vbox.setFillWidth(true);
                 tab.setContent(vbox);
+
+                // Add the tab to the TabPane
+                ticketPane.getTabs().add(tab);
             }
         }
 
-
         // Check if the user is logged in and populate the ListViews accordingly
         if (Auth.INSTANCE.getPrincipal() != null) {
-            // If user is logged in, fetch the user's tickets and populate the ListViews
             testLabel.setText("Tikety");
             List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId().intValue());
 
-            // Now, for each tab, add the user's tickets to the ListView corresponding to the status
+            // Populate the ListViews with the user's tickets for each tab (by status)
             for (Tab tab : ticketPane.getTabs()) {
-                // Create the ListView again (it was initialized earlier as empty)
-                ListView<Ticket> listView = new ListView<>();
+                // Convert the capitalized tab name back to lowercase to match the enum constant
+                String lowercaseTabName = tab.getText().toLowerCase();
+                StatusForTicket status = StatusForTicket.valueOf(lowercaseTabName); // Match with lowercase enum
 
-                // You can further categorize the tickets per tab, for example:
-                StatusForTicket status = StatusForTicket.valueOf(tab.getText());
                 List<Ticket> filteredTickets = filterTicketsByStatus(userTickets, status);
 
-                // Setup the ListView with the filtered tickets
+                // Set up the ListView with the filtered tickets
+                ListView<Ticket> listView = new ListView<>();
                 setupListView(listView, filteredTickets);
 
                 // Replace the VBox content with the populated ListView
@@ -63,10 +72,19 @@ public class TicketController {
                 tab.setContent(vbox);
             }
         } else {
-            // If the user is not logged in, show a message in each ListView (optional)
             testLabel.setText("Prosím prihláste sa pre zobrazenie tiketov.");
         }
     }
+
+    // Helper method to capitalize the first letter
+    private String capitalizeFirstLetter(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+
 
     // Filter tickets by the current status (you can modify this method based on your needs)
     private List<Ticket> filterTicketsByStatus(List<Ticket> tickets, StatusForTicket status) {

@@ -110,3 +110,26 @@
 .label {
     -fx-text-fill: white;
 }
+
+.odds-button {
+    -fx-background-color: #212121;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.odds-button:hover {
+    -fx-background-color: #121212;
+    -fx-text-fill: white;
+}
+
+.odds-button:selected {
+    -fx-background-color: #121212; /* Example of a custom style for selected odds */
+}
+
+.bet-button {
+    -fx-background-color: #56bf5c;
+}
+
+.bet-button:hover {
+    -fx-background-color: #67c66d;
+}

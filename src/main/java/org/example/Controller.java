@@ -48,7 +48,7 @@ public class Controller {
             ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
             Stage stage = new Stage();
-            stage.setTitle("Ticket View");
+            stage.setTitle("Tikety");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/ticket.png")));
             stage.setScene(ticketScene);
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -80,7 +80,7 @@ public class Controller {
 
                 // Create the stage and set the scene
                 Stage stage = new Stage();
-                stage.setTitle("Login View");
+                stage.setTitle("Login");
                 stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL); // Modal window
@@ -107,13 +107,24 @@ public class Controller {
             Stage stage = new Stage();
             stage.setTitle("Detail zápasu");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/match.png")));
-            stage.setScene(new Scene(root));
+
+            // Create the scene
+            Scene scene = new Scene(root);
+
+            // Add the dark theme CSS stylesheet to the scene
+            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+
+            // Set the scene to the stage
+            stage.setScene(scene);
+
+            // Make the stage modal
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     public void initialize() {
@@ -203,7 +214,7 @@ public class Controller {
             ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
 
             Stage stage = new Stage();
-            stage.setTitle("Ticket View");
+            stage.setTitle("Štatistika");
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/statistics.png")));
             stage.setScene(ticketScene);
             stage.initModality(Modality.APPLICATION_MODAL);
