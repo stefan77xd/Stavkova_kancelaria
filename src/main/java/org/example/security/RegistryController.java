@@ -116,7 +116,8 @@ public class RegistryController {
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+        Alert.AlertType alertType = title.equals("Výborne") ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING;
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(message);
         alert.getDialogPane().setStyle("-fx-background-color: #303030;");
@@ -127,7 +128,8 @@ public class RegistryController {
             }
         });
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
+        String iconPath = title.equals("Výborne") ? "/icons/success.png" : "/icons/warning.png";
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath))));
         alert.showAndWait();
     }
 
