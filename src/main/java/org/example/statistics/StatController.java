@@ -12,7 +12,7 @@ public class StatController {
     @FXML
     private VBox statBox;
 
-    private StatisticsDAO statisticsDAO = new StatisticsDAO();
+    private final StatisticsDAO statisticsDAO = new StatisticsDAO();
 
     @FXML
     private Label mainLabel;

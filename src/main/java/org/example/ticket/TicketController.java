@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TicketController {
 
-    private TicketDAO UserTicketDAO = new TicketDAO();
+    private final TicketDAO UserTicketDAO = new TicketDAO();
 
     @FXML
     private TabPane ticketPane;

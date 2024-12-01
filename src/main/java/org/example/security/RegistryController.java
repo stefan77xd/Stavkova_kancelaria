@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +87,7 @@ public class RegistryController {
             showAlert("Výborne", "Registrácia prebehla v poriadku!");
             closeRegistryView(event);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
             showAlert("Error", "An error occurred while processing your request.");
         }
     }
@@ -126,7 +127,7 @@ public class RegistryController {
             }
         });
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/warning.png")));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
         alert.showAndWait();
     }
 

@@ -27,7 +27,7 @@ public class MatchController {
     @FXML
     private Label userInfo;
 
-    private PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
+    private final PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
 
     public void setSportEvent(SportEvent sportEvent) {
         if (Auth.INSTANCE.getPrincipal() != null && !sportEvent.getStatus().equals(StatusForEvent.finished)) {
@@ -42,11 +42,7 @@ public class MatchController {
             eventId = sportEvent.getEventId();
 
             // Check if the event is finished
-            if (sportEvent.getStatus().equals(StatusForEvent.finished)) {
-                loadPossibleOutcomes(true);
-            } else {
-                loadPossibleOutcomes(false);
-            }
+            loadPossibleOutcomes(sportEvent.getStatus().equals(StatusForEvent.finished));
         }
     }
 

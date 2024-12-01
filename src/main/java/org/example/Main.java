@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -21,7 +23,7 @@ public class Main extends Application {
         stage.setScene(scene);
 
         // Load and set the application icon (Make sure the icon is placed in the resources folder)
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/icon.png")));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png"))));
 
         // Show the stage
         stage.show();

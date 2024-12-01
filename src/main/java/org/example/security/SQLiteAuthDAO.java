@@ -13,7 +13,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.util.Properties;
 
 public class SQLiteAuthDAO implements AuthDao {
@@ -59,7 +58,7 @@ public class SQLiteAuthDAO implements AuthDao {
         }
 
         //Verify password
-        if (principalWithPassword == null || !BCrypt.checkpw(password, principalWithPassword.getPassword())) {
+        if (!BCrypt.checkpw(password, principalWithPassword.getPassword())) {
             throw new AuthenticationException("Invalid credentials.");
         }
         System.out.println("GREAT SUCCESS");

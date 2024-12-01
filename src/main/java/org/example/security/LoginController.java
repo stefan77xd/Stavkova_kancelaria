@@ -5,10 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Setter;
@@ -16,6 +14,7 @@ import org.example.Controller;
 import org.example.exceptions.AuthenticationException;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class LoginController {
 
@@ -25,10 +24,7 @@ public class LoginController {
     @FXML
     private TextField usernameTextField;
 
-    @FXML
-    private Label invalidLogin;
-
-    private AuthDao AuthDao = new SQLiteAuthDAO();
+    private final AuthDao AuthDao = new SQLiteAuthDAO();
 
     @Setter
     private Controller mainController;
@@ -43,9 +39,7 @@ public class LoginController {
         try {
             principal = AuthDao.authenticate(usernameOrEmail, password);
         } catch (AuthenticationException e) {
-            javafx.application.Platform.runLater(() -> {
-                showAlert("Pozor!", "Zlé použivateľské meno alebo heslo!");
-            });
+            javafx.application.Platform.runLater(this::showAlert);
             return;
         }
 
@@ -70,7 +64,7 @@ public class LoginController {
 
 
 
-    public void OpenRegistryWindow(MouseEvent mouseEvent) {
+    public void OpenRegistryWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/registryView.fxml"));
             Parent root = loader.load();
@@ -85,23 +79,23 @@ public class LoginController {
             Scene scene = new Scene(root);
 
             // Add the dark theme CSS stylesheet to the scene
-            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
             // Create the stage and set the scene
             Stage stage = new Stage();
             stage.setTitle("Register");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL); // Modal window
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
-    private void showAlert(String title, String message) {
+    private void showAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(message);
+        alert.setTitle("Pozor!");
+        alert.setHeaderText("Zlé použivateľské meno alebo heslo!");
         alert.getDialogPane().setStyle("-fx-background-color: #303030;");
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -110,7 +104,7 @@ public class LoginController {
             }
         });
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/warning.png")));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
         alert.showAndWait();
     }
 }
