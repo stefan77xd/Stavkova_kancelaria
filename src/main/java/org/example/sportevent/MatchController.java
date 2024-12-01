@@ -34,7 +34,11 @@ public class MatchController {
             userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
         }
         if (sportEvent != null) {
+            // Set event name and make it responsive
             eventNameLabel.setText(sportEvent.getEventName());
+            eventNameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;"); // Adjust font size if needed
+            eventNameLabel.setWrapText(true);  // Allow text to wrap if too long
+
             eventId = sportEvent.getEventId();
 
             // Check if the event is finished
@@ -45,6 +49,7 @@ public class MatchController {
             }
         }
     }
+
 
 
     private void loadPossibleOutcomes(Boolean finished) {
@@ -60,6 +65,7 @@ public class MatchController {
 
             // Define a fixed width for all elements (adjust this value as needed)
             double fixedWidth = 200;
+            double maxWidth = 250;  // Max width for the outcome label
 
             // Variables to hold selected odds and bet amount
             final DoubleProperty selectedOdds = new SimpleDoubleProperty(0.0);
@@ -90,7 +96,8 @@ public class MatchController {
                 // Create a label for the resultName
                 Label outcomeLabel = new Label(outcome.getResultName());
                 outcomeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-                outcomeLabel.setPrefWidth(fixedWidth - 100);  // Set width for label
+                outcomeLabel.setMaxWidth(maxWidth);  // Set max width
+                outcomeLabel.setWrapText(true);  // Allow text to wrap if too long
 
                 // Create a button for the odds
                 ToggleButton oddsButton = new ToggleButton(String.valueOf(outcome.getOdds()));
@@ -98,7 +105,7 @@ public class MatchController {
                 oddsButton.setPrefWidth(100);
                 if (finished) {
                     oddsButton.setDisable(true);
-                }// Set a fixed width for the button
+                }  // Set a fixed width for the button
                 oddsButton.setToggleGroup(toggleGroup);  // Ensure single selection
 
                 // Handle selection of odds
@@ -129,11 +136,20 @@ public class MatchController {
 
             // Add listener to update eventual win when the bet amount is changed
             betAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue.matches("\\d*")) {
-                    betAmountField.setText(newValue.replaceAll("[^\\d]", ""));
+                // Allow digits and only one decimal point
+                if (!newValue.matches("\\d*\\.?\\d*")) {
+                    betAmountField.setText(newValue.replaceAll("[^\\d.]", ""));
                 }
+
+                // Ensure only one decimal point is allowed
+                if (newValue.indexOf('.') != newValue.lastIndexOf('.')) {
+                    betAmountField.setText(oldValue);  // Restore the old value if more than one decimal point
+                }
+
                 updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
             });
+
+
 
             // Add the input field row to the VBox
             outcomeVBox.getChildren().add(inputRow);
@@ -166,15 +182,13 @@ public class MatchController {
                 betAmountField.setVisible(false);
                 placeBetButton.setVisible(false);
                 oddsWinRow.setVisible(false);
-
             }
 
         } else {
             System.out.println("Invalid eventId.");
         }
-
-
     }
+
 
     // Helper method to update eventual win calculation
     private void updateEventualWin(String betAmount, double odds, Label eventualWinLabel) {

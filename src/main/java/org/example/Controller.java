@@ -50,7 +50,7 @@ public class Controller {
 
         // Set event handlers for menu items
         //profileMenuItem.setOnAction(event -> openProfileView());
-        //logoutMenuItem.setOnAction(event -> handleLogout());
+        logoutMenuItem.setOnAction(event -> handleLogout());
 
         // Add menu items to the dropdown
         dropdownMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
@@ -72,11 +72,10 @@ public class Controller {
         });
     }
 
-
-
-
-
-
+    private void handleLogout() {
+        Auth.INSTANCE.setPrincipal(null);
+        loginoruser.setText("Login/Register");
+    }
 
     @FXML
     public void openTicketView() {
@@ -214,6 +213,7 @@ public class Controller {
 
     public void updateEvents(Enum<StatusForEvent> status) {
         sportTabPane.getTabs().clear();
+
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
         List<SportEvent> Events= new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {

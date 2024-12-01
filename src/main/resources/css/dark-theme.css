@@ -81,6 +81,25 @@
     -fx-text-fill: white;
 }
 
+.root .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.root .scroll-bar .thumb {
+    -fx-background-color: #212121;
+    -fx-cursor: hand;
+}
+
+.root .scroll-bar .thumb:hover {
+    -fx-background-color: #121212;
+}
+
+.root .scroll-bar .increment-button,
+.root .scroll-bar .decrement-button {
+    -fx-background-color: #212121;
+    -fx-cursor: hand;
+}
+
 .button {
     -fx-background-color: #212121;
     -fx-text-fill: white;
@@ -153,3 +172,26 @@
 .dropdown-item:focused {
     -fx-background-color: #303030;
 }
+
+.tab-pane .tab-down-button {
+    -fx-background-color: #212121; /* Change the background color */
+    -fx-text-fill: white; /* Change the text color */
+}
+
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu {
+ -fx-background-color: #212121;
+    -fx-cursor: hand;
+}
+
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:hover {
+ -fx-background-color: #303030;
+}
+
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:selected {
+    -fx-background-color: #303030;
+}
+
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:focused {
+    -fx-background-color: #303030;
+}
+
