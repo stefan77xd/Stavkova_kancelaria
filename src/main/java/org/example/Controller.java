@@ -1,7 +1,6 @@
 package org.example;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,9 +18,7 @@ import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -29,7 +26,7 @@ public class Controller {
     @FXML
     private TabPane sportTabPane;
 
-    private SportEventDAO sportEventDAO = new SportEventDAO();
+    private final SportEventDAO sportEventDAO = new SportEventDAO();
 
     @FXML
     private Button loginoruser;
@@ -85,16 +82,16 @@ public class Controller {
 
             // Add the stylesheet to the ticket view explicitly
             Scene ticketScene = new Scene(root);
-            ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
             Stage stage = new Stage();
             stage.setTitle("Tikety");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/ticket.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ticket.png"))));
             stage.setScene(ticketScene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -116,17 +113,17 @@ public class Controller {
                 Scene scene = new Scene(root);
 
                 // Add the dark theme CSS stylesheet to the scene
-                scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
                 // Create the stage and set the scene
                 Stage stage = new Stage();
                 stage.setTitle("Login");
-                stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/login.png")));
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL); // Modal window
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println(e.getMessage());
             }
         }
         }
@@ -144,13 +141,13 @@ public class Controller {
 
             Stage stage = new Stage();
             stage.setTitle("Detail zápasu");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/match.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
 
             // Create the scene
             Scene scene = new Scene(root);
 
             // Add the dark theme CSS stylesheet to the scene
-            scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
             // Set the scene to the stage
             stage.setScene(scene);
@@ -159,7 +156,7 @@ public class Controller {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -168,12 +165,12 @@ public class Controller {
     public void initialize() {
         sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                newScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+                newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
             }
         });
 
         // Zavolanie metódy showOdds na inicializáciu tabov
-        showOdds(null);
+        showOdds();
     }
 
 
@@ -202,10 +199,10 @@ public class Controller {
         });
     }
 
-    public void showResults(javafx.event.ActionEvent actionEvent) {
+    public void showResults() {
         updateEvents(StatusForEvent.finished);
     }
-    public void showOdds(javafx.event.ActionEvent actionEvent) {
+    public void showOdds() {
         updateEvents(StatusForEvent.upcoming);
 
     }
@@ -215,22 +212,28 @@ public class Controller {
         sportTabPane.getTabs().clear();
 
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
-        List<SportEvent> Events= new ArrayList<>();
+        List<SportEvent> Events = new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {
-            if (sportEvent.getStatus()==status) {
+            if (sportEvent.getStatus() == status) {
                 Events.add(sportEvent);
             }
         }
         Map<String, List<SportEvent>> groupedEvents = Events.stream()
                 .collect(Collectors.groupingBy(SportEvent::getSportType));
+
+        // Create the "All" tab
         Tab allTab = new Tab("All");
         ListView<SportEvent> allListView = new ListView<>();
         setupListView(allListView, Events);
         VBox allVBox = new VBox(allListView);
         allVBox.setFillWidth(true);
         allTab.setContent(allVBox);
-        sportTabPane.getTabs().add(allTab);
 
+        // Collect all tabs
+        List<Tab> allTabs = new ArrayList<>();
+        allTabs.add(allTab);
+
+        // Create tabs for each sport
         for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
             Tab sportTab = new Tab(entry.getKey());
             ListView<SportEvent> listView = new ListView<>();
@@ -238,28 +241,35 @@ public class Controller {
             VBox vbox = new VBox(listView);
             vbox.setFillWidth(true);
             sportTab.setContent(vbox);
-            sportTabPane.getTabs().add(sportTab);
+            allTabs.add(sportTab);
         }
+
+        // Sort the tabs alphabetically by title
+        allTabs.sort(Comparator.comparing(Tab::getText));
+
+        // Add the sorted tabs to the sportTabPane
+        sportTabPane.getTabs().addAll(allTabs);
     }
 
+
     @FXML
-    public void openStatView(ActionEvent actionEvent) {
+    public void openStatView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/statView.fxml"));
             Parent root = loader.load();
 
             // Add the stylesheet to the ticket view explicitly
             Scene ticketScene = new Scene(root);
-            ticketScene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
+            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
             Stage stage = new Stage();
             stage.setTitle("Štatistika");
-            stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/statistics.png")));
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/statistics.png"))));
             stage.setScene(ticketScene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
     }
 }
