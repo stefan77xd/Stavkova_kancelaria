@@ -178,7 +178,7 @@ public class Controller {
         listView.setItems(FXCollections.observableArrayList(sportEvents));
         listView.setFixedCellSize(24);
         listView.setPrefHeight(sportEvents.size() * listView.getFixedCellSize() + 2);
-        listView.setCellFactory(lv -> new ListCell<SportEvent>() {
+        listView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(SportEvent sportEvent, boolean empty) {
                 super.updateItem(sportEvent, empty);
