@@ -10,13 +10,27 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.ConfigReader;
 import org.example.Controller;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
+import org.example.security.Principal;
+import org.example.security.PrincipalWithPassword;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
+import org.jooq.codegen.maven.example.tables.Users;
+
+import static org.jooq.codegen.maven.example.tables.Users.USERS;
 
 public class MatchController {
 
@@ -179,7 +193,11 @@ public class MatchController {
                     if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
                         double betAmount = Double.parseDouble(betAmountField.getText());
                         if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
-                            placeBet(selectedOdds.get(), betAmount);
+                            try {
+                                placeBet(selectedOdds.get(), betAmount);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
                         } else {
                             showAlert();
                         }
@@ -210,10 +228,47 @@ public class MatchController {
         }
     }
 
-    private void placeBet(double odds, double betAmount) {
+    private void placeBet(double odds, double betAmount) throws SQLException {
         System.out.println(odds + " " + betAmount);
 
+        // Získanie používateľského ID
+        Principal principal = Auth.INSTANCE.getPrincipal();
+        Long userID = principal.getId();
+        System.out.println("userid" + userID);
 
+        // Načítanie konfigurácie a pripojenie k databáze
+        Properties config = ConfigReader.loadProperties("config.properties");
+        String dbUrl = config.getProperty("db.url");
+
+        try (Connection connection = DriverManager.getConnection(dbUrl)) {
+            // Použitie DSLContext pre prácu s databázou
+            DSLContext create = DSL.using(connection);
+
+            // Aktualizácia balance používateľa
+            create.update(USERS)
+                    .set(USERS.BALANCE, USERS.BALANCE.minus(BigDecimal.valueOf(betAmount)))
+                    .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
+                    .set(USERS.MAX_BET,
+                            DSL.when(USERS.MAX_BET.lessThan(BigDecimal.valueOf(betAmount)), BigDecimal.valueOf(betAmount))
+                                    .otherwise(USERS.MAX_BET))
+                    .set(USERS.TOTAL_STAKES, USERS.TOTAL_STAKES.plus(BigDecimal.valueOf(betAmount)))
+
+                    .where(USERS.USER_ID.eq(userID.intValue()))
+                    .execute();
+            create.update(USERS)
+                    .set(USERS.AVERAGE_BET,
+                            DSL.case_()
+                                    .when(USERS.TOTAL_BETS.isNotNull().and(USERS.TOTAL_BETS.gt(0)),
+                                            DSL.round(
+                                                    USERS.TOTAL_STAKES.cast(BigDecimal.class).divide(USERS.TOTAL_BETS.cast(BigDecimal.class))
+                                            ))
+                                    .otherwise(DSL.val(BigDecimal.ZERO)))
+                    .execute();
+
+
+
+
+        }
 
         Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance() - betAmount);
         userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
