@@ -69,6 +69,10 @@ public class Controller {
         });
     }
 
+    public void updateBalance() {
+        loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
+    }
+
     private void handleLogout() {
         Auth.INSTANCE.setPrincipal(null);
         loginoruser.setText("Login/Register");
@@ -142,6 +146,8 @@ public class Controller {
             Stage stage = new Stage();
             stage.setTitle("Detail zápasu");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
+
+            matchController.setMainController(this);
 
             // Create the scene
             Scene scene = new Scene(root);

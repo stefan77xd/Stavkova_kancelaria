@@ -5,13 +5,18 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import lombok.Setter;
+import org.example.Controller;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MatchController {
 
@@ -28,6 +33,9 @@ public class MatchController {
     private Label userInfo;
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
+
+    @Setter
+    private Controller mainController;
 
     public void setSportEvent(SportEvent sportEvent) {
         if (Auth.INSTANCE.getPrincipal() != null && !sportEvent.getStatus().equals(StatusForEvent.finished)) {
@@ -142,8 +150,14 @@ public class MatchController {
                     betAmountField.setText(oldValue);  // Restore the old value if more than one decimal point
                 }
 
+                // Ensure only two digits after the decimal point
+                if (newValue.contains(".") && newValue.substring(newValue.indexOf(".") + 1).length() > 2) {
+                    betAmountField.setText(oldValue);  // Restore the old value if there are more than two digits after the decimal point
+                }
+
                 updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
             });
+
 
 
 
@@ -160,6 +174,17 @@ public class MatchController {
             placeBetButton.setPrefWidth(fixedWidth);  // Set width to match label + button width
             placeBetButton.setStyle("-fx-font-size: 16; -fx-cursor: hand;");
             placeBetButton.getStyleClass().add("bet-button");
+
+            placeBetButton.setOnAction(event -> {
+                    if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
+                        double betAmount = Double.parseDouble(betAmountField.getText());
+                        if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
+                            placeBet(selectedOdds.get(), betAmount);
+                        } else {
+                            showAlert();
+                        }
+                    }
+            });
 
             if (Auth.INSTANCE.getPrincipal() == null) {
                 placeBetButton.setDisable(true);
@@ -185,6 +210,18 @@ public class MatchController {
         }
     }
 
+    private void placeBet(double odds, double betAmount) {
+        System.out.println(odds + " " + betAmount);
+
+
+
+        Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance() - betAmount);
+        userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
+        if (mainController != null) {
+            mainController.updateBalance();
+        }
+    }
+
 
     // Helper method to update eventual win calculation
     private void updateEventualWin(String betAmount, double odds, Label eventualWinLabel) {
@@ -195,6 +232,22 @@ public class MatchController {
         } catch (NumberFormatException e) {
             eventualWinLabel.setText("0.0");  // Set to 0 if input is invalid
         }
+    }
+
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Pozor!");
+        alert.setHeaderText("Nedostatok prostriedkov");
+        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+            }
+        });
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
+        alert.showAndWait();
     }
 
 }
