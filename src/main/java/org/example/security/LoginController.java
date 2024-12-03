@@ -9,9 +9,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import lombok.Setter;
+import org.example.AdminController;
 import org.example.Controller;
 import org.example.exceptions.AuthenticationException;
+import org.example.user.Role;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -31,7 +34,6 @@ public class LoginController {
 
     @FXML
     void Login(ActionEvent event) {
-
         var usernameOrEmail = usernameTextField.getText();
         var password = passwordTextField.getText();
 
@@ -43,17 +45,49 @@ public class LoginController {
             return;
         }
 
-
-
+        var role = principal.getRole();
         Auth.INSTANCE.setPrincipal(principal);
 
-        if (mainController != null) {
-            mainController.onLoginSuccess();
+        if (role == Role.user) {
+            if (mainController != null) {
+                mainController.onLoginSuccess();
+            }
+            closeLoginView(event); // Zatvorí len okno prihlasovania
+        } else if (role == Role.admin) {
+            closeAllWindows();
+            closeLoginView(event);
+            openAdminWindow();
+
         }
-
-        closeLoginView(event);
-
     }
+
+    private void openAdminWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/adminView.fxml"));
+            Parent root = loader.load();
+
+            // Get the LoginController from the loader
+            AdminController adminController = loader.getController();
+
+
+
+            // Create a new scene with the root node
+            Scene scene = new Scene(root);
+
+
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setTitle("Admin");
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
 
 
     private void closeLoginView(ActionEvent event) {
@@ -63,7 +97,13 @@ public class LoginController {
     }
 
 
-
+    public void closeAllWindows() {
+        for (Window window : Window.getWindows()) {
+            if (window instanceof Stage) {
+                ((Stage) window).close();
+            }
+        }
+    }
     public void OpenRegistryWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/registryView.fxml"));
@@ -78,15 +118,14 @@ public class LoginController {
             // Create a new scene with the root node
             Scene scene = new Scene(root);
 
-            // Add the dark theme CSS stylesheet to the scene
+
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
-            // Create the stage and set the scene
             Stage stage = new Stage();
             stage.setTitle("Register");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
             stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL); // Modal window
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
             System.err.println(e.getMessage());

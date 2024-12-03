@@ -22,6 +22,7 @@ public class TicketController {
 
     @FXML
     public void initialize() {
+
         // Create a custom order for the StatusForTicket enums
         StatusForTicket[] orderedStatuses = {
                 StatusForTicket.pending, // assuming 'pending' is the lowercase enum constant
@@ -46,6 +47,7 @@ public class TicketController {
 
                 // Add the tab to the TabPane
                 ticketPane.getTabs().add(tab);
+
             }
         }
 

@@ -1,6 +1,8 @@
 package org.example;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.example.security.Auth;
 import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
@@ -30,6 +33,7 @@ public class Controller {
 
     @FXML
     private Button loginoruser;
+    Stage stage;
 
     public void onLoginSuccess() {
         // Update the button text
@@ -116,7 +120,7 @@ public class Controller {
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
 
-                Stage stage = new Stage();
+                stage = new Stage();
                 stage.setTitle("Login");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
                 stage.setScene(scene);
@@ -202,7 +206,9 @@ public class Controller {
     }
 
     public void showResults() {
+        closeMainView();
         updateEvents(StatusForEvent.finished);
+
     }
     public void showOdds() {
         updateEvents(StatusForEvent.upcoming);
@@ -268,6 +274,19 @@ public class Controller {
             System.err.println(e.getMessage());
         }
     }
+    public void closeMainView() {
+
+        if (stage != null) {
+            stage.close();
+        } else {
+            System.err.println("Stage hlavného okna je null, nemôžem zavrieť okno.");
+        }
+    }
+
+
+
+
+
 }
 
 
