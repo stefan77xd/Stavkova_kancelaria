@@ -16,6 +16,7 @@ import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
 import org.example.security.Principal;
+import org.example.ticket.StatusForTicket;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -27,7 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import static org.jooq.codegen.maven.example.tables.Users.USERS;
+import static org.jooq.codegen.maven.example.Tables.TICKETS;
+import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class MatchController {
 
@@ -42,6 +44,8 @@ public class MatchController {
 
     @FXML
     private Label userInfo;
+    PossibleOutcome selectedOutcome;
+
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
 
@@ -70,6 +74,7 @@ public class MatchController {
     private void loadPossibleOutcomes(Boolean finished) {
         // Clear any previous outcomes
         outcomeVBox.getChildren().clear();
+
 
         // Set alignment of VBox to center the content vertically and horizontally
         outcomeVBox.setAlignment(Pos.CENTER);
@@ -125,10 +130,12 @@ public class MatchController {
 
                 // Handle selection of odds
                 oddsButton.setOnAction(event -> {
+
                     selectedOdds.set(outcome.getOdds());
                     if (!finished) {
                         oddsWinRow.setVisible(true);  // Show the HBox with odds and eventual win
                     }
+                      selectedOutcome = outcome;
                     updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
                 });
 
@@ -191,7 +198,7 @@ public class MatchController {
                         double betAmount = Double.parseDouble(betAmountField.getText());
                         if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
                             try {
-                                placeBet(selectedOdds.get(), betAmount);
+                                placeBet(selectedOdds.get(), betAmount, selectedOutcome);
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
                             }
@@ -225,15 +232,15 @@ public class MatchController {
         }
     }
 
-    private void placeBet(double odds, double betAmount) throws SQLException {
+    private void placeBet(double odds, double betAmount, PossibleOutcome outcome) throws SQLException {
         System.out.println(odds + " " + betAmount);
 
-        // Získanie používateľského ID
+
         Principal principal = Auth.INSTANCE.getPrincipal();
         Long userID = principal.getId();
         System.out.println("userid" + userID);
 
-        // Načítanie konfigurácie a pripojenie k databáze
+
         Properties config = ConfigReader.loadProperties("config.properties");
         String dbUrl = config.getProperty("db.url");
 
@@ -260,6 +267,12 @@ public class MatchController {
                                                     USERS.TOTAL_STAKES.cast(BigDecimal.class).divide(USERS.TOTAL_BETS.cast(BigDecimal.class))
                                             ))
                                     .otherwise(DSL.val(BigDecimal.ZERO)))
+                    .execute();
+            create.insertInto(TICKETS)
+                    .set(TICKETS.USER_ID, userID.intValue()) // Prevod long na int
+                    .set(TICKETS.OUTCOME_ID, (int) selectedOutcome.getOutcomeId()) // Prevod long na int
+                    .set(TICKETS.STAKE, BigDecimal.valueOf(betAmount))
+                    .set(TICKETS.STATUS, StatusForTicket.pending.name())
                     .execute();
 
 

@@ -1,19 +1,27 @@
 package org.example.ticket;
-import lombok.Data;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.example.ticket.StatusForTicket;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@ToString
 public class Ticket {
-    private long ticketId;
-    private long userId;
-    private long outcomeId;
+    private Integer ticketId;
+    private Integer userId;
+    private Integer outcomeId;
     private StatusForTicket status;
     private double stake;
-    private String eventName;
-    private String resultName;
 
-    @Override
-    public String toString() {
-        return eventName + ", "
-                + resultName + ", " + stake + ", " + status;
-    }
+    // Dynamické atribúty, ktoré sú pridané v aplikácii, ale nie sú v databáze
+    private String resultName;
+    private String eventName;
+    private LocalDateTime eventStartTime;
+
+
+
 }

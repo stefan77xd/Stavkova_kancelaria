@@ -35,33 +35,31 @@ public class Controller {
         // Update the button text
         loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
 
-        // Create a context menu for the dropdown
+
         ContextMenu dropdownMenu = new ContextMenu();
         dropdownMenu.getStyleClass().add("dropdown-menu");
 
-        // Create "Profile" menu item
+
         MenuItem profileMenuItem = new MenuItem("Profil");
         profileMenuItem.getStyleClass().add("dropdown-item");
         MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
         logoutMenuItem.getStyleClass().add("dropdown-item");
 
-        // Set event handlers for menu items
-        //profileMenuItem.setOnAction(event -> openProfileView());
+
         logoutMenuItem.setOnAction(event -> handleLogout());
 
-        // Add menu items to the dropdown
         dropdownMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
 
-        // Attach the context menu to the button
+
         loginoruser.setOnMouseClicked(event -> {
             if (event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
-                // Get button width
+
                 double buttonWidth = loginoruser.getWidth();
 
-                // Apply a fixed width to the context menu using CSS
+
                 dropdownMenu.setStyle("-fx-pref-width: " + buttonWidth + "px;");
 
-                // Show the dropdown aligned with the button
+
                 double buttonStartX = loginoruser.localToScreen(0, 0).getX();
                 double buttonBottomY = loginoruser.localToScreen(0, loginoruser.getHeight()).getY()+6;
                 dropdownMenu.show(loginoruser, buttonStartX, buttonBottomY);
@@ -83,8 +81,6 @@ public class Controller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ticketView.fxml"));
             Parent root = loader.load();
-
-            // Add the stylesheet to the ticket view explicitly
             Scene ticketScene = new Scene(root);
             ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
@@ -107,19 +103,19 @@ public class Controller {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
                 Parent root = loader.load();
 
-                // Get the LoginController from the loader
+
                 LoginController loginController = loader.getController();
 
-                // Pass the main controller to the login controller
+
                 loginController.setMainController(this);
 
-                // Create a new scene with the root node
+
                 Scene scene = new Scene(root);
 
-                // Add the dark theme CSS stylesheet to the scene
+
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
-                // Create the stage and set the scene
+
                 Stage stage = new Stage();
                 stage.setTitle("Login");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -149,16 +145,16 @@ public class Controller {
 
             matchController.setMainController(this);
 
-            // Create the scene
+
             Scene scene = new Scene(root);
 
-            // Add the dark theme CSS stylesheet to the scene
+
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
-            // Set the scene to the stage
+
             stage.setScene(scene);
 
-            // Make the stage modal
+
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
@@ -175,7 +171,7 @@ public class Controller {
             }
         });
 
-        // Zavolanie metódy showOdds na inicializáciu tabov
+
         showOdds();
     }
 
@@ -227,19 +223,16 @@ public class Controller {
         Map<String, List<SportEvent>> groupedEvents = Events.stream()
                 .collect(Collectors.groupingBy(SportEvent::getSportType));
 
-        // Create the "All" tab
         Tab allTab = new Tab("All");
         ListView<SportEvent> allListView = new ListView<>();
         setupListView(allListView, Events);
         VBox allVBox = new VBox(allListView);
         allVBox.setFillWidth(true);
         allTab.setContent(allVBox);
-
-        // Collect all tabs
         List<Tab> allTabs = new ArrayList<>();
         allTabs.add(allTab);
 
-        // Create tabs for each sport
+
         for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
             Tab sportTab = new Tab(entry.getKey());
             ListView<SportEvent> listView = new ListView<>();
@@ -250,10 +243,8 @@ public class Controller {
             allTabs.add(sportTab);
         }
 
-        // Sort the tabs alphabetically by title
         allTabs.sort(Comparator.comparing(Tab::getText));
 
-        // Add the sorted tabs to the sportTabPane
         sportTabPane.getTabs().addAll(allTabs);
     }
 
@@ -264,7 +255,6 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/statView.fxml"));
             Parent root = loader.load();
 
-            // Add the stylesheet to the ticket view explicitly
             Scene ticketScene = new Scene(root);
             ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 

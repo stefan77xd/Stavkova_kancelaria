@@ -53,7 +53,7 @@ public class TicketController {
         if (Auth.INSTANCE.getPrincipal() != null) {
             testLabel.setText("Tikety");
             List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId().intValue());
-
+            System.out.println(userTickets);
             // Populate the ListViews with the user's tickets for each tab (by status)
             for (Tab tab : ticketPane.getTabs()) {
                 // Convert the capitalized tab name back to lowercase to match the enum constant

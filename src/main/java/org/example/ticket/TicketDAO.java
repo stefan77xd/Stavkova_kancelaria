@@ -3,6 +3,7 @@ package org.example.ticket;
 
 import org.example.ConfigReader;
 import org.jooq.DSLContext;
+import org.jooq.Name;
 import org.jooq.Record11;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -58,8 +59,9 @@ public class TicketDAO {
                 ticket.setOutcomeId(record.get(TICKETS.OUTCOME_ID));
                 ticket.setStatus(StatusForTicket.valueOf((String) record.get("ticket_status")));
                 ticket.setStake(record.get(TICKETS.STAKE).doubleValue());
-                ticket.setResultName((String) record.get("outcome_name"));
-                ticket.setEventName(record.get(SPORT_EVENTS.EVENT_NAME));
+                ticket.setResultName(String.valueOf(record.get(POSSIBLE_OUTCOMES.RESULT_NAME)));
+
+                System.out.println("Result Name: " + String.valueOf(record.get(POSSIBLE_OUTCOMES.RESULT_NAME)));
 
                 tickets.add(ticket);
             }
