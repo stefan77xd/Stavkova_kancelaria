@@ -16,12 +16,14 @@ public class Ticket {
     private Integer outcomeId;
     private StatusForTicket status;
     private double stake;
-
-    // Dynamické atribúty, ktoré sú pridané v aplikácii, ale nie sú v databáze
     private String resultName;
     private String eventName;
     private LocalDateTime eventStartTime;
 
 
-
+    @Override
+    public String toString() {
+        return eventName + ", " + resultName + ", "
+                + eventStartTime.toLocalDate() + ", " + stake + ", " + status;
+    }
 }

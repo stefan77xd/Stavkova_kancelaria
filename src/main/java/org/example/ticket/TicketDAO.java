@@ -40,8 +40,8 @@ public class TicketDAO {
                             TICKETS.STAKE,
                             POSSIBLE_OUTCOMES.RESULT_NAME.as("outcome_name"),
                             POSSIBLE_OUTCOMES.EVENT_ID,
-                            SPORT_EVENTS.EVENT_NAME,
-                            SPORT_EVENTS.START_TIME,
+                            SPORT_EVENTS.EVENT_NAME.as("event_name"),
+                            SPORT_EVENTS.START_TIME.as("start_time"),
                             SPORT_EVENTS.SPORT_TYPE,
                             SPORT_EVENTS.STATUS.as("event_status")
                     )
@@ -59,10 +59,10 @@ public class TicketDAO {
                 ticket.setOutcomeId(record.get(TICKETS.OUTCOME_ID));
                 ticket.setStatus(StatusForTicket.valueOf((String) record.get("ticket_status")));
                 ticket.setStake(record.get(TICKETS.STAKE).doubleValue());
-                ticket.setResultName(String.valueOf(record.get(POSSIBLE_OUTCOMES.RESULT_NAME)));
 
-                System.out.println("Result Name: " + String.valueOf(record.get(POSSIBLE_OUTCOMES.RESULT_NAME)));
-
+                ticket.setResultName(String.valueOf(record.get("outcome_name")));
+                ticket.setEventName(String.valueOf(record.get("event_name")));
+                ticket.setEventStartTime((LocalDateTime) record.get("start_time"));
                 tickets.add(ticket);
             }
 
