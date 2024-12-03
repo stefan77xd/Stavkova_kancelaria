@@ -16,7 +16,6 @@ import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
 import org.example.security.Principal;
-import org.example.security.PrincipalWithPassword;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -26,9 +25,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
-import org.jooq.codegen.maven.example.tables.Users;
 
 import static org.jooq.codegen.maven.example.tables.Users.USERS;
 

@@ -121,7 +121,7 @@
                         </generate>
                         <target>
                             <packageName>org.jooq.codegen.maven.example</packageName>
-                            <directory>target/generated-sources/jooq</directory>
+                            <directory>target/generated-sources</directory>
                         </target>
                     </generator>
                 </configuration>
