@@ -100,9 +100,22 @@
     -fx-cursor: hand;
 }
 
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #212121; /* Dark background for the vertical thumb */
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #212121; /* Dark background for the horizontal thumb */
+}
+
+.scroll-bar {
+    -fx-padding: 0; /* Adjust padding of the scrollbars */
+}
+
 .button {
     -fx-background-color: #212121;
     -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
 .text-field {
@@ -211,4 +224,8 @@
 
 .balanceLabel {
     -fx-font-size: 3em;
+}
+
+.recoverMail:hover {
+    -fx-underline: true;
 }
