@@ -4,11 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.AdminController">
    <children>
-      <Button layoutX="415.0" layoutY="16.0" mnemonicParsing="false" onAction="#AddSportEvent" text="Pridaj event" />
-      <Button layoutX="506.0" layoutY="16.0" mnemonicParsing="false" onAction="#ShowEvents" text="Ukaž eventy" />
+      <Button layoutX="333.0" layoutY="16.0" mnemonicParsing="false" onAction="#AddSportEvent" text="Pridaj event" />
+      <Button layoutX="422.0" layoutY="16.0" mnemonicParsing="false" onAction="#ShowEvents" text="Ukaž eventy" />
       <Label fx:id="welcomeSign" layoutX="14.0" layoutY="20.0" text="Label" />
+      <Button layoutX="510.0" layoutY="16.0" mnemonicParsing="false" onAction="#logout" text="Odhlásiť sa" />
    </children>
 </AnchorPane>
