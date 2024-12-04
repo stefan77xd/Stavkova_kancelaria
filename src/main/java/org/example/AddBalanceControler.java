@@ -2,8 +2,10 @@ package org.example;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import lombok.Setter;
+import org.example.security.Auth;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -25,9 +27,17 @@ public class AddBalanceControler {
     @Setter
     private Controller mainController;
 
+    @FXML
+    private Label balanceLabel;
+
 
 
     boolean pridanie = false;
+
+    @FXML
+    public void initialize() {
+        balanceLabel.setText("Pridajte prostriedky pre " + Auth.INSTANCE.getPrincipal().getUsername());
+    }
 
     @FXML
     void submit(ActionEvent event) throws SQLException {

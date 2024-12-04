@@ -85,6 +85,6 @@
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#submit" text="Potvrdiť" />
          </children>
       </VBox>
-      <Label id="balanceLabel" text="Pridajte si peniaze" GridPane.columnIndex="1" />
+      <Label id="balanceLabel" fx:id="balanceLabel" text="Pridajte si peniaze" GridPane.columnIndex="1" />
    </children>
 </GridPane>
