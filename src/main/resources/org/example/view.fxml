@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TabPane?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controller">
     <children>
         <HBox maxHeight="1.7976931348623157E308" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #212121;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -50,6 +51,11 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#refreshBalance" prefHeight="16.0" prefWidth="10.0" text="!" GridPane.columnIndex="4">
+                     <GridPane.margin>
+                        <Insets left="25.0" />
+                     </GridPane.margin>
                   </Button>
                     </children>
                 </GridPane>

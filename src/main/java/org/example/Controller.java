@@ -13,16 +13,27 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.example.possibleoutcome.PossibleOutcome;
+import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.security.Auth;
 import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
+import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class Controller {
 
@@ -65,20 +76,67 @@ public class Controller {
 
 
                 double buttonStartX = loginoruser.localToScreen(0, 0).getX();
-                double buttonBottomY = loginoruser.localToScreen(0, loginoruser.getHeight()).getY()+6;
+                double buttonBottomY = loginoruser.localToScreen(0, loginoruser.getHeight()).getY() + 6;
                 dropdownMenu.show(loginoruser, buttonStartX, buttonBottomY);
             }
         });
     }
 
     public void updateBalance() {
-        loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
+        if (Auth.INSTANCE.getPrincipal() == null) {
+            loginoruser.setText("Prosím, prihláste sa.");
+            return;
+        }
+
+        // Načítanie informácií o aktuálnom používateľovi
+        var userId = Auth.INSTANCE.getPrincipal().getId().intValue();
+
+        try {
+            // Načítanie konfigurácie databázy
+            Properties config = ConfigReader.loadProperties("config.properties");
+            String dbUrl = config.getProperty("db.url");
+
+            // Pripojenie k databáze
+            try (Connection connection = DriverManager.getConnection(dbUrl)) {
+                DSLContext create = DSL.using(connection);
+
+                // Získanie aktuálneho zostatku z databázy
+                BigDecimal currentBalance = create.select(USERS.BALANCE)
+                        .from(USERS)
+                        .where(USERS.USER_ID.eq(userId))
+                        .fetchOneInto(BigDecimal.class);
+
+                if (currentBalance != null) {
+
+
+                    // Aktualizácia používateľových informácií v Auth a zobrazenie
+                    Auth.INSTANCE.getPrincipal().setBalance(currentBalance.doubleValue()); // Aktualizácia balansu v Auth
+                    loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
+                } else {
+                    loginoruser.setText("Nepodarilo sa načítať zostatok.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            loginoruser.setText("Chyba pri pripájaní k databáze.");
+        }
     }
+
 
     private void handleLogout() {
         Auth.INSTANCE.setPrincipal(null);
         loginoruser.setText("Login/Register");
     }
+    @FXML
+    void refreshBalance(ActionEvent event) {
+        if (Auth.INSTANCE.getPrincipal() == null) {
+            return;
+        }
+        updateBalance();
+    }
+
+
+
 
     @FXML
     public void openTicketView() {
@@ -130,9 +188,7 @@ public class Controller {
                 System.err.println(e.getMessage());
             }
         }
-        }
-
-
+    }
 
 
     private void openMatchScene(SportEvent sportEvent) {
@@ -200,9 +256,96 @@ public class Controller {
         listView.setOnMouseClicked(event -> {
             SportEvent selectedEvent = listView.getSelectionModel().getSelectedItem();
             if (selectedEvent != null) {
-                openMatchScene(selectedEvent);
+                if (selectedEvent.getStatus() == StatusForEvent.upcoming) {
+                    openMatchScene(selectedEvent);
+                }else {
+                    try {
+                        openFinishedMatchScene(selectedEvent);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         });
+    }
+
+    private void openFinishedMatchScene(SportEvent selectedEvent) throws IOException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ResultView.fxml"));
+            Parent root = loader.load();
+
+            ResultMatchController resultMatchController = loader.getController();
+            resultMatchController.eventName.setText(selectedEvent.getEventName());
+            Properties config = ConfigReader.loadProperties("config.properties");
+            String dbUrl = config.getProperty("db.url");
+
+            try (Connection connection = DriverManager.getConnection(dbUrl)) {
+                DSLContext create = DSL.using(connection);
+
+                Set<String> resultNames = new HashSet<>(create.select(POSSIBLE_OUTCOMES.RESULT_NAME)
+                        .from(POSSIBLE_OUTCOMES)
+                        .where(POSSIBLE_OUTCOMES.EVENT_ID.eq((int) selectedEvent.getEventId()))
+                        .and(POSSIBLE_OUTCOMES.STATUS.eq(StatusForOutcomes.winning.name()))
+                        .fetch(POSSIBLE_OUTCOMES.RESULT_NAME));
+
+
+                // Skontrolujeme, či nie sú prázdne hodnoty v 'resultNames'
+                Iterator<String> iterator = resultNames.iterator();
+
+// Nastavíme hodnoty pre outcomeResult1, outcomeResult2 a outcomeResult3
+                if (iterator.hasNext()) {
+                    resultMatchController.outcomeResult1.setText(iterator.next());
+                } else {
+                    resultMatchController.outcomeResult1.setText("");
+                }
+
+                if (iterator.hasNext()) {
+                    resultMatchController.outcomeResult2.setText(iterator.next());
+                } else {
+                    resultMatchController.outcomeResult2.setText("");
+                }
+
+                if (iterator.hasNext()) {
+                    resultMatchController.outcomeResult3.setText(iterator.next());
+                } else {
+                    resultMatchController.outcomeResult3.setText("");
+                }
+
+// Ak je text "Label", nastavíme prázdny text
+                if (resultMatchController.outcomeResult1.getText().equals("Label")) {
+                    resultMatchController.outcomeResult1.setText("");
+                }
+                if (resultMatchController.outcomeResult2.getText().equals("Label")) {
+                    resultMatchController.outcomeResult2.setText("");
+                }
+                if (resultMatchController.outcomeResult3.getText().equals("Label")) {
+                    resultMatchController.outcomeResult3.setText("");
+                }
+
+
+
+                Stage stage = new Stage();
+                stage.setTitle("Ukončený zápas");
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
+
+
+                Scene scene = new Scene(root);
+
+
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+
+
+                stage.setScene(scene);
+
+
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+        } finally {
+
+        }
     }
 
     public void showResults() {
@@ -210,6 +353,7 @@ public class Controller {
         updateEvents(StatusForEvent.finished);
 
     }
+
     public void showOdds() {
         updateEvents(StatusForEvent.upcoming);
 
@@ -274,6 +418,7 @@ public class Controller {
             System.err.println(e.getMessage());
         }
     }
+
     public void closeMainView() {
 
         if (stage != null) {
@@ -282,9 +427,6 @@ public class Controller {
             System.err.println("Stage hlavného okna je null, nemôžem zavrieť okno.");
         }
     }
-
-
-
 
 
 }
