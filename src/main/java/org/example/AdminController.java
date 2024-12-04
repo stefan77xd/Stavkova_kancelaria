@@ -22,6 +22,37 @@ public class AdminController {
     private Label welcomeSign;
 
     @FXML
+    private void logout() {
+        try {
+            // Clear the authentication data
+            Auth.INSTANCE.setPrincipal(null);
+
+            // Close the current stage
+            Stage currentStage = (Stage) welcomeSign.getScene().getWindow();
+            currentStage.close();
+
+            // Load the new view
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+
+            // Add stylesheets if necessary
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+
+            // Set stage properties
+            stage.setTitle("Stávková kancelária");
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png"))));
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error during logout: " + e.getMessage());
+        }
+    }
+
+    @FXML
     public void initialize() {
         welcomeSign.setText("Vitaj " + Auth.INSTANCE.getPrincipal().getUsername());
     }

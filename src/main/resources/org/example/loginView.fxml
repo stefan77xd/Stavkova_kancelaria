@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.security.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.security.LoginController">
    <children>
       <GridPane layoutY="6.0" maxWidth="1.7976931348623157E308" prefHeight="60.0" prefWidth="340.0" style="-fx-background-color: #212121;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -61,22 +61,29 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <Text id="register" fx:id="register" fill="#7fa129" onMouseClicked="#OpenRegistryWindow" strokeType="OUTSIDE" strokeWidth="0.0" text="Nemáte účet? Zaregistrujte sa tu" textAlignment="CENTER" wrappingWidth="179.36456298828125" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <font>
-                  <Font size="9.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Text>
-            <Label fx:id="recoverMail" ellipsisString="" onMouseClicked="#openRecoverWindow" textFill="#d93a3a" underline="true" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <font>
-                  <Font size="10.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets top="-100.0" />
-               </GridPane.margin>
-            </Label>
+            <VBox GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+               <children>
+                  <Label id="recoverMail" fx:id="recoverMail" alignment="CENTER" contentDisplay="CENTER" ellipsisString="" onMouseClicked="#openRecoverWindow" styleClass="recoverMail" textAlignment="CENTER" textFill="#d93a3a" wrapText="true">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+                  <Text id="register" fx:id="register" fill="#7fa129" onMouseClicked="#OpenRegistryWindow" strokeType="OUTSIDE" strokeWidth="0.0" text="Nemáte účet? Zaregistrujte sa tu" textAlignment="CENTER" wrappingWidth="179.36456298828125">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Text>
+               </children>
+            </VBox>
          </children>
       </GridPane>
    </children>
