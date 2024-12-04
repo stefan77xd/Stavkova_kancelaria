@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.StatusForOutcomes;
+import org.example.AddBalanceControler;
 import org.example.security.Auth;
 import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
@@ -60,8 +61,8 @@ public class Controller {
         MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
         logoutMenuItem.getStyleClass().add("dropdown-item");
 
-
         logoutMenuItem.setOnAction(event -> handleLogout());
+        profileMenuItem.setOnAction(event -> openBallanceWindow());
 
         dropdownMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
 
@@ -82,17 +83,39 @@ public class Controller {
         });
     }
 
+    private void openBallanceWindow() {
+        if (Auth.INSTANCE.getPrincipal() != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/addBalanceView.fxml"));
+                Parent root = loader.load();
+                AddBalanceControler addBalanceControler = loader.getController();
+                addBalanceControler.UserID=Auth.INSTANCE.getPrincipal().getId();
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                stage = new Stage();
+                stage.setTitle("Add balance");
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL); // Modal window
+                stage.show();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+
+    }
+
     public void updateBalance() {
         if (Auth.INSTANCE.getPrincipal() == null) {
             loginoruser.setText("Prosím, prihláste sa.");
             return;
         }
 
-        // Načítanie informácií o aktuálnom používateľovi
+
         var userId = Auth.INSTANCE.getPrincipal().getId().intValue();
 
         try {
-            // Načítanie konfigurácie databázy
+
             Properties config = ConfigReader.loadProperties("config.properties");
             String dbUrl = config.getProperty("db.url");
 
@@ -109,7 +132,7 @@ public class Controller {
                 if (currentBalance != null) {
 
 
-                    // Aktualizácia používateľových informácií v Auth a zobrazenie
+
                     Auth.INSTANCE.getPrincipal().setBalance(currentBalance.doubleValue()); // Aktualizácia balansu v Auth
                     loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
                 } else {
