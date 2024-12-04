@@ -1,6 +1,5 @@
 package org.example.ticket;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -70,6 +69,7 @@ public class TicketController {
         if (Auth.INSTANCE.getPrincipal() != null) {
             testLabel.setText("Tikety");
             List<Ticket> userTickets = UserTicketDAO.getUsersTickets(Auth.INSTANCE.getPrincipal().getId().intValue());
+            System.out.println(userTickets);
             // Populate the ListViews with the user's tickets for each tab (by status)
             for (Tab tab : ticketPane.getTabs()) {
                 // Convert the capitalized tab name back to lowercase to match the enum constant
@@ -141,13 +141,7 @@ public class TicketController {
         // Set the items for the ListView
         listView.setItems(FXCollections.observableArrayList(tickets));
         listView.setFixedCellSize(24);
-
-        Platform.runLater(() -> {
-            ScrollBar horizontalScrollBar = (ScrollBar) listView.lookup(".scroll-bar:horizontal");
-            double scrollbarHeight = horizontalScrollBar != null ? horizontalScrollBar.getHeight() + 4 : 0;
-            listView.setPrefHeight(tickets.size() * listView.getFixedCellSize() + scrollbarHeight);
-        });
-
+        listView.setPrefHeight(tickets.size() * listView.getFixedCellSize() + 2);
 
         // Customize how each item (Ticket) is displayed in the ListView
         listView.setCellFactory(lv -> new ListCell<Ticket>() {

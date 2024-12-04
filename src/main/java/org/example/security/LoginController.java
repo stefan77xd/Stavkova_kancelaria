@@ -54,6 +54,7 @@ public class LoginController {
             javafx.application.Platform.runLater(this::showAlert);
             recoverMail.setText("Zabudli ste heslo? Obnovte si heslo cez email tu.");
             recoverMail.setStyle("-fx-text-fill: #d22424;");
+
             return;
 
         }

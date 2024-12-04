@@ -233,11 +233,12 @@ public class MatchController {
     }
 
     private void placeBet(double odds, double betAmount, PossibleOutcome outcome) throws SQLException {
+        System.out.println(odds + " " + betAmount);
 
 
         Principal principal = Auth.INSTANCE.getPrincipal();
         Long userID = principal.getId();
-
+        System.out.println("userid" + userID);
 
 
         Properties config = ConfigReader.loadProperties("config.properties");
