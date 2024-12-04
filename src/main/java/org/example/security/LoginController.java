@@ -5,14 +5,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.Setter;
 import org.example.AdminController;
 import org.example.Controller;
+import org.example.EmailController;
 import org.example.exceptions.AuthenticationException;
 import org.example.user.Role;
 
@@ -23,6 +26,11 @@ public class LoginController {
 
     @FXML
     private TextField passwordTextField;
+
+    @FXML
+    private Label recoverMail;
+
+    int countOfAttempts = 0;
 
     @FXML
     private TextField usernameTextField;
@@ -41,8 +49,14 @@ public class LoginController {
         try {
             principal = AuthDao.authenticate(usernameOrEmail, password);
         } catch (AuthenticationException e) {
+            countOfAttempts++;
+            System.out.println(countOfAttempts);
             javafx.application.Platform.runLater(this::showAlert);
+            recoverMail.setText("Zabudli ste heslo? Obnovte si heslo cez email tu.");
+            recoverMail.setStyle("-fx-text-fill: #d22424;");
+
             return;
+
         }
 
         var role = principal.getRole();
@@ -146,6 +160,33 @@ public class LoginController {
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
         alert.showAndWait();
     }
+    @FXML
+    void openRecoverWindow(MouseEvent event) {
+        if (countOfAttempts>=1){
+            System.out.println("da sa klikat");
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/emailView.fxml"));
+                Parent root = loader.load();
+
+                // Get the LoginController from the loader
+                EmailController emailController = loader.getController();
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+
+                Stage stage = new Stage();
+                stage.setTitle("Email");
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+
+        }
+    }
+
+
 }
 
 
