@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import javafx.stage.Stage;
 
 import static org.jooq.codegen.maven.example.Tables.USERS;
 
@@ -66,6 +67,8 @@ public class AddBalanceControler {
             if (mainController != null) {
                 mainController.updateBalance();
             }
+            Stage stage = (Stage) amount.getScene().getWindow();
+            stage.close();
 
         }
     }

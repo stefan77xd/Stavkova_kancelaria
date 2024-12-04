@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -12,8 +13,18 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 import org.example.Controller;
+import org.example.security.Auth;
+
 
 public class AdminController {
+
+    @FXML
+    private Label welcomeSign;
+
+    @FXML
+    public void initialize() {
+        welcomeSign.setText("Vitaj " + Auth.INSTANCE.getPrincipal().getUsername());
+    }
 
     @FXML
     void AddSportEvent(ActionEvent event) {

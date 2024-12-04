@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -30,20 +31,22 @@ public class ListViewController {
     @FXML
     private ListView<SportEvent> listOfSport;
 
-
-    public void initialize() {
+    @FXML
+    private void initialize() {
         sportEventDAO = new SportEventDAO();
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
         List<SportEvent> upcomingEvents = new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {
-            if (sportEvent.getStatus() == StatusForEvent.upcoming) {
+            if (sportEvent != null && sportEvent.getStatus() == StatusForEvent.upcoming) {
                 upcomingEvents.add(sportEvent);
             }
-
         }
+        int itemCount = upcomingEvents.size();
+        listOfSport.setPrefHeight(itemCount * 24);
         listOfSport.setItems(FXCollections.observableArrayList(upcomingEvents));
 
     }
+
 
     @FXML
     void selected(MouseEvent event) throws IOException, SQLException {

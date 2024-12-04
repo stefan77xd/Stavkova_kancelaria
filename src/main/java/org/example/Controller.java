@@ -60,7 +60,7 @@ public class Controller {
         profileMenuItem.getStyleClass().add("dropdown-item");
         MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
         logoutMenuItem.getStyleClass().add("dropdown-item");
-        MenuItem addBalance = new MenuItem("Pridať balance");
+        MenuItem addBalance = new MenuItem("Vklad");
         addBalance.getStyleClass().add("dropdown-item");
 
         logoutMenuItem.setOnAction(event -> handleLogout());
@@ -96,8 +96,8 @@ public class Controller {
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
                 stage = new Stage();
-                stage.setTitle("Add balance");
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
+                stage.setTitle("Pridajte prostriedky");
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/card.png"))));
                 stage.setScene(scene);
                 stage.initModality(Modality.APPLICATION_MODAL); // Modal window
                 stage.show();
