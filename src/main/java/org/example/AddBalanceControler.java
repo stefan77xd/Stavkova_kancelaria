@@ -33,7 +33,6 @@ public class AddBalanceControler {
     void submit(ActionEvent event) throws SQLException {
         if (pridanie == false) {
 
-            System.out.println("klikam" + UserID);
             Properties config = ConfigReader.loadProperties("config.properties");
             String dbUrl = config.getProperty("db.url");
             double amountValue = Double.parseDouble(amount.getText());
