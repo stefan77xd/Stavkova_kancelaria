@@ -2,6 +2,7 @@ package org.example;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import org.example.possibleoutcome.StatusForOutcomes;
@@ -77,11 +78,7 @@ public class AddSportController {
                     .columns(SPORT_EVENTS.EVENT_NAME, SPORT_EVENTS.START_TIME, SPORT_EVENTS.SPORT_TYPE, SPORT_EVENTS.STATUS)
                     .values(eventName.getText(), LocalDateTime.parse(startTime), sportType.getText(), StatusForEvent.upcoming.name())
                     .execute();
-
-
             int eventId = create.fetchOne("SELECT last_insert_rowid()").into(int.class);
-
-
             if (isNotEmpty(resultName1.getText()) && isNotEmpty(odds1.getText())) {
                 create.insertInto(POSSIBLE_OUTCOMES)
                         .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
@@ -100,8 +97,10 @@ public class AddSportController {
                         .values(eventId, resultName3.getText(), BigDecimal.valueOf(Double.parseDouble(odds3.getText())), StatusForOutcomes.upcoming.name())
                         .execute();
             }
-
-            System.out.println("Záznam bol úspešne pridaný.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Informácia");
+            alert.setHeaderText("Športová udalosť bola pridaná.");
+            alert.showAndWait();
 
         } catch (IllegalArgumentException e) {
             System.err.println("Chyba: " + e.getMessage());

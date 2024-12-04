@@ -3,6 +3,7 @@ package org.example;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import lombok.Setter;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -21,6 +22,11 @@ public class AddBalanceControler {
     @FXML
     private TextField bonusCode;
 
+    @Setter
+    private Controller mainController;
+
+
+
     boolean pridanie = false;
 
     @FXML
@@ -34,6 +40,9 @@ public class AddBalanceControler {
             if (bonusCode.getText().equals("lukas10")){
                 amountValue=amountValue*1.1;
             }
+            if(bonusCode.getText().equals("SK10")){
+                amountValue=amountValue*10;
+            }
 
             try (Connection connection = DriverManager.getConnection(dbUrl)) {
                 DSLContext create = DSL.using(connection);
@@ -41,9 +50,12 @@ public class AddBalanceControler {
                         .set(USERS.BALANCE, USERS.BALANCE.plus(amountValue))
                         .where(USERS.USER_ID.eq((int) UserID))
                         .execute();
-
                 pridanie = true;
 
+            }
+
+            if (mainController != null) {
+                mainController.updateBalance();
             }
 
         }

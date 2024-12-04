@@ -60,11 +60,13 @@ public class Controller {
         profileMenuItem.getStyleClass().add("dropdown-item");
         MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
         logoutMenuItem.getStyleClass().add("dropdown-item");
+        MenuItem addBalance = new MenuItem("Pridať balance");
+        addBalance.getStyleClass().add("dropdown-item");
 
         logoutMenuItem.setOnAction(event -> handleLogout());
-        profileMenuItem.setOnAction(event -> openBallanceWindow());
+        addBalance.setOnAction(event -> openBallanceWindow());
 
-        dropdownMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
+        dropdownMenu.getItems().addAll(profileMenuItem, addBalance, logoutMenuItem);
 
 
         loginoruser.setOnMouseClicked(event -> {
@@ -89,7 +91,8 @@ public class Controller {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/addBalanceView.fxml"));
                 Parent root = loader.load();
                 AddBalanceControler addBalanceControler = loader.getController();
-                addBalanceControler.UserID=Auth.INSTANCE.getPrincipal().getId();
+                addBalanceControler.UserID = Auth.INSTANCE.getPrincipal().getId();
+                addBalanceControler.setMainController(this);
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
                 stage = new Stage();
@@ -132,7 +135,6 @@ public class Controller {
                 if (currentBalance != null) {
 
 
-
                     Auth.INSTANCE.getPrincipal().setBalance(currentBalance.doubleValue()); // Aktualizácia balansu v Auth
                     loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
                 } else {
@@ -150,15 +152,6 @@ public class Controller {
         Auth.INSTANCE.setPrincipal(null);
         loginoruser.setText("Login/Register");
     }
-    @FXML
-    void refreshBalance(ActionEvent event) {
-        if (Auth.INSTANCE.getPrincipal() == null) {
-            return;
-        }
-        updateBalance();
-    }
-
-
 
 
     @FXML
@@ -281,7 +274,7 @@ public class Controller {
             if (selectedEvent != null) {
                 if (selectedEvent.getStatus() == StatusForEvent.upcoming) {
                     openMatchScene(selectedEvent);
-                }else {
+                } else {
                     try {
                         openFinishedMatchScene(selectedEvent);
                     } catch (IOException e) {
@@ -344,7 +337,6 @@ public class Controller {
                 if (resultMatchController.outcomeResult3.getText().equals("Label")) {
                     resultMatchController.outcomeResult3.setText("");
                 }
-
 
 
                 Stage stage = new Stage();
