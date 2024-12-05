@@ -2,15 +2,23 @@ package org.example;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -20,6 +28,7 @@ public class EmailController {
 
     @FXML
     private TextField emailField;
+
 
     @FXML
     void confirmEmail(ActionEvent event) throws SQLException {
@@ -46,6 +55,8 @@ public class EmailController {
                     alert.setTitle("Výborne!");
                     alert.setHeaderText("Email bol odoslaný!");
                     alert.showAndWait();
+                    openTokenWindow(token, email);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -54,6 +65,33 @@ public class EmailController {
                     alert.showAndWait();
                 }
             }
+        }
+    }
+
+    private void openTokenWindow(String token, String email) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tokenView.fxml"));
+            Parent root = loader.load();
+            TokenController tokenController = loader.getController();
+            tokenController.email=email;
+            tokenController.token=token;
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            Stage stage = new Stage();
+            stage.setTitle("Token");
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+            tokenController.newPassword1.setEditable(false);
+            tokenController.newPassword1.setDisable(true);
+            tokenController.newPassword2.setEditable(false);
+            tokenController.newPassword2.setDisable(true);
+            tokenController.passwords.setDisable(true);
+
+
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
         }
     }
 
