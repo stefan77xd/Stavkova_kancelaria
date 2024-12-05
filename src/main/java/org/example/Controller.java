@@ -99,7 +99,7 @@ public class Controller {
                 stage.setTitle("Pridajte prostriedky");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/card.png"))));
                 stage.setScene(scene);
-                stage.initModality(Modality.APPLICATION_MODAL); // Modal window
+                stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             } catch (IOException e) {
                 System.err.println(e.getMessage());
