@@ -2,13 +2,15 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.AdminController">
    <children>
-      <Button layoutX="333.0" layoutY="16.0" mnemonicParsing="false" onAction="#AddSportEvent" text="Pridaj event" />
-      <Button layoutX="422.0" layoutY="16.0" mnemonicParsing="false" onAction="#ShowEvents" text="Ukaž eventy" />
+      <Button layoutX="333.0" layoutY="16.0" mnemonicParsing="false" onAction="#AddSportEvent" text="Pridaj event" AnchorPane.rightAnchor="188.0" AnchorPane.topAnchor="16.0" />
+      <Button layoutX="422.0" layoutY="16.0" mnemonicParsing="false" onAction="#ShowEvents" text="Ukaž eventy" AnchorPane.rightAnchor="98.0" AnchorPane.topAnchor="16.0" />
       <Label fx:id="welcomeSign" layoutX="14.0" layoutY="20.0" text="Label" />
-      <Button layoutX="510.0" layoutY="16.0" mnemonicParsing="false" onAction="#logout" text="Odhlásiť sa" />
+      <Button layoutX="510.0" layoutY="16.0" mnemonicParsing="false" onAction="#logout" text="Odhlásiť sa" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="16.0" />
+      <TabPane fx:id="tabPane" layoutX="222.0" layoutY="139.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" />
    </children>
 </AnchorPane>
