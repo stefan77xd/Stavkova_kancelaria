@@ -38,7 +38,7 @@ public class EmailController {
             } else {
                 String token = TokenGenerator.generateToken();
                 String subject = "Resetovanie hesla";
-                String messageContent = "Použite tento token na resetovanie hesla: " + token;
+                String messageContent = "Použite tento token na resetovanie hesla: " + token + "Šťastné a veselé Vianoce prajú Štefan Malik a Lukáš Varga.";
 
                 try {
                     EmailSender.sendEmail(email, subject, messageContent);
