@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -46,6 +47,8 @@ public class MatchController {
     private Label userInfo;
     PossibleOutcome selectedOutcome;
 
+    private SportEvent sportEvent;
+
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
 
@@ -53,6 +56,7 @@ public class MatchController {
     private Controller mainController;
 
     public void setSportEvent(SportEvent sportEvent) {
+        this.sportEvent = sportEvent;
         if (Auth.INSTANCE.getPrincipal() != null && !sportEvent.getStatus().equals(StatusForEvent.finished)) {
             userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
         }
@@ -63,6 +67,7 @@ public class MatchController {
             eventNameLabel.setWrapText(true);  // Allow text to wrap if too long
 
             eventId = sportEvent.getEventId();
+
 
             // Check if the event is finished
             loadPossibleOutcomes(sportEvent.getStatus().equals(StatusForEvent.finished));
@@ -197,13 +202,18 @@ public class MatchController {
                     if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
                         double betAmount = Double.parseDouble(betAmountField.getText());
                         if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
-                            try {
-                                placeBet(selectedOdds.get(), betAmount, selectedOutcome);
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
+                            if (!LocalDateTime.now().isAfter(sportEvent.getStartTime())) {
+                                try {
+                                    placeBet(selectedOdds.get(), betAmount, selectedOutcome);
+                                } catch (SQLException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } else {
+                                showAlert("Zápas už začal");
                             }
+
                         } else {
-                            showAlert();
+                            showAlert("Nedostatok prostriedkov");
                         }
                     }
             });
@@ -298,10 +308,10 @@ public class MatchController {
         }
     }
 
-    private void showAlert() {
+    private void showAlert(String text) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Pozor!");
-        alert.setHeaderText("Nedostatok prostriedkov");
+        alert.setHeaderText(text);
         alert.getDialogPane().setStyle("-fx-background-color: #303030;");
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
