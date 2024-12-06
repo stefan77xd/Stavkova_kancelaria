@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -41,7 +42,7 @@ public class LoginController {
     private Controller mainController;
 
     @FXML
-    void Login(ActionEvent event) {
+    void Login() {
         var usernameOrEmail = usernameTextField.getText();
         var password = passwordTextField.getText();
 
@@ -55,23 +56,38 @@ public class LoginController {
             recoverMail.setText("Zabudli ste heslo? Obnovte si heslo cez email tu.");
             recoverMail.setStyle("-fx-text-fill: #d22424;");
             return;
-
         }
 
         var role = principal.getRole();
         Auth.INSTANCE.setPrincipal(principal);
 
+        Stage stage = (Stage) usernameTextField.getScene().getWindow();  // Get Stage from the TextField's Scene
         if (role == Role.user) {
             if (mainController != null) {
                 mainController.onLoginSuccess();
             }
-            closeLoginView(event); // Zatvorí len okno prihlasovania
+            stage.close();
         } else if (role == Role.admin) {
             closeAllWindows();
-            closeLoginView(event);
+            stage.close();
             openAdminWindow();
-
         }
+    }
+
+    @FXML
+    void initialize() {
+        passwordTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                Login();
+            }
+        });
+        usernameTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                Login();
+            }
+        });
     }
 
     private void openAdminWindow() {

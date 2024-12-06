@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.ConfigReader;
@@ -38,7 +39,7 @@ public class RegistryController {
     private LoginController loginController;
 
     @FXML
-    void SubmitValues(ActionEvent event) {
+    void SubmitValues() {
         // Get user inputs
         String username = RegistryUsernameTextField.getText().trim();
         String email = RegistryEmailTextField.getText().trim();
@@ -85,7 +86,7 @@ public class RegistryController {
 
 
             showAlert("Výborne", "Registrácia prebehla v poriadku!");
-            closeRegistryView(event);
+            closeRegistryView();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             showAlert("Error", "An error occurred while processing your request.");
@@ -127,17 +128,21 @@ public class RegistryController {
                 alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
             }
         });
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        Stage stage = (Stage) RegistryPassword2TextField.getScene().getWindow();
         String iconPath = title.equals("Výborne") ? "/icons/success.png" : "/icons/warning.png";
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath))));
         alert.showAndWait();
+        if (title.equals("Výborne")) {
+            stage.close();
+        }
+
     }
 
 
 
-    private void closeRegistryView(ActionEvent event) {
+    private void closeRegistryView() {
 
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) RegistryPassword2TextField.getScene().getWindow();
         stage.close();
     }
 
@@ -146,5 +151,33 @@ public class RegistryController {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    @FXML
+    void initialize() {
+        RegistryPassword1TextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                SubmitValues();
+            }
+        });
+        RegistryPassword2TextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                SubmitValues();
+            }
+        });
+        RegistryEmailTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                SubmitValues();
+            }
+        });
+        RegistryUsernameTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                // Trigger the login when Enter key is pressed
+                SubmitValues();
+            }
+        });
     }
 }

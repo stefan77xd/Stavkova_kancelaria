@@ -103,7 +103,7 @@ public class AdminController {
             if (selectedEvent != null) {
                 try {
                     openEventPreviewWindow(selectedEvent); // Open event preview
-                } catch (IOException | SQLException e) {
+                } catch (IOException e) {
                     System.err.println("Error opening event preview: " + e.getMessage());
                 }
             }
@@ -137,7 +137,7 @@ public class AdminController {
                 if (selectedEvent != null) {
                     try {
                         openEventPreviewWindow(selectedEvent); // Open event preview
-                    } catch (IOException | SQLException e) {
+                    } catch (IOException e) {
                         System.err.println("Error opening event preview: " + e.getMessage());
                     }
                 }
@@ -152,7 +152,7 @@ public class AdminController {
 
 
     // Method to open the EventPreviewController
-    private void openEventPreviewWindow(SportEvent sportEvent) throws IOException, SQLException {
+    private void openEventPreviewWindow(SportEvent sportEvent) throws IOException {
         if (sportEvent == null) {
             System.err.println("SportEvent is null. Cannot open preview window.");
             return;
@@ -162,51 +162,9 @@ public class AdminController {
         Parent root = loader.load();
 
         EventPreviewController eventPreviewController = loader.getController();
-        eventPreviewController.sportEvent = sportEvent;
-        eventPreviewController.Name.setText(sportEvent.getEventName());
+        eventPreviewController.setSportEvent(sportEvent); // Pass the sport event
 
-        int eventID = (int) sportEvent.getEventId();
-
-        // Load possible outcomes from the database
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
-
-            var results = create.select(POSSIBLE_OUTCOMES.RESULT_NAME)
-                    .from(POSSIBLE_OUTCOMES)
-                    .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(eventID))
-                    .fetch();
-
-            Set<String> resultNames = new HashSet<>(results.into(String.class));
-            Iterator<String> iterator = resultNames.iterator();
-
-            if (iterator.hasNext()) {
-                eventPreviewController.checkbox1.setText(iterator.next());
-            } else {
-                eventPreviewController.checkbox1.setText("");
-                eventPreviewController.checkbox1.setDisable(true);
-            }
-
-            if (iterator.hasNext()) {
-                eventPreviewController.checkbox2.setText(iterator.next());
-            } else {
-                eventPreviewController.checkbox2.setText("");
-                eventPreviewController.checkbox2.setDisable(true);
-            }
-
-            if (iterator.hasNext()) {
-                eventPreviewController.checkbox3.setText(iterator.next());
-            } else {
-                eventPreviewController.checkbox3.setText("");
-                eventPreviewController.checkbox3.setDisable(true);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
-            throw e;
-        }
+        eventPreviewController.setAdminController(this);
 
         // Create and show the new scene
         Scene scene = new Scene(root);
@@ -219,6 +177,7 @@ public class AdminController {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
     }
+
 
     @FXML
     void AddSportEvent(ActionEvent event) {
@@ -234,6 +193,7 @@ public class AdminController {
 
             // Get the LoginController from the loader
             AddSportController addSportController = loader.getController();
+            addSportController.setAdminController(this);
 
             // Create a new scene with the root node
             Scene scene = new Scene(root);
@@ -248,6 +208,11 @@ public class AdminController {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public void updateTabs() {
+        tabPane.getTabs().clear();
+        initialize();
     }
 
 

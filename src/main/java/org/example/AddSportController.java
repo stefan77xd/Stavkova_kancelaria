@@ -2,9 +2,12 @@ package org.example;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import lombok.Setter;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.StatusForEvent;
 import org.jooq.DSLContext;
@@ -55,6 +58,9 @@ public class AddSportController {
     @FXML
     private TextField time;
 
+    @Setter
+    public AdminController adminController;
+
 
     @FXML
     void Add(ActionEvent event) {
@@ -101,6 +107,12 @@ public class AddSportController {
             alert.setTitle("Informácia");
             alert.setHeaderText("Športová udalosť bola pridaná.");
             alert.showAndWait();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+            adminController.updateTabs();
+
+
 
         } catch (IllegalArgumentException e) {
             System.err.println("Chyba: " + e.getMessage());

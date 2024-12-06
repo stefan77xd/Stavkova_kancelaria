@@ -49,17 +49,22 @@ public class AddBalanceControler {
 
     @FXML
     void submit(ActionEvent event) throws SQLException {
-        if (pridanie == false) {
+        if (!pridanie) {
             Properties config = ConfigReader.loadProperties("config.properties");
             String dbUrl = config.getProperty("db.url");
-            if (Integer.parseInt(amount.getText()) > 0) {
-                double amountValue = Double.parseDouble(amount.getText());
-                if (bonusCode.getText().equals("lukas10")){
-                    amountValue=amountValue*1.1;
+
+            // Parse amount as a double directly
+            double amountValue = Double.parseDouble(amount.getText());
+
+            if (amountValue > 0) {
+                // Apply bonus codes
+                if (bonusCode.getText().equals("lukas10")) {
+                    amountValue = amountValue * 1.1;
                 }
-                if(bonusCode.getText().equals("SK10")){
-                    amountValue=amountValue*10;
+                if (bonusCode.getText().equals("SK10")) {
+                    amountValue = amountValue * 10;
                 }
+
                 try (Connection connection = DriverManager.getConnection(dbUrl)) {
                     DSLContext create = DSL.using(connection);
                     create.update(USERS)
@@ -68,6 +73,7 @@ public class AddBalanceControler {
                             .execute();
                     pridanie = true;
                 }
+
                 if (mainController != null) {
                     mainController.updateBalance();
                 }
