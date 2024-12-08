@@ -32,7 +32,7 @@
             <RowConstraints maxHeight="329.0" minHeight="10.0" prefHeight="325.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <VBox id="statBox" fx:id="statBox" alignment="CENTER" prefHeight="200.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <VBox id="statBox" fx:id="statBox" alignment="CENTER" prefHeight="200.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
