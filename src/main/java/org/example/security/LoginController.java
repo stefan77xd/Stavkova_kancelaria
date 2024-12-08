@@ -178,7 +178,6 @@ public class LoginController {
     @FXML
     void openRecoverWindow(MouseEvent event) {
         if (countOfAttempts>=1){
-            System.out.println("da sa klikat");
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/emailView.fxml"));
                 Parent root = loader.load();
