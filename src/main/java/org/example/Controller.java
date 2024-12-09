@@ -286,85 +286,25 @@ public class Controller {
     }
 
     private void openFinishedMatchScene(SportEvent selectedEvent) throws IOException {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ResultView.fxml"));
-            Parent root = loader.load();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ResultView.fxml"));
+        Parent root = loader.load();
 
-            ResultMatchController resultMatchController = loader.getController();
-            resultMatchController.eventName.setText(selectedEvent.getEventName());
-            Properties config = ConfigReader.loadProperties("config.properties");
-            String dbUrl = config.getProperty("db.url");
+        ResultMatchController resultMatchController = loader.getController();
+        resultMatchController.setSportEvent(selectedEvent); // Pass the event to the controller
 
-            try (Connection connection = DriverManager.getConnection(dbUrl)) {
-                DSLContext create = DSL.using(connection);
+        Stage stage = new Stage();
+        stage.setTitle("Ukončený zápas");
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
 
-                Set<String> resultNames = new HashSet<>(create.select(POSSIBLE_OUTCOMES.RESULT_NAME)
-                        .from(POSSIBLE_OUTCOMES)
-                        .where(POSSIBLE_OUTCOMES.EVENT_ID.eq((int) selectedEvent.getEventId()))
-                        .and(POSSIBLE_OUTCOMES.STATUS.eq(StatusForOutcomes.winning.name()))
-                        .fetch(POSSIBLE_OUTCOMES.RESULT_NAME));
-
-
-                // Skontrolujeme, či nie sú prázdne hodnoty v 'resultNames'
-                Iterator<String> iterator = resultNames.iterator();
-
-// Nastavíme hodnoty pre outcomeResult1, outcomeResult2 a outcomeResult3
-                if (iterator.hasNext()) {
-                    resultMatchController.outcomeResult1.setText(iterator.next());
-                } else {
-                    resultMatchController.outcomeResult1.setText("");
-                }
-
-                if (iterator.hasNext()) {
-                    resultMatchController.outcomeResult2.setText(iterator.next());
-                } else {
-                    resultMatchController.outcomeResult2.setText("");
-                }
-
-                if (iterator.hasNext()) {
-                    resultMatchController.outcomeResult3.setText(iterator.next());
-                } else {
-                    resultMatchController.outcomeResult3.setText("");
-                }
-
-// Ak je text "Label", nastavíme prázdny text
-                if (resultMatchController.outcomeResult1.getText().equals("Label")) {
-                    resultMatchController.outcomeResult1.setText("");
-                }
-                if (resultMatchController.outcomeResult2.getText().equals("Label")) {
-                    resultMatchController.outcomeResult2.setText("");
-                }
-                if (resultMatchController.outcomeResult3.getText().equals("Label")) {
-                    resultMatchController.outcomeResult3.setText("");
-                }
-
-
-                Stage stage = new Stage();
-                stage.setTitle("Ukončený zápas");
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
-
-
-                Scene scene = new Scene(root);
-
-
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
-
-                stage.setScene(scene);
-
-
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.show();
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-        } finally {
-
-        }
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
     }
 
+
     public void showResults() {
-        closeMainView();
         updateEvents(StatusForEvent.finished);
 
     }
@@ -434,14 +374,6 @@ public class Controller {
         }
     }
 
-    public void closeMainView() {
-
-        if (stage != null) {
-            stage.close();
-        } else {
-            System.err.println("Stage hlavného okna je null, nemôžem zavrieť okno.");
-        }
-    }
 
 
 }

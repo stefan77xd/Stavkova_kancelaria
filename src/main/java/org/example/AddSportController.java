@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.possibleoutcome.StatusForOutcomes;
@@ -61,15 +62,54 @@ public class AddSportController {
     @Setter
     public AdminController adminController;
 
+    @FXML
+    private VBox resultFieldsContainer;
+
+    @FXML
+    private VBox oddsFieldsContainer;
+
+
+    public void initialize() {
+        // Add the first two fields for results and odds
+        resultFieldsContainer.setSpacing(10);
+        oddsFieldsContainer.setSpacing(10);
+        addNewResultAndOddsField();
+        addNewResultAndOddsField();
+    }
+
+    private void addNewResultAndOddsField() {
+        TextField resultField = new TextField();
+        resultField.getStyleClass().add("resultFields");
+        resultField.setPromptText("Názov výsledku:");
+        TextField oddsField = new TextField();
+        oddsField.getStyleClass().add("resultFields");
+        oddsField.setPromptText("Kurz:");
+
+        resultFieldsContainer.getChildren().add(resultField);
+        oddsFieldsContainer.getChildren().add(oddsField);
+
+        // Add listener to check when the field is filled
+        resultField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.trim().isEmpty()) {
+                if (isLastResultField(resultField)) {
+                    addNewResultAndOddsField(); // Add new field when the current one is filled
+                }
+            }
+        });
+    }
+
+    private boolean isLastResultField(TextField field) {
+        return resultFieldsContainer.getChildren().indexOf(field) == resultFieldsContainer.getChildren().size() - 1;
+    }
 
     @FXML
     void Add(ActionEvent event) {
+        // Your existing code for adding the event
         Properties config = ConfigReader.loadProperties("config.properties");
         String dbUrl = config.getProperty("db.url");
 
         try (Connection connection = DriverManager.getConnection(dbUrl)) {
             DSLContext create = DSL.using(connection);
-
 
             LocalDate date = DatePicker.getValue();
             if (date == null) {
@@ -79,40 +119,34 @@ public class AddSportController {
             LocalTime parsedTime = parseTime(time.getText());
             String startTime = date.atTime(parsedTime).toString();
 
-
             create.insertInto(SPORT_EVENTS)
                     .columns(SPORT_EVENTS.EVENT_NAME, SPORT_EVENTS.START_TIME, SPORT_EVENTS.SPORT_TYPE, SPORT_EVENTS.STATUS)
                     .values(eventName.getText(), LocalDateTime.parse(startTime), sportType.getText(), StatusForEvent.upcoming.name())
                     .execute();
             int eventId = create.fetchOne("SELECT last_insert_rowid()").into(int.class);
-            if (isNotEmpty(resultName1.getText()) && isNotEmpty(odds1.getText())) {
-                create.insertInto(POSSIBLE_OUTCOMES)
-                        .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                        .values(eventId, resultName1.getText(), BigDecimal.valueOf(Double.parseDouble(odds1.getText())), StatusForOutcomes.upcoming.name())
-                        .execute();
+
+            for (int i = 0; i < resultFieldsContainer.getChildren().size(); i++) {
+                TextField resultField = (TextField) resultFieldsContainer.getChildren().get(i);
+                TextField oddsField = (TextField) oddsFieldsContainer.getChildren().get(i);
+
+                if (isNotEmpty(resultField.getText()) && isNotEmpty(oddsField.getText())) {
+                    create.insertInto(POSSIBLE_OUTCOMES)
+                            .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
+                            .values(eventId, resultField.getText(), BigDecimal.valueOf(Double.parseDouble(oddsField.getText())), StatusForOutcomes.upcoming.name())
+                            .execute();
+                }
             }
-            if (isNotEmpty(resultName2.getText()) && isNotEmpty(odds2.getText())) {
-                create.insertInto(POSSIBLE_OUTCOMES)
-                        .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                        .values(eventId, resultName2.getText(), BigDecimal.valueOf(Double.parseDouble(odds2.getText())), StatusForOutcomes.upcoming.name())
-                        .execute();
-            }
-            if (isNotEmpty(resultName3.getText()) && isNotEmpty(odds3.getText())) {
-                create.insertInto(POSSIBLE_OUTCOMES)
-                        .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                        .values(eventId, resultName3.getText(), BigDecimal.valueOf(Double.parseDouble(odds3.getText())), StatusForOutcomes.upcoming.name())
-                        .execute();
-            }
+
+            // Inform the user
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informácia");
             alert.setHeaderText("Športová udalosť bola pridaná.");
             alert.showAndWait();
 
+            // Close the window
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             adminController.updateTabs();
-
-
 
         } catch (IllegalArgumentException e) {
             System.err.println("Chyba: " + e.getMessage());
@@ -121,11 +155,9 @@ public class AddSportController {
         }
     }
 
-
     private boolean isNotEmpty(String text) {
         return text != null && !text.trim().isEmpty();
     }
-
 
     private LocalTime parseTime(String timeText) {
         try {
