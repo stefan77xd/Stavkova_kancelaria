@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="stavkova.db" uuid="c20667be-d78d-412c-b6a0-9ee1e6453fff">
+    <data-source source="LOCAL" name="stavkova.db" uuid="80787ecd-e5d1-411f-8862-c28e865e8dae">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

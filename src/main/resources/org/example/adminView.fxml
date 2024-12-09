@@ -11,5 +11,7 @@
       <Label fx:id="welcomeSign" layoutX="14.0" layoutY="20.0" text="Label" />
       <Button layoutX="510.0" layoutY="16.0" mnemonicParsing="false" onAction="#logout" text="Odhlásiť sa" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="16.0" />
       <TabPane fx:id="tabPane" layoutX="222.0" layoutY="139.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="60.0" />
+      <Button layoutX="307.0" layoutY="16.0" mnemonicParsing="false" onAction="#showFinishedEvents" text="Skončené zápasy" AnchorPane.rightAnchor="187.0" AnchorPane.topAnchor="16.0" />
+      <Button layoutX="164.0" layoutY="16.0" mnemonicParsing="false" onAction="#showUpcomingEvents" text="Nadchádzajúce zápasy" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="16.0" />
    </children>
 </AnchorPane>

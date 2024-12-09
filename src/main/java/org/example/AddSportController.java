@@ -35,23 +35,6 @@ public class AddSportController {
     @FXML
     private TextField eventName;
 
-    @FXML
-    private TextField odds1;
-
-    @FXML
-    private TextField odds2;
-
-    @FXML
-    private TextField odds3;
-
-    @FXML
-    private TextField resultName1;
-
-    @FXML
-    private TextField resultName2;
-
-    @FXML
-    private TextField resultName3;
 
     @FXML
     private TextField sportType;
@@ -87,6 +70,23 @@ public class AddSportController {
 
         resultFieldsContainer.getChildren().add(resultField);
         oddsFieldsContainer.getChildren().add(oddsField);
+
+        oddsField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Allow digits and only one decimal point
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                oddsField.setText(newValue.replaceAll("[^\\d.]", ""));
+            }
+
+            // Ensure only one decimal point is allowed
+            if (newValue.indexOf('.') != newValue.lastIndexOf('.')) {
+                oddsField.setText(oldValue);  // Restore the old value if more than one decimal point
+            }
+
+            // Ensure only two digits after the decimal point
+            if (newValue.contains(".") && newValue.substring(newValue.indexOf(".") + 1).length() > 2) {
+                oddsField.setText(oldValue);  // Restore the old value if there are more than two digits after the decimal point
+            }
+        });
 
         // Add listener to check when the field is filled
         resultField.textProperty().addListener((observable, oldValue, newValue) -> {

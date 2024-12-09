@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -30,6 +27,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
 import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
+import static org.jooq.codegen.maven.example.tables.SportEvents.SPORT_EVENTS;
 
 
 public class AdminController {
@@ -41,6 +39,7 @@ public class AdminController {
     private TabPane tabPane;  // Injected TabPane
 
     private SportEventDAO sportEventDAO;
+
 
     @FXML
     private void logout() {
@@ -79,14 +78,24 @@ public class AdminController {
 
         // Initialize SportEventDAO and load the sport events
         sportEventDAO = new SportEventDAO();
-        loadSportsIntoTabs();
+        loadSportsIntoTabs("upcoming");  // Default to showing upcoming events
     }
 
-    private void loadSportsIntoTabs() {
-        // Get all upcoming sport events
-        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents().stream()
-                .filter(event -> event.getStatus() == StatusForEvent.upcoming)
-                .collect(Collectors.toList());
+    private void loadSportsIntoTabs(String eventStatus) {
+        // Filter events based on the eventStatus parameter ("upcoming" or "finished")
+        List<SportEvent> sportEvents;
+        if ("upcoming".equals(eventStatus)) {
+            sportEvents = sportEventDAO.getAllSportEvents().stream()
+                    .filter(event -> event.getStatus() == StatusForEvent.upcoming)
+                    .collect(Collectors.toList());
+        } else {
+            sportEvents = sportEventDAO.getAllSportEvents().stream()
+                    .filter(event -> event.getStatus() == StatusForEvent.finished)
+                    .collect(Collectors.toList());
+        }
+
+        // Clear existing tabs
+        tabPane.getTabs().clear();
 
         // Create an "All" tab that displays all events
         Tab allTab = new Tab("All");
@@ -101,10 +110,18 @@ public class AdminController {
         allEventsListView.setOnMouseClicked(event -> {
             SportEvent selectedEvent = allEventsListView.getSelectionModel().getSelectedItem();
             if (selectedEvent != null) {
-                try {
-                    openEventPreviewWindow(selectedEvent); // Open event preview
-                } catch (IOException e) {
-                    System.err.println("Error opening event preview: " + e.getMessage());
+                // Check if the event is upcoming
+                if (selectedEvent.getStatus() == StatusForEvent.upcoming) {
+                    try {
+                        // Open event preview for upcoming events
+                        openEventPreviewWindow(selectedEvent);
+                    } catch (IOException e) {
+                        System.err.println("Error opening event preview: " + e.getMessage());
+                    }
+                } else if (selectedEvent.getStatus() == StatusForEvent.finished) {
+                    // Call hideEvent method for finished events
+                    hideEvent(selectedEvent);
+                    showFinishedEvents();
                 }
             }
         });
@@ -215,5 +232,53 @@ public class AdminController {
         initialize();
     }
 
+    @FXML
+    private void showUpcomingEvents() {
+        loadSportsIntoTabs("upcoming");
+    }
 
-}
+    @FXML
+    private void showFinishedEvents() {
+        loadSportsIntoTabs("finished");
+    }
+
+    public void hideEvent(SportEvent selectedEvent) {
+        // Step 1: Create a confirmation alert dialog
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Hide Event");
+        alert.setHeaderText("Are you sure you want to hide this event?");
+        alert.setContentText("This action will make the event no longer visible.");
+
+        // Step 2: Show the alert and handle the user response
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Step 3: User pressed Yes, update the database
+
+                // Load properties from the config file
+                Properties config = ConfigReader.loadProperties("config.properties");
+                String dbUrl = config.getProperty("db.url");
+
+                try (Connection connection = DriverManager.getConnection(dbUrl)) {
+                    // Use jOOQ with SQLite connection
+                    DSLContext create = DSL.using(connection);
+
+                    // Step 4: Execute the update query to hide the event
+                    create.update(SPORT_EVENTS)
+                            .set(SPORT_EVENTS.VISIBILITY, "hidden")  // Set visibility to "hidden"
+                            .where(SPORT_EVENTS.EVENT_ID.eq((int) selectedEvent.getEventId()))  // Match the event by ID
+                            .execute();
+
+                    // Optionally, update the UI or show a message to confirm the action
+                    System.out.println("Event hidden: " + selectedEvent.getEventName());
+                } catch (SQLException e) {
+                    System.err.println("Error hiding event: " + e.getMessage());
+                }
+            } else {
+                // User pressed No, nothing happens
+                System.out.println("Event visibility not changed.");
+            }
+        });
+    }
+    }
+
+

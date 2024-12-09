@@ -28,7 +28,12 @@ public class SportEventDAO {
             DSLContext create = DSL.using(connection);
 
             // Fetch data from the SQLite sport_events table
-            Result<Record> result = create.fetch("SELECT event_id, event_name, start_time, sport_type, status FROM sport_events ORDER BY start_time");
+            Result<Record> result = create.fetch(
+                    "SELECT event_id, event_name, start_time, sport_type, status " +
+                            "FROM sport_events " +
+                            "WHERE visibility = 'visible' " +
+                            "ORDER BY start_time"
+            );
 
             for (Record record : result) {
                 SportEvent event = new SportEvent();
