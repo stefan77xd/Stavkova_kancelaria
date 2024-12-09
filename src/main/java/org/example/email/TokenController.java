@@ -1,4 +1,4 @@
-package org.example;
+package org.example.email;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.example.ConfigReader;
 import org.jooq.DSLContext;
 import org.jooq.True;
 import org.jooq.codegen.maven.example.tables.Users;

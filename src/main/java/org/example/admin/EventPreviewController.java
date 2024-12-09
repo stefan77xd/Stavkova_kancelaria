@@ -1,4 +1,4 @@
-package org.example;
+package org.example.admin;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -10,10 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import lombok.Data;
 import lombok.Setter;
+import org.example.ConfigReader;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.StatusForEvent;

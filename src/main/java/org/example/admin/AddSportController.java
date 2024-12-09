@@ -1,4 +1,4 @@
-package org.example;
+package org.example.admin;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.ConfigReader;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.StatusForEvent;
 import org.jooq.DSLContext;

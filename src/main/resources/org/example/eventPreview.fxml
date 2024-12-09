@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane prefHeight="263.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.EventPreviewController">
+<GridPane prefHeight="263.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.admin.EventPreviewController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="122.0" prefWidth="138.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" prefWidth="195.0" />

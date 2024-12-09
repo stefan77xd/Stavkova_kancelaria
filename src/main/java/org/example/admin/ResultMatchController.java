@@ -1,8 +1,9 @@
-package org.example;
+package org.example.admin;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.example.ConfigReader;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEvent;
 import org.jooq.DSLContext;

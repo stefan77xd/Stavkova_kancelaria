@@ -1,4 +1,4 @@
-package org.example;
+package org.example.admin;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.example.ConfigReader;
+import org.example.Factory;
 import org.example.security.Auth;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
@@ -26,7 +28,6 @@ import org.example.sportevent.StatusForEvent;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
 import static org.jooq.codegen.maven.example.tables.SportEvents.SPORT_EVENTS;
 
 

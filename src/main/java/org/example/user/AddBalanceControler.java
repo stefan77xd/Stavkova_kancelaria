@@ -1,4 +1,4 @@
-package org.example;
+package org.example.user;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,6 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import lombok.Setter;
+import org.example.ConfigReader;
+import org.example.Controller;
 import org.example.security.Auth;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -22,7 +24,7 @@ public class AddBalanceControler {
 
     @FXML
     private TextField amount;
-    long UserID;
+    public long UserID;
     @FXML
     private TextField bonusCode;
 

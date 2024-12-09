@@ -1,7 +1,8 @@
-package org.example;
+package org.example.email;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
+import org.example.ConfigReader;
 
 import java.util.Properties;
 

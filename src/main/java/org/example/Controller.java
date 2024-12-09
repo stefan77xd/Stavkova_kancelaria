@@ -1,8 +1,6 @@
 package org.example;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,16 +10,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.example.possibleoutcome.PossibleOutcome;
-import org.example.possibleoutcome.StatusForOutcomes;
-import org.example.AddBalanceControler;
+import org.example.admin.ResultMatchController;
 import org.example.security.Auth;
 import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
 import org.example.sportevent.SportEvent;
-import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
+import org.example.user.AddBalanceControler;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -33,7 +28,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
 import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class Controller {
