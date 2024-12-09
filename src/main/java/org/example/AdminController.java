@@ -248,10 +248,48 @@ public class AdminController {
         alert.setTitle("Hide Event");
         alert.setHeaderText("Are you sure you want to hide this event?");
         alert.setContentText("This action will make the event no longer visible.");
+        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+
+        // Style the header
+        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+            }
+        });
+
+        // Change the buttons to "Yes" and "No"
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        // Style the buttons and add hover effects
+        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Style the "Yes" button
+                Button yes = (Button) alert.getDialogPane().lookupButton(yesButton);
+                yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
+
+                // Add hover effect to "Yes" button
+                yes.setOnMouseEntered(event -> yes.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
+                yes.setOnMouseExited(event -> yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+
+                // Style the "No" button
+                Button no = (Button) alert.getDialogPane().lookupButton(noButton);
+                no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
+
+                // Add hover effect to "No" button
+                no.setOnMouseEntered(event -> no.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
+                no.setOnMouseExited(event -> no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+            }
+        });
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
 
         // Step 2: Show the alert and handle the user response
         alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
+            if (response == yesButton) {
                 // Step 3: User pressed Yes, update the database
 
                 // Load properties from the config file
@@ -279,6 +317,11 @@ public class AdminController {
             }
         });
     }
-    }
+
+}
+
+
+
+
 
 

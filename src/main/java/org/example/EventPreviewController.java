@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -134,7 +135,30 @@ public class EventPreviewController {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Process Completed");
                 alert.setHeaderText(null);
-                alert.setContentText("The event outcomes have been updated successfully!");
+                alert.setContentText("Výsledky boli úspešne zapísané!");
+                alert.getDialogPane().setStyle("-fx-background-color: #303030;"); // Style the background color of the dialog
+
+                // Style the content text to be white
+                alert.getDialogPane().lookup(".content").setStyle("-fx-text-fill: white;");
+
+                // Style the header and label (if header exists)
+                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        Node header = alert.getDialogPane().lookup(".header");
+                        if (header != null) {
+                            header.setStyle("-fx-background-color: #303030;");
+                        }
+
+                        Node label = alert.getDialogPane().lookup(".header .label");
+                        if (label != null) {
+                            label.setStyle("-fx-text-fill: white;");
+                        }
+                    }
+                });
+
+
+                Stage stage1 = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage1.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
 
                 // Wait for the alert to close, then close the current window and call updateTabs
                 alert.showAndWait().ifPresent(response -> {

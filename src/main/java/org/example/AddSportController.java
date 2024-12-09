@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Properties;
 
 import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
@@ -141,7 +143,21 @@ public class AddSportController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informácia");
             alert.setHeaderText("Športová udalosť bola pridaná.");
+
+            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+
+            // Style the header
+            alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                }
+            });
+            Stage stage1 = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage1.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
             alert.showAndWait();
+
+
 
             // Close the window
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
