@@ -13,14 +13,17 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.Properties;
+
+import static org.jooq.codegen.maven.example.Tables.*;
 
 public class SQLiteAuthDAO implements AuthDao {
 
     private final String dbUrl;
 
     public SQLiteAuthDAO() {
-        // Load configuration from config.properties
+
         Properties config = ConfigReader.loadProperties("config.properties");
         this.dbUrl = config.getProperty("db.url");
     }
@@ -31,28 +34,23 @@ public class SQLiteAuthDAO implements AuthDao {
 
         try (Connection connection = DriverManager.getConnection(dbUrl)) {
             DSLContext create = DSL.using(connection);
-
-            // Query to find the user by username or email
-            Record record = create.fetchOne(
-                    "SELECT user_id, email, username, role, password, balance FROM users WHERE username = ? OR email = ?",
-                    usernameOrEmail, usernameOrEmail
-            );
-
+            Record record = (Record) create.select(USERS.USER_ID, USERS.EMAIL, USERS.USERNAME, USERS.ROLE, USERS.PASSWORD, USERS.BALANCE)
+                    .from(USERS)
+                    .where(USERS.USERNAME.eq(usernameOrEmail).or(USERS.EMAIL.eq(usernameOrEmail))).fetchOne();
             if (record == null) {
                 throw new AuthenticationException("Invalid credentials.");
             }
-
-            // Map record to PrincipalWithPassword
+            String role = record.getValue(USERS.ROLE);
             Principal principal = new Principal();
-            principal.setId(record.getValue("user_id", Long.class));
-            principal.setEmail(record.getValue("email", String.class));
-            principal.setUsername(record.getValue("username", String.class));
-            principal.setRole(Role.valueOf(record.getValue("role", String.class)));
-            principal.setBalance(record.getValue("balance", Double.class));
+            principal.setId(Long.valueOf(record.getValue(USERS.USER_ID)));
+            principal.setEmail(record.getValue(USERS.EMAIL));
+            principal.setUsername(record.getValue(USERS.USERNAME));
+            principal.setRole(Role.valueOf(role.toLowerCase()));
+            principal.setBalance(record.getValue(USERS.BALANCE).doubleValue());
 
             principalWithPassword = new PrincipalWithPassword();
             principalWithPassword.setPrincipal(principal);
-            principalWithPassword.setPassword(record.getValue("password", String.class));
+            principalWithPassword.setPassword(record.getValue(USERS.PASSWORD));
         } catch (SQLException e) {
             throw new RuntimeException("Failed to authenticate user: " + e.getMessage(), e);
         }
@@ -66,9 +64,5 @@ public class SQLiteAuthDAO implements AuthDao {
 
         return principalWithPassword.getPrincipal();
     }
-    // Method to encrypt a password using bcrypt
-//    public void encryptPassword(String plainPassword) {
-//        System.out.println(BCrypt.hashpw(plainPassword, BCrypt.gensalt()));
-//    }
 
 }

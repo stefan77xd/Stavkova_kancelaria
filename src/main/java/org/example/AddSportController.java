@@ -117,16 +117,16 @@ public class AddSportController {
             if (date == null) {
                 throw new IllegalArgumentException("Dátum nesmie byť prázdny.");
             }
-
             LocalTime parsedTime = parseTime(time.getText());
             String startTime = date.atTime(parsedTime).toString();
-
-            create.insertInto(SPORT_EVENTS)
-                    .columns(SPORT_EVENTS.EVENT_NAME, SPORT_EVENTS.START_TIME, SPORT_EVENTS.SPORT_TYPE, SPORT_EVENTS.STATUS)
-                    .values(eventName.getText(), LocalDateTime.parse(startTime), sportType.getText(), StatusForEvent.upcoming.name())
-                    .execute();
-            int eventId = create.fetchOne("SELECT last_insert_rowid()").into(int.class);
-
+            int eventId = create.insertInto(SPORT_EVENTS)
+                    .set(SPORT_EVENTS.EVENT_NAME, eventName.getText())
+                    .set(SPORT_EVENTS.START_TIME, LocalDateTime.parse(startTime))
+                    .set(SPORT_EVENTS.SPORT_TYPE, sportType.getText())
+                    .set(SPORT_EVENTS.STATUS, StatusForEvent.upcoming.name())
+                    .returning(SPORT_EVENTS.EVENT_ID)
+                    .fetchOne()
+                    .getValue(SPORT_EVENTS.EVENT_ID);
             for (int i = 0; i < resultFieldsContainer.getChildren().size(); i++) {
                 TextField resultField = (TextField) resultFieldsContainer.getChildren().get(i);
                 TextField oddsField = (TextField) oddsFieldsContainer.getChildren().get(i);

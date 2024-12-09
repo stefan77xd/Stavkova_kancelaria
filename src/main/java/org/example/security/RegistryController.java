@@ -9,8 +9,11 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.ConfigReader;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,6 +23,8 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class RegistryController {
 
@@ -72,19 +77,15 @@ public class RegistryController {
         String dbUrl = config.getProperty("db.url");
 
         try (Connection connection = DriverManager.getConnection(dbUrl)) {
+            // Use jOOQ with the SQLite connection
+            DSLContext create = DSL.using(connection);
 
-            if (userExists(connection, username, email)) {
+            if (userExists(create, username, email)) {
                 showAlert("Pozor", "Toto uzivatelske meno alebo email uz existuje.");
                 return;
             }
-
-
             String hashedPassword = BCrypt.hashpw(password1, BCrypt.gensalt());
-
-
-            insertUser(connection, username, hashedPassword, email);
-
-
+            insertUser(create, username, hashedPassword, email);
             showAlert("Výborne", "Registrácia prebehla v poriadku!");
             closeRegistryView();
         } catch (SQLException e) {
@@ -93,28 +94,25 @@ public class RegistryController {
         }
     }
 
-    private boolean userExists(Connection connection, String username, String email) throws SQLException {
-        String query = "SELECT 1 FROM users WHERE username = ? OR email = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            statement.setString(2, email);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();
-            }
-        }
+    private boolean userExists(DSLContext create, String username, String email) {
+        return create.fetchExists(
+                DSL.selectOne()
+                        .from(USERS)
+                        .where(USERS.USERNAME.eq(username).or(USERS.EMAIL.eq(email)))
+        );
     }
 
-    private void insertUser(Connection connection, String username, String hashedPassword, String email) throws SQLException {
-        String insertQuery = "INSERT INTO users (username, password, email, balance, role) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-            statement.setString(1, username);
-            statement.setString(2, hashedPassword);
-            statement.setString(3, email);
-            statement.setDouble(4, 0.0);
-            statement.setString(5, "user");
-            statement.executeUpdate();
-        }
+
+    private void insertUser(DSLContext create, String username, String hashedPassword, String email) {
+        create.insertInto(USERS)
+                .set(USERS.USERNAME, username)
+                .set(USERS.PASSWORD, hashedPassword)
+                .set(USERS.EMAIL, email)
+                .set(USERS.BALANCE, BigDecimal.ZERO)
+                .set(USERS.ROLE, "user")
+                .execute();
     }
+
 
     private void showAlert(String title, String message) {
         Alert.AlertType alertType = title.equals("Výborne") ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING;

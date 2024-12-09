@@ -1,6 +1,8 @@
 package org.example.possibleoutcome;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class PossibleOutcome {
     private long outcomeId;

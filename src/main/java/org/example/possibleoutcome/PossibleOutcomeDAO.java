@@ -1,18 +1,18 @@
 package org.example.possibleoutcome;
 
 import org.example.ConfigReader;
-import org.jooq.DSLContext;
+import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.jooq.impl.DSL;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
+import static org.jooq.codegen.maven.example.Tables.*;
 public class PossibleOutcomeDAO {
 
     public List<PossibleOutcome> getPossibleOutcomesByEventId(long eventId) {
@@ -27,18 +27,25 @@ public class PossibleOutcomeDAO {
             DSLContext create = DSL.using(connection);
 
             // Query the possible_outcomes table for outcomes matching the eventId
-            Result<Record> result = create.fetch("SELECT outcome_id, event_id, result_name, odds, status FROM possible_outcomes WHERE event_id = ?", eventId);
+            Result<Record5<Integer, Integer, String, BigDecimal, String>> result =
+                    create.select(
+                                    POSSIBLE_OUTCOMES.OUTCOME_ID,
+                                    POSSIBLE_OUTCOMES.EVENT_ID,
+                                    POSSIBLE_OUTCOMES.RESULT_NAME,
+                                    POSSIBLE_OUTCOMES.ODDS,
+                                    POSSIBLE_OUTCOMES.STATUS)
+                            .from(POSSIBLE_OUTCOMES)
+                            .where(POSSIBLE_OUTCOMES.EVENT_ID.eq((int) eventId))
+                            .fetch();
 
-            // Iterate through the results and map them to PossibleOutcome objects
+
             for (Record record : result) {
                 PossibleOutcome outcome = new PossibleOutcome();
-
-                outcome.setOutcomeId(record.getValue("outcome_id", Long.class));
-                outcome.setEventId(record.getValue("event_id", Long.class));
-                outcome.setResultName(record.getValue("result_name", String.class));
-                outcome.setOdds(record.getValue("odds", Double.class));
-                outcome.setStatusForOutcomes(StatusForOutcomes.valueOf(record.getValue("status", String.class)));
-
+                outcome.setOutcomeId(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID));
+                outcome.setEventId(record.getValue(POSSIBLE_OUTCOMES.EVENT_ID));
+                outcome.setResultName(record.getValue(POSSIBLE_OUTCOMES.RESULT_NAME));
+                outcome.setOdds((record.getValue( POSSIBLE_OUTCOMES.ODDS).doubleValue()));
+                outcome.setStatusForOutcomes(StatusForOutcomes.valueOf(record.getValue(POSSIBLE_OUTCOMES.STATUS)));
                 outcomes.add(outcome);
             }
         } catch (SQLException e) {
