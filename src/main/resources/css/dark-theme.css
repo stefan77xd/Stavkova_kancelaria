@@ -230,3 +230,15 @@
     -fx-underline: true;
 }
 
+.profileButton {
+    -fx-text-fill: white;
+    -fx-background-color: #212121;
+    -fx-cursor: hand;
+}
+
+.profileButton:hover {
+    -fx-background-color: #121212;
+    -fx-cursor: hand;
+}
+
+

@@ -36,7 +36,7 @@ public class AdminController {
     private Label welcomeSign;
 
     @FXML
-    private TabPane tabPane;  // Injected TabPane
+    private TabPane tabPane;
 
     private SportEventDAO sportEventDAO;
 
@@ -104,7 +104,7 @@ public class AdminController {
         // Set the items for the "All" tab and adjust its height
         allEventsListView.setItems(FXCollections.observableArrayList(sportEvents));
         int allItemCount = sportEvents.size();
-        allEventsListView.setPrefHeight(allItemCount * 24); // Assuming 24 pixels per item
+        allEventsListView.setPrefHeight(allItemCount * 25); // Assuming 24 pixels per item
 
         // Handle event selection in the "All" tab
         allEventsListView.setOnMouseClicked(event -> {

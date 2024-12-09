@@ -65,6 +65,7 @@ public class Controller {
 
         logoutMenuItem.setOnAction(event -> handleLogout());
         addBalance.setOnAction(event -> openBallanceWindow());
+        profileMenuItem.setOnAction(event -> openProfileView());
 
         dropdownMenu.getItems().addAll(profileMenuItem, addBalance, logoutMenuItem);
 
@@ -83,6 +84,26 @@ public class Controller {
                 dropdownMenu.show(loginoruser, buttonStartX, buttonBottomY);
             }
         });
+    }
+
+    private void openProfileView() {
+        if (Auth.INSTANCE.getPrincipal() != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/profileView.fxml"));
+                Parent root = loader.load();
+                Scene ticketScene = new Scene(root);
+                ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+
+                Stage stage = new Stage();
+                stage.setTitle("Profil");
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
+                stage.setScene(ticketScene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
     }
 
     private void openBallanceWindow() {
