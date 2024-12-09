@@ -8,6 +8,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import org.example.ConfigReader;
 import org.example.Controller;
+import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.security.Auth;
@@ -28,7 +29,7 @@ import static org.jooq.codegen.maven.example.Tables.*;
 
 public class TicketController {
 
-    private final TicketDAO UserTicketDAO = new TicketDAO();
+    private final TicketDAO UserTicketDAO = Factory.INSTANCE.getTicketDAO();
 
     @FXML
     private TabPane ticketPane;

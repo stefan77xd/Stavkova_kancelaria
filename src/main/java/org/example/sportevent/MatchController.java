@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.ConfigReader;
 import org.example.Controller;
+import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
@@ -50,7 +51,7 @@ public class MatchController {
     private SportEvent sportEvent;
 
 
-    private final PossibleOutcomeDAO possibleOutcomeDAO = new PossibleOutcomeDAO();
+    private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
 
     @Setter
     private Controller mainController;

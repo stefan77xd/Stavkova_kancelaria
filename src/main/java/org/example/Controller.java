@@ -41,7 +41,6 @@ public class Controller {
     @FXML
     private TabPane sportTabPane;
 
-    private final SportEventDAO sportEventDAO = new SportEventDAO();
 
     @FXML
     private Button loginoruser;
@@ -339,7 +338,7 @@ public class Controller {
     public void updateEvents(Enum<StatusForEvent> status) {
         sportTabPane.getTabs().clear();
 
-        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
+        List<SportEvent> sportEvents = Factory.INSTANCE.getSportEventDAO().getAllSportEvents();
         List<SportEvent> Events = new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {
             if (sportEvent.getStatus() == status) {

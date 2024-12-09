@@ -77,7 +77,7 @@ public class AdminController {
         welcomeSign.setText("Vitaj " + Auth.INSTANCE.getPrincipal().getUsername());
 
         // Initialize SportEventDAO and load the sport events
-        sportEventDAO = new SportEventDAO();
+        sportEventDAO = Factory.INSTANCE.getSportEventDAO();
         loadSportsIntoTabs("upcoming");  // Default to showing upcoming events
     }
 

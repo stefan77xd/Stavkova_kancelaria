@@ -3,6 +3,7 @@ package org.example.statistics;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.example.Factory;
 import org.example.security.Auth;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class StatController {
     @FXML
     private VBox statBox;
 
-    private final StatisticsDAO statisticsDAO = new StatisticsDAO();
+    private final StatisticsDAO statisticsDAO = Factory.INSTANCE.getStatisticsDAO();
 
     @FXML
     private Label mainLabel;
