@@ -38,7 +38,7 @@ public class EventPreviewController {
     SportEvent sportEvent;
 
     @FXML
-    Text Name;
+    Label Name;
 
     @FXML
     private VBox checkboxContainer;
