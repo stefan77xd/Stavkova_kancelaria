@@ -4,6 +4,7 @@ import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.sportevent.SportEventDAO;
 import org.example.statistics.StatisticsDAO;
 import org.example.ticket.TicketDAO;
+import org.example.user.UserDAO;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -20,6 +21,7 @@ public enum Factory {
     private volatile PossibleOutcomeDAO possibleOutcomeDAO;
     private volatile TicketDAO ticketDAO;
     private volatile StatisticsDAO statisticsDAO;
+    private volatile UserDAO userDAO;
 
     private final Object lock = new Object();
     private volatile DSLContext dslContext;
@@ -95,6 +97,17 @@ public enum Factory {
             }
         }
         return statisticsDAO;
+    }
+
+    public UserDAO getUserDAO() {
+        if (userDAO == null) {
+            synchronized (lock) {
+                if (userDAO == null) {
+                    userDAO = new UserDAO(getSQLiteDSLContext());
+                }
+            }
+        }
+        return userDAO;
     }
 }
 
