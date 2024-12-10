@@ -22,7 +22,6 @@ public class TicketDAO {
     public List<Ticket> getUsersTickets(Integer userId) {
         List<Ticket> tickets = new ArrayList<>();
 
-        try {
             // Fetch data from the SQLite tickets table
             Result<Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(
                             TICKETS.TICKET_ID,
@@ -57,11 +56,15 @@ public class TicketDAO {
                 ticket.setEventStartTime((LocalDateTime) record.get("start_time"));
                 tickets.add(ticket);
             }
-
-        } catch (Exception e) {
-            System.err.println("Failed to fetch tickets: " + e.getMessage());
-        }
-
         return tickets;
+    }
+
+    public void insertTicket(int userID, int outcomeID, double betAmount) {
+        dslContext.insertInto(TICKETS)
+                .set(TICKETS.USER_ID, userID)
+                .set(TICKETS.OUTCOME_ID, outcomeID)
+                .set(TICKETS.STAKE, BigDecimal.valueOf(betAmount))
+                .set(TICKETS.STATUS, StatusForTicket.pending.name())
+                .execute();
     }
 }

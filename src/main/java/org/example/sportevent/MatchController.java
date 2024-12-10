@@ -18,6 +18,8 @@ import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
 import org.example.security.Principal;
 import org.example.ticket.StatusForTicket;
+import org.example.ticket.TicketDAO;
+import org.example.user.UserDAO;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -39,11 +41,9 @@ public class MatchController {
     private Label eventNameLabel;
 
     @FXML
-    private VBox outcomeVBox;  // VBox where outcome labels will be placed
-
+    private VBox outcomeVBox;
     @FXML
     private long eventId;
-
     @FXML
     private Label userInfo;
     PossibleOutcome selectedOutcome;
@@ -52,6 +52,10 @@ public class MatchController {
 
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
+
+    private final TicketDAO ticketDAO = Factory.INSTANCE.getTicketDAO();
+
+    private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
 
     @Setter
     private Controller mainController;
@@ -182,20 +186,14 @@ public class MatchController {
                 updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
             });
 
-
-
-
-            // Add the input field row to the VBox
             outcomeVBox.getChildren().add(inputRow);
 
-            // Create an HBox for the 'Place Bet' button
             HBox buttonRow = new HBox();
             buttonRow.setSpacing(10);
             buttonRow.setAlignment(Pos.CENTER);
 
-            // Create a 'Place Bet' button
             Button placeBetButton = new Button("Staviť");
-            placeBetButton.setPrefWidth(fixedWidth);  // Set width to match label + button width
+            placeBetButton.setPrefWidth(fixedWidth);
             placeBetButton.setStyle("-fx-font-size: 16; -fx-cursor: hand;");
             placeBetButton.getStyleClass().add("bet-button");
 
@@ -205,14 +203,13 @@ public class MatchController {
                         if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
                             if (!LocalDateTime.now().isAfter(sportEvent.getStartTime())) {
                                 try {
-                                    placeBet(selectedOdds.get(), betAmount, selectedOutcome);
+                                    placeBet(betAmount);
                                 } catch (SQLException e) {
                                     throw new RuntimeException(e);
                                 }
                             } else {
                                 showAlert("Zápas už začal");
                             }
-
                         } else {
                             showAlert("Nedostatok prostriedkov");
                         }
@@ -223,13 +220,8 @@ public class MatchController {
                 placeBetButton.setDisable(true);
             }
 
-            // Add the button to the HBox
             buttonRow.getChildren().add(placeBetButton);
-
-            // Add the button row to the VBox
             outcomeVBox.getChildren().add(buttonRow);
-
-            // Add the odds and eventual win row to the VBox (initially hidden)
             outcomeVBox.getChildren().add(oddsWinRow);
 
             if (finished) {
@@ -237,58 +229,18 @@ public class MatchController {
                 placeBetButton.setVisible(false);
                 oddsWinRow.setVisible(false);
             }
-
         } else {
             System.out.println("Invalid eventId.");
         }
     }
 
-    private void placeBet(double odds, double betAmount, PossibleOutcome outcome) throws SQLException {
-
-
+    private void placeBet(double betAmount) throws SQLException {
         Principal principal = Auth.INSTANCE.getPrincipal();
         Long userID = principal.getId();
 
-
-
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            // Použitie DSLContext pre prácu s databázou
-            DSLContext create = DSL.using(connection);
-
-            // Aktualizácia balance používateľa
-            create.update(USERS)
-                    .set(USERS.BALANCE, USERS.BALANCE.minus(BigDecimal.valueOf(betAmount)))
-                    .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
-                    .set(USERS.MAX_BET,
-                            DSL.when(USERS.MAX_BET.lessThan(BigDecimal.valueOf(betAmount)), BigDecimal.valueOf(betAmount))
-                                    .otherwise(USERS.MAX_BET))
-                    .set(USERS.TOTAL_STAKES, USERS.TOTAL_STAKES.plus(BigDecimal.valueOf(betAmount)))
-
-                    .where(USERS.USER_ID.eq(userID.intValue()))
-                    .execute();
-            create.update(USERS)
-                    .set(USERS.AVERAGE_BET,
-                            DSL.case_()
-                                    .when(USERS.TOTAL_BETS.isNotNull().and(USERS.TOTAL_BETS.gt(0)),
-                                            DSL.round(
-                                                    USERS.TOTAL_STAKES.cast(BigDecimal.class).divide(USERS.TOTAL_BETS.cast(BigDecimal.class))
-                                            ))
-                                    .otherwise(DSL.val(BigDecimal.ZERO)))
-                    .execute();
-            create.insertInto(TICKETS)
-                    .set(TICKETS.USER_ID, userID.intValue()) // Prevod long na int
-                    .set(TICKETS.OUTCOME_ID, (int) selectedOutcome.getOutcomeId()) // Prevod long na int
-                    .set(TICKETS.STAKE, BigDecimal.valueOf(betAmount))
-                    .set(TICKETS.STATUS, StatusForTicket.pending.name())
-                    .execute();
-
-
-
-
-        }
+            userDAO.updateBalanceAndStat(userID.intValue(), betAmount);
+            userDAO.updateStatistics();
+            ticketDAO.insertTicket(userID.intValue(), (int) selectedOutcome.getOutcomeId(), betAmount);
 
         Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance() - betAmount);
         userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
@@ -298,14 +250,14 @@ public class MatchController {
     }
 
 
-    // Helper method to update eventual win calculation
+
     private void updateEventualWin(String betAmount, double odds, Label eventualWinLabel) {
         try {
             double bet = Double.parseDouble(betAmount);
             double eventualWin = bet * odds;
             eventualWinLabel.setText(String.format("%.2f", eventualWin));
         } catch (NumberFormatException e) {
-            eventualWinLabel.setText("0.0");  // Set to 0 if input is invalid
+            eventualWinLabel.setText("0.0");
         }
     }
 
@@ -324,5 +276,4 @@ public class MatchController {
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
         alert.showAndWait();
     }
-
 }

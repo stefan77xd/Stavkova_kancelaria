@@ -41,4 +41,29 @@ public class UserDAO {
     public void updatePassword(String newPassword, String email) {
         dslContext.update(USERS).set(USERS.PASSWORD, newPassword).where(USERS.EMAIL.eq(email)).execute();
     }
+
+    public void updateStatistics() {
+        dslContext.update(USERS)
+                .set(USERS.AVERAGE_BET,
+                        DSL.case_()
+                                .when(USERS.TOTAL_BETS.isNotNull().and(USERS.TOTAL_BETS.gt(0)),
+                                        DSL.round(
+                                                USERS.TOTAL_STAKES.cast(BigDecimal.class).divide(USERS.TOTAL_BETS.cast(BigDecimal.class))
+                                        ))
+                                .otherwise(DSL.val(BigDecimal.ZERO)))
+                .execute();
+    }
+
+    public void updateBalanceAndStat(int userID, double betAmount) {
+        dslContext.update(USERS)
+                .set(USERS.BALANCE, USERS.BALANCE.minus(BigDecimal.valueOf(betAmount)))
+                .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
+                .set(USERS.MAX_BET,
+                        DSL.when(USERS.MAX_BET.lessThan(BigDecimal.valueOf(betAmount)), BigDecimal.valueOf(betAmount))
+                                .otherwise(USERS.MAX_BET))
+                .set(USERS.TOTAL_STAKES, USERS.TOTAL_STAKES.plus(BigDecimal.valueOf(betAmount)))
+
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+    }
 }
