@@ -20,9 +20,13 @@ import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.ticket.StatusForTicket;
+import org.example.ticket.Ticket;
 import org.example.ticket.TicketDAO;
 import org.example.user.UserDAO;
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.codegen.maven.example.tables.records.TicketsRecord;
 import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
@@ -30,10 +34,7 @@ import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static org.jooq.codegen.maven.example.Tables.*;
 
@@ -57,11 +58,6 @@ public class EventPreviewController {
 
     @FXML
     void Action(ActionEvent event) throws SQLException {
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
 
             possibleOutcomeDAO.setOutcomesToLoosing((int) sportEvent.getEventId());
 
@@ -78,22 +74,15 @@ public class EventPreviewController {
 
             sportEventDAO.updateEventStatus((int) sportEvent.getEventId());
 
-            // Fetch tickets related to the event
-            var tickets = create.select(TICKETS.fields())
-                    .from(TICKETS)
-                    .join(POSSIBLE_OUTCOMES)
-                    .on(TICKETS.OUTCOME_ID.eq(POSSIBLE_OUTCOMES.OUTCOME_ID))
-                    .where(POSSIBLE_OUTCOMES.EVENT_ID.eq((int) sportEvent.getEventId()))
-                    .fetchInto(TICKETS);
+
+            var tickets = ticketDAO.fetchTicketsRealtedToEvent((int) sportEvent.getEventId());
 
             // Collect affected user IDs
             Set<Integer> affectedUserIds = new HashSet<>();
 
             // Process each ticket based on outcome status
             for (var ticket : tickets) {
-                var outcome = create.selectFrom(POSSIBLE_OUTCOMES)
-                        .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(ticket.getOutcomeId()))
-                        .fetchOne();
+                var outcome = possibleOutcomeDAO.processTicket(ticket.getOutcomeId());
 
                 if (outcome == null) {
                     System.out.println("Outcome not found for ticket: " + ticket.getTicketId());
@@ -115,7 +104,7 @@ public class EventPreviewController {
             }
 
             // Call method to calculate and update user stats
-            updateUserStats(affectedUserIds, create);
+            updateUserStats(affectedUserIds);
 
             // Show success alert and close window after alert is dismissed
             Platform.runLater(() -> {
@@ -155,19 +144,13 @@ public class EventPreviewController {
                     adminController.updateTabs();
                 });
             });
-
-        } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
-        }
     }
 
 
-    void updateUserStats(Set<Integer> userIds, DSLContext create) throws SQLException {
+    void updateUserStats(Set<Integer> userIds) throws SQLException {
         for (Integer userId : userIds) {
-            // Fetch all tickets for the user
-            var userTickets = create.selectFrom(TICKETS)
-                    .where(TICKETS.USER_ID.eq(userId))
-                    .fetch();
+
+            var userTickets = ticketDAO.fetchTicketsForUser(userId);
 
             int totalTickets = userTickets.size();
             int wonTickets = 0;
@@ -176,9 +159,7 @@ public class EventPreviewController {
             for (var ticket : userTickets) {
                 if (ticket.getStatus().equals(StatusForTicket.won.name())) {
                     wonTickets++;
-                    var outcome = create.selectFrom(POSSIBLE_OUTCOMES)
-                            .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(ticket.getOutcomeId()))
-                            .fetchOne();
+                    var outcome = possibleOutcomeDAO.getTicketOutcome(ticket.getOutcomeId());
 
                     totalWinnings = totalWinnings.add(ticket.getStake().multiply(outcome.getOdds()));
                 }
@@ -190,16 +171,9 @@ public class EventPreviewController {
             // Round win rate to 2 decimal places
             BigDecimal roundedWinRate = BigDecimal.valueOf(winRate).setScale(2, RoundingMode.HALF_UP);
 
-            // Update the user with rounded win rate and total winnings
-            create.update(USERS)
-                    .set(USERS.WIN_RATE, roundedWinRate)
-                    .set(USERS.TOTAL_WINNINGS, totalWinnings)
-                    .where(USERS.USER_ID.eq(userId))
-                    .execute();
+            userDAO.updateWinRateAndTotalWinnings(roundedWinRate, totalWinnings, userId);
         }
     }
-
-
 
 
     public void setSportEvent(SportEvent sportEvent) {
@@ -215,34 +189,22 @@ public class EventPreviewController {
         }
 
         int eventID = (int) sportEvent.getEventId();
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
+        var results = possibleOutcomeDAO.fetchOutcomesForEvent(eventID);
 
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
+        // Clear existing checkboxes
+        checkboxContainer.getChildren().clear();
 
-            // Fetch outcomes for the event
-            var results = create.select(POSSIBLE_OUTCOMES.OUTCOME_ID, POSSIBLE_OUTCOMES.RESULT_NAME)
-                    .from(POSSIBLE_OUTCOMES)
-                    .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(eventID))
-                    .fetch();
+        // Dynamically create checkboxes for each possible outcome
+        for (var record : results) {
+            HBox hBox = new HBox(10);
+            CheckBox checkBox = new CheckBox();
+            checkBox.setUserData(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID)); // Store outcome ID
+            Label label = new Label(record.get(POSSIBLE_OUTCOMES.RESULT_NAME));
 
-            // Clear existing checkboxes
-            checkboxContainer.getChildren().clear();
-
-            // Dynamically create checkboxes for each possible outcome
-            for (var record : results) {
-                HBox hBox = new HBox(10);
-                CheckBox checkBox = new CheckBox();
-                checkBox.setUserData(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID)); // Store outcome ID
-                Label label = new Label(record.get(POSSIBLE_OUTCOMES.RESULT_NAME));
-
-                hBox.getChildren().addAll(checkBox, label);
-                checkboxContainer.getChildren().add(hBox);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Database error: " + e.getMessage());
+            hBox.getChildren().addAll(checkBox, label);
+            checkboxContainer.getChildren().add(hBox);
         }
+
+
     }
 }

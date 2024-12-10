@@ -72,4 +72,23 @@ public class PossibleOutcomeDAO {
                 .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
                 .execute();
     }
+
+    public org.jooq.codegen.maven.example.tables.records.PossibleOutcomesRecord processTicket(int outcomeID) {
+        return dslContext.selectFrom(POSSIBLE_OUTCOMES)
+                .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
+                .fetchOne();
+    }
+
+    public org.jooq.codegen.maven.example.tables.records.PossibleOutcomesRecord getTicketOutcome(int outcomeID) {
+        return dslContext.selectFrom(POSSIBLE_OUTCOMES)
+                .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
+                .fetchOne();
+    }
+
+    public Result<org.jooq.Record2<Integer, String>> fetchOutcomesForEvent(int eventID) {
+        return dslContext.select(POSSIBLE_OUTCOMES.OUTCOME_ID, POSSIBLE_OUTCOMES.RESULT_NAME)
+                .from(POSSIBLE_OUTCOMES)
+                .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(eventID))
+                .fetch();
+    }
 }

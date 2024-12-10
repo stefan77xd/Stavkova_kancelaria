@@ -88,4 +88,12 @@ public class UserDAO {
                 .execute();
 
     }
+
+    public void updateWinRateAndTotalWinnings(BigDecimal roundedWinRate, BigDecimal totalWinnings, int userID) {
+        dslContext.update(USERS)
+                .set(USERS.WIN_RATE, roundedWinRate)
+                .set(USERS.TOTAL_WINNINGS, totalWinnings)
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+    }
 }

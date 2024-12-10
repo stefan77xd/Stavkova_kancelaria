@@ -3,6 +3,7 @@ package org.example.ticket;
 import org.jooq.DSLContext;
 import org.jooq.Record11;
 import org.jooq.Result;
+import org.jooq.codegen.maven.example.tables.records.TicketsRecord;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -80,5 +81,20 @@ public class TicketDAO {
                 .set(TICKETS.STATUS, StatusForTicket.won.name())
                 .where(TICKETS.TICKET_ID.eq(ticketID))
                 .execute();
+    }
+
+    public Result<TicketsRecord> fetchTicketsRealtedToEvent(int evnetID) {
+        return dslContext.select(TICKETS.fields())
+                .from(TICKETS)
+                .join(POSSIBLE_OUTCOMES)
+                .on(TICKETS.OUTCOME_ID.eq(POSSIBLE_OUTCOMES.OUTCOME_ID))
+                .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(evnetID))
+                .fetchInto(TICKETS);
+    }
+
+    public Result<TicketsRecord> fetchTicketsForUser(int userID) {
+        return dslContext.selectFrom(TICKETS)
+                .where(TICKETS.USER_ID.eq(userID))
+                .fetch();
     }
 }
