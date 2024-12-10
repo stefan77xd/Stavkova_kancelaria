@@ -80,4 +80,12 @@ public class UserDAO {
                 .where(USERS.USER_ID.eq(userID))
                 .fetchOneInto(BigDecimal.class);
     }
+
+    public void updateBalanceWithTicket(BigDecimal stake, BigDecimal odds, int userID) {
+        dslContext.update(USERS)
+                .set(USERS.BALANCE, USERS.BALANCE.plus(stake.multiply(odds)))
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+
+    }
 }

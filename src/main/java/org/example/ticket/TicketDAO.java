@@ -67,4 +67,18 @@ public class TicketDAO {
                 .set(TICKETS.STATUS, StatusForTicket.pending.name())
                 .execute();
     }
+
+    public void updateTicketStatusToWon(int ticketID) {
+        dslContext.update(TICKETS)
+                .set(TICKETS.STATUS, StatusForTicket.won.name())
+                .where(TICKETS.TICKET_ID.eq(ticketID))
+                .execute();
+    }
+
+    public void updateTicketStatusToLost(int ticketID) {
+        dslContext.update(TICKETS)
+                .set(TICKETS.STATUS, StatusForTicket.won.name())
+                .where(TICKETS.TICKET_ID.eq(ticketID))
+                .execute();
+    }
 }

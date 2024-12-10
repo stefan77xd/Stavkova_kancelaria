@@ -21,6 +21,7 @@ import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.ticket.StatusForTicket;
 import org.example.ticket.TicketDAO;
+import org.example.user.UserDAO;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -52,6 +53,7 @@ public class EventPreviewController {
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
     private final TicketDAO ticketDAO = Factory.INSTANCE.getTicketDAO();
+    private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
 
     @FXML
     void Action(ActionEvent event) throws SQLException {
@@ -103,22 +105,12 @@ public class EventPreviewController {
 
                 // Determine if the outcome was winning or losing
                 if (Objects.equals(outcome.getStatus(), StatusForOutcomes.winning.name())) {
-                    // Update ticket status to "won" and adjust user's balance
-                    create.update(TICKETS)
-                            .set(TICKETS.STATUS, StatusForTicket.won.name())
-                            .where(TICKETS.TICKET_ID.eq(ticket.getTicketId()))
-                            .execute();
+                    ticketDAO.updateTicketStatusToWon(ticket.getTicketId());
 
-                    create.update(USERS)
-                            .set(USERS.BALANCE, USERS.BALANCE.plus(ticket.getStake().multiply(outcome.getOdds())))
-                            .where(USERS.USER_ID.eq(ticket.getUserId()))
-                            .execute();
+                    userDAO.updateBalanceWithTicket(ticket.getStake(), outcome.getOdds(), ticket.getUserId());
+
                 } else {
-                    // Update ticket status to "lost"
-                    create.update(TICKETS)
-                            .set(TICKETS.STATUS, StatusForTicket.lost.name())
-                            .where(TICKETS.TICKET_ID.eq(ticket.getTicketId()))
-                            .execute();
+                    ticketDAO.updateTicketStatusToLost(ticket.getTicketId());
                 }
             }
 
