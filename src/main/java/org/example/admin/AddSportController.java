@@ -11,7 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.ConfigReader;
+import org.example.Factory;
+import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.possibleoutcome.StatusForOutcomes;
+import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -53,6 +56,10 @@ public class AddSportController {
 
     @FXML
     private VBox oddsFieldsContainer;
+
+    private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
+
+    private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
 
 
     public void initialize() {
@@ -107,47 +114,29 @@ public class AddSportController {
 
     @FXML
     void Add(ActionEvent event) {
-        // Your existing code for adding the event
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
-
             LocalDate date = DatePicker.getValue();
             if (date == null) {
                 throw new IllegalArgumentException("Dátum nesmie byť prázdny.");
             }
             LocalTime parsedTime = parseTime(time.getText());
             String startTime = date.atTime(parsedTime).toString();
-            int eventId = create.insertInto(SPORT_EVENTS)
-                    .set(SPORT_EVENTS.EVENT_NAME, eventName.getText())
-                    .set(SPORT_EVENTS.START_TIME, LocalDateTime.parse(startTime))
-                    .set(SPORT_EVENTS.SPORT_TYPE, sportType.getText())
-                    .set(SPORT_EVENTS.STATUS, StatusForEvent.upcoming.name())
-                    .returning(SPORT_EVENTS.EVENT_ID)
-                    .fetchOne()
-                    .getValue(SPORT_EVENTS.EVENT_ID);
+
+            int eventId = sportEventDAO.createEvent(eventName.getText(), startTime, sportType.getText());
+
             for (int i = 0; i < resultFieldsContainer.getChildren().size(); i++) {
                 TextField resultField = (TextField) resultFieldsContainer.getChildren().get(i);
                 TextField oddsField = (TextField) oddsFieldsContainer.getChildren().get(i);
 
                 if (isNotEmpty(resultField.getText()) && isNotEmpty(oddsField.getText())) {
-                    create.insertInto(POSSIBLE_OUTCOMES)
-                            .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                            .values(eventId, resultField.getText(), BigDecimal.valueOf(Double.parseDouble(oddsField.getText())), StatusForOutcomes.upcoming.name())
-                            .execute();
+                    possibleOutcomeDAO.createPossibleOutcome(eventId, resultField.getText(), oddsField.getText());
                 }
             }
 
-            // Inform the user
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informácia");
             alert.setHeaderText("Športová udalosť bola pridaná.");
 
             alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-
-            // Style the header
             alert.showingProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
                     alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
@@ -158,18 +147,10 @@ public class AddSportController {
             stage1.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
             alert.showAndWait();
 
-
-
-            // Close the window
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             adminController.updateTabs();
 
-        } catch (IllegalArgumentException e) {
-            System.err.println("Chyba: " + e.getMessage());
-        } catch (SQLException e) {
-            System.err.println("SQL chyba: " + e.getMessage());
-        }
     }
 
     private boolean isNotEmpty(String text) {

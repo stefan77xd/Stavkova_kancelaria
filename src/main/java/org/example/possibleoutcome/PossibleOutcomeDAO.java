@@ -51,4 +51,11 @@ public class PossibleOutcomeDAO {
                 .and(POSSIBLE_OUTCOMES.STATUS.eq(StatusForOutcomes.winning.name()))
                 .fetch(POSSIBLE_OUTCOMES.RESULT_NAME);
     }
+
+    public void createPossibleOutcome(int eventId, String resultField, String oddsField) {
+        dslContext.insertInto(POSSIBLE_OUTCOMES)
+                .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
+                .values(eventId, resultField, BigDecimal.valueOf(Double.parseDouble(oddsField)), StatusForOutcomes.upcoming.name())
+                .execute();
+    }
 }
