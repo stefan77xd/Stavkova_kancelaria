@@ -66,4 +66,18 @@ public class UserDAO {
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
     }
+
+    public void addBalance(int userID, double amountValue) {
+        dslContext.update(USERS)
+                .set(USERS.BALANCE, USERS.BALANCE.plus(amountValue))
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+    }
+
+    public BigDecimal getBalance(int userID) {
+        return dslContext.select(USERS.BALANCE)
+                .from(USERS)
+                .where(USERS.USER_ID.eq(userID))
+                .fetchOneInto(BigDecimal.class);
+    }
 }

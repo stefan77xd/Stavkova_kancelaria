@@ -18,25 +18,22 @@ import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.user.AddBalanceControler;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
+import org.example.user.UserDAO;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class Controller {
 
     @FXML
     private TabPane sportTabPane;
 
-    private SportEventDAO sportEventDAO;
+    private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
+
+    private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
 
 
     @FXML
@@ -44,37 +41,25 @@ public class Controller {
     Stage stage;
 
     public void onLoginSuccess() {
-        // Update the button text
         loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
-
 
         ContextMenu dropdownMenu = new ContextMenu();
         dropdownMenu.getStyleClass().add("dropdown-menu");
-
-
         MenuItem profileMenuItem = new MenuItem("Profil");
         profileMenuItem.getStyleClass().add("dropdown-item");
         MenuItem logoutMenuItem = new MenuItem("Odhlásiť sa");
         logoutMenuItem.getStyleClass().add("dropdown-item");
         MenuItem addBalance = new MenuItem("Vklad");
         addBalance.getStyleClass().add("dropdown-item");
-
         logoutMenuItem.setOnAction(event -> handleLogout());
         addBalance.setOnAction(event -> openBallanceWindow());
         profileMenuItem.setOnAction(event -> openProfileView());
-
         dropdownMenu.getItems().addAll(profileMenuItem, addBalance, logoutMenuItem);
-
 
         loginoruser.setOnMouseClicked(event -> {
             if (event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
-
                 double buttonWidth = loginoruser.getWidth();
-
-
                 dropdownMenu.setStyle("-fx-pref-width: " + buttonWidth + "px;");
-
-
                 double buttonStartX = loginoruser.localToScreen(0, 0).getX();
                 double buttonBottomY = loginoruser.localToScreen(0, loginoruser.getHeight()).getY() + 6;
                 dropdownMenu.show(loginoruser, buttonStartX, buttonBottomY);
@@ -89,7 +74,6 @@ public class Controller {
                 Parent root = loader.load();
                 Scene ticketScene = new Scene(root);
                 ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
                 Stage stage = new Stage();
                 stage.setTitle("Profil");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
@@ -131,37 +115,14 @@ public class Controller {
             return;
         }
 
-
         var userId = Auth.INSTANCE.getPrincipal().getId().intValue();
-
-        try {
-
-            Properties config = ConfigReader.loadProperties("config.properties");
-            String dbUrl = config.getProperty("db.url");
-
-            // Pripojenie k databáze
-            try (Connection connection = DriverManager.getConnection(dbUrl)) {
-                DSLContext create = DSL.using(connection);
-
-                // Získanie aktuálneho zostatku z databázy
-                BigDecimal currentBalance = create.select(USERS.BALANCE)
-                        .from(USERS)
-                        .where(USERS.USER_ID.eq(userId))
-                        .fetchOneInto(BigDecimal.class);
-
+                BigDecimal currentBalance = userDAO.getBalance(userId);
                 if (currentBalance != null) {
-
-
                     Auth.INSTANCE.getPrincipal().setBalance(currentBalance.doubleValue()); // Aktualizácia balansu v Auth
                     loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
                 } else {
                     loginoruser.setText("Nepodarilo sa načítať zostatok.");
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            loginoruser.setText("Chyba pri pripájaní k databáze.");
-        }
     }
 
 
@@ -178,7 +139,6 @@ public class Controller {
             Parent root = loader.load();
             Scene ticketScene = new Scene(root);
             ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
             Stage stage = new Stage();
             stage.setTitle("Tikety");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ticket.png"))));
@@ -197,20 +157,10 @@ public class Controller {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/loginView.fxml"));
                 Parent root = loader.load();
-
-
                 LoginController loginController = loader.getController();
-
-
                 loginController.setMainController(this);
-
-
                 Scene scene = new Scene(root);
-
-
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
-
                 stage = new Stage();
                 stage.setTitle("Login");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -228,26 +178,15 @@ public class Controller {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/matchView.fxml"));
             Parent root = loader.load();
-
             MatchController matchController = loader.getController();
             matchController.setSportEvent(sportEvent);
-
             Stage stage = new Stage();
             stage.setTitle("Detail zápasu");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
-
             matchController.setMainController(this);
-
-
             Scene scene = new Scene(root);
-
-
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
-
             stage.setScene(scene);
-
-
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
@@ -258,14 +197,11 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        sportEventDAO = Factory.INSTANCE.getSportEventDAO();
         sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
             }
         });
-
-
         showOdds();
     }
 
@@ -306,14 +242,11 @@ public class Controller {
     private void openFinishedMatchScene(SportEvent selectedEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ResultView.fxml"));
         Parent root = loader.load();
-
         ResultMatchController resultMatchController = loader.getController();
         resultMatchController.setSportEvent(selectedEvent); // Pass the event to the controller
-
         Stage stage = new Stage();
         stage.setTitle("Ukončený zápas");
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
-
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
         stage.setScene(scene);
@@ -321,21 +254,17 @@ public class Controller {
         stage.show();
     }
 
-
     public void showResults() {
         updateEvents(StatusForEvent.finished);
-
     }
 
     public void showOdds() {
         updateEvents(StatusForEvent.upcoming);
-
     }
 
 
     public void updateEvents(Enum<StatusForEvent> status) {
         sportTabPane.getTabs().clear();
-
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
         List<SportEvent> Events = new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {
@@ -355,7 +284,6 @@ public class Controller {
         List<Tab> allTabs = new ArrayList<>();
         allTabs.add(allTab);
 
-
         for (Map.Entry<String, List<SportEvent>> entry : groupedEvents.entrySet()) {
             Tab sportTab = new Tab(entry.getKey());
             ListView<SportEvent> listView = new ListView<>();
@@ -365,22 +293,17 @@ public class Controller {
             sportTab.setContent(vbox);
             allTabs.add(sportTab);
         }
-
         allTabs.sort(Comparator.comparing(Tab::getText));
-
         sportTabPane.getTabs().addAll(allTabs);
     }
-
 
     @FXML
     public void openStatView() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/statView.fxml"));
             Parent root = loader.load();
-
             Scene ticketScene = new Scene(root);
             ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
             Stage stage = new Stage();
             stage.setTitle("Štatistika");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/statistics.png"))));
@@ -391,9 +314,6 @@ public class Controller {
             System.err.println(e.getMessage());
         }
     }
-
-
-
 }
 
 
