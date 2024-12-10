@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import static org.jooq.codegen.maven.example.Tables.*;
+import static org.jooq.codegen.maven.example.tables.SportEvents.SPORT_EVENTS;
 
 public class SportEventDAO {
     private final DSLContext dslContext;
@@ -44,6 +45,13 @@ public class SportEventDAO {
         }
 
         return events;
+    }
+
+    public void hideEvent(int eventId) {
+        dslContext.update(SPORT_EVENTS)
+                .set(SPORT_EVENTS.VISIBILITY, "hidden")
+                .where(SPORT_EVENTS.EVENT_ID.eq(eventId))
+                .execute();
     }
 
 
