@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.example.ConfigReader;
+import org.example.Factory;
+import org.example.user.UserDAO;
 import org.jooq.DSLContext;
 import org.jooq.True;
 import org.jooq.codegen.maven.example.tables.Users;
@@ -47,6 +49,8 @@ public class TokenController {
 
     private boolean verified = false;
 
+    private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+
     @FXML
     void SubmitAction(ActionEvent event) {
         if (!verified) {
@@ -73,7 +77,7 @@ public class TokenController {
                 newPassword2.setDisable(false);
                 passwords.setDisable(false);
                 tokenField.setText(null);
-            }else {
+            } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Pozor!");
                 alert.setHeaderText("Tokeny sa nezhodujú!");
@@ -98,26 +102,22 @@ public class TokenController {
         if (newPassword1.getText().equals(newPassword2.getText())) {
             if (newPassword1.getText() != null && newPassword1.getText().length() >= 8) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                Properties config = ConfigReader.loadProperties("config.properties");
-                String dbUrl = config.getProperty("db.url");
-                try (Connection connection = DriverManager.getConnection(dbUrl)) {
-                    DSLContext create = DSL.using(connection);
-                    create.update(USERS).set(USERS.PASSWORD, BCrypt.hashpw(newPassword1.getText(), BCrypt.gensalt())).where(USERS.EMAIL.eq(email)).execute();
-                    alert.setTitle("Výborne!");
-                    alert.setHeaderText("Zmenili ste heslo!");
-                    alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                    alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue) {
-                            alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                            alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                        }
-                    });
-                    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                    stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-                    alert.showAndWait();
-                    Stage currentStage = (Stage) submitButton.getScene().getWindow();
-                    currentStage.close();
-                }
+                userDAO.updatePassword(BCrypt.hashpw(newPassword1.getText(), BCrypt.gensalt()), email);
+                alert.setTitle("Výborne!");
+                alert.setHeaderText("Zmenili ste heslo!");
+                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                    }
+                });
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
+                alert.showAndWait();
+                Stage currentStage = (Stage) submitButton.getScene().getWindow();
+                currentStage.close();
+
 
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);

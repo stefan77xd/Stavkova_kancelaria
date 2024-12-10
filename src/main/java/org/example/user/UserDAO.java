@@ -2,6 +2,7 @@ package org.example.user;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.math.BigDecimal;
 
@@ -35,5 +36,9 @@ public class UserDAO {
 
     public String findEmail(String email) {
         return dslContext.select(USERS.EMAIL).from(USERS).where(USERS.EMAIL.eq(email)).fetchOneInto(String.class);
+    }
+
+    public void updatePassword(String newPassword, String email) {
+        dslContext.update(USERS).set(USERS.PASSWORD, newPassword).where(USERS.EMAIL.eq(email)).execute();
     }
 }
