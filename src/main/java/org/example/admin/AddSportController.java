@@ -10,28 +10,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
-import org.example.ConfigReader;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
-import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEventDAO;
-import org.example.sportevent.StatusForEvent;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.Properties;
-
-import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
-import static org.jooq.codegen.maven.example.Tables.SPORT_EVENTS;
 
 public class AddSportController {
 
@@ -61,9 +47,7 @@ public class AddSportController {
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
 
-
     public void initialize() {
-        // Add the first two fields for results and odds
         resultFieldsContainer.setSpacing(10);
         oddsFieldsContainer.setSpacing(10);
         addNewResultAndOddsField();
@@ -131,7 +115,6 @@ public class AddSportController {
                     possibleOutcomeDAO.createPossibleOutcome(eventId, resultField.getText(), oddsField.getText());
                 }
             }
-
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Informácia");
             alert.setHeaderText("Športová udalosť bola pridaná.");
@@ -150,7 +133,6 @@ public class AddSportController {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             adminController.updateTabs();
-
     }
 
     private boolean isNotEmpty(String text) {

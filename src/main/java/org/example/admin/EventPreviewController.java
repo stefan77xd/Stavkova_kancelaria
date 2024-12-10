@@ -13,10 +13,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.ConfigReader;
+import org.example.Factory;
+import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEvent;
+import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.ticket.StatusForTicket;
+import org.example.ticket.TicketDAO;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -45,6 +49,10 @@ public class EventPreviewController {
     @Setter
     public AdminController adminController;
 
+    private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
+    private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
+    private final TicketDAO ticketDAO = Factory.INSTANCE.getTicketDAO();
+
     @FXML
     void Action(ActionEvent event) throws SQLException {
         Properties config = ConfigReader.loadProperties("config.properties");
@@ -53,11 +61,7 @@ public class EventPreviewController {
         try (Connection connection = DriverManager.getConnection(dbUrl)) {
             DSLContext create = DSL.using(connection);
 
-            // Reset all outcomes to "loosing" first
-            create.update(POSSIBLE_OUTCOMES)
-                    .set(POSSIBLE_OUTCOMES.STATUS, StatusForOutcomes.loosing.name())
-                    .where(POSSIBLE_OUTCOMES.EVENT_ID.eq((int) sportEvent.getEventId()))
-                    .execute();
+            possibleOutcomeDAO.setOutcomesToLoosing((int) sportEvent.getEventId());
 
             for (var node : checkboxContainer.getChildren()) {
                 if (node instanceof HBox hBox) {
@@ -65,20 +69,12 @@ public class EventPreviewController {
                     Integer outcomeId = (Integer) checkBox.getUserData();
 
                     if (outcomeId != null && checkBox.isSelected()) {
-                        // Update the selected outcome to "winning"
-                        create.update(POSSIBLE_OUTCOMES)
-                                .set(POSSIBLE_OUTCOMES.STATUS, StatusForOutcomes.winning.name())
-                                .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeId))
-                                .execute();
+                        possibleOutcomeDAO.setOutcomeToWinning(outcomeId);
                     }
                 }
             }
 
-            // Update event status
-            create.update(SPORT_EVENTS)
-                    .set(SPORT_EVENTS.STATUS, StatusForEvent.finished.name())
-                    .where(SPORT_EVENTS.EVENT_ID.eq((int) sportEvent.getEventId()))
-                    .execute();
+            sportEventDAO.updateEventStatus((int) sportEvent.getEventId());
 
             // Fetch tickets related to the event
             var tickets = create.select(TICKETS.fields())

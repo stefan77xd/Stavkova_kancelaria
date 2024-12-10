@@ -52,10 +52,24 @@ public class PossibleOutcomeDAO {
                 .fetch(POSSIBLE_OUTCOMES.RESULT_NAME);
     }
 
-    public void createPossibleOutcome(int eventId, String resultField, String oddsField) {
+    public void createPossibleOutcome(int eventID, String resultField, String oddsField) {
         dslContext.insertInto(POSSIBLE_OUTCOMES)
                 .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                .values(eventId, resultField, BigDecimal.valueOf(Double.parseDouble(oddsField)), StatusForOutcomes.upcoming.name())
+                .values(eventID, resultField, BigDecimal.valueOf(Double.parseDouble(oddsField)), StatusForOutcomes.upcoming.name())
+                .execute();
+    }
+
+    public void setOutcomesToLoosing(int eventID) {
+        dslContext.update(POSSIBLE_OUTCOMES)
+                .set(POSSIBLE_OUTCOMES.STATUS, StatusForOutcomes.loosing.name())
+                .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(eventID))
+                .execute();
+    }
+
+    public void setOutcomeToWinning(int outcomeID) {
+        dslContext.update(POSSIBLE_OUTCOMES)
+                .set(POSSIBLE_OUTCOMES.STATUS, StatusForOutcomes.winning.name())
+                .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
                 .execute();
     }
 }

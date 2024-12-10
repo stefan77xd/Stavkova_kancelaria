@@ -66,6 +66,13 @@ public class SportEventDAO {
                 .getValue(Tables.SPORT_EVENTS.EVENT_ID);
     }
 
+    public void updateEventStatus(int eventID) {
+        dslContext.update(Tables.SPORT_EVENTS)
+                .set(Tables.SPORT_EVENTS.STATUS, StatusForEvent.finished.name())
+                .where(Tables.SPORT_EVENTS.EVENT_ID.eq(eventID))
+                .execute();
+    }
+
 
 }
 

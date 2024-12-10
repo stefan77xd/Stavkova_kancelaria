@@ -37,24 +37,15 @@ public class AdminController {
     @FXML
     private void logout() {
         try {
-            // Clear the authentication data
             Auth.INSTANCE.setPrincipal(null);
-
 
             Stage currentStage = (Stage) welcomeSign.getScene().getWindow();
             currentStage.close();
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view.fxml"));
             Parent root = loader.load();
-
-
             Stage stage = new Stage();
             Scene scene = new Scene(root);
-
-
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
-
             stage.setTitle("Stávková kancelária");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png"))));
             stage.setScene(scene);
@@ -67,12 +58,10 @@ public class AdminController {
     @FXML
     public void initialize() {
         welcomeSign.setText("Vitaj " + Auth.INSTANCE.getPrincipal().getUsername());
-
         loadSportsIntoTabs("upcoming");
     }
 
     private void loadSportsIntoTabs(String eventStatus) {
-
         List<SportEvent> sportEvents;
         if ("upcoming".equals(eventStatus)) {
             sportEvents = sportEventDAO.getAllSportEvents().stream()
@@ -83,15 +72,10 @@ public class AdminController {
                     .filter(event -> event.getStatus() == StatusForEvent.finished)
                     .collect(Collectors.toList());
         }
-
-        // Clear existing tabs
         tabPane.getTabs().clear();
-
 
         Tab allTab = new Tab("All");
         ListView<SportEvent> allEventsListView = new ListView<>();
-
-
         allEventsListView.setItems(FXCollections.observableArrayList(sportEvents));
         int allItemCount = sportEvents.size();
         allEventsListView.setPrefHeight(allItemCount * 25);
@@ -124,13 +108,11 @@ public class AdminController {
             List<SportEvent> events = entry.getValue();
 
             Tab tab = new Tab(sportType);
-
             ListView<SportEvent> listView = new ListView<>();
             listView.setItems(FXCollections.observableArrayList(events));
 
             int itemCount = events.size();
             listView.setPrefHeight(itemCount * 25);
-
 
             listView.setOnMouseClicked(event -> {
                 SportEvent selectedEvent = listView.getSelectionModel().getSelectedItem();
@@ -142,7 +124,6 @@ public class AdminController {
                     }
                 }
             });
-
             VBox vBox = new VBox(listView);
             tab.setContent(vBox);
             tabPane.getTabs().add(tab);
@@ -156,18 +137,13 @@ public class AdminController {
             System.err.println("SportEvent is null. Cannot open preview window.");
             return;
         }
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/eventPreview.fxml"));
         Parent root = loader.load();
-
         EventPreviewController eventPreviewController = loader.getController();
         eventPreviewController.setSportEvent(sportEvent);
-
         eventPreviewController.setAdminController(this);
-
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
         Stage stage = new Stage();
         stage.setTitle("Event Preview");
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -180,7 +156,6 @@ public class AdminController {
     @FXML
     void AddSportEvent(ActionEvent event) {
         openAddSportWindow();
-
     }
 
 
@@ -188,13 +163,10 @@ public class AdminController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/addSportEvent.fxml"));
             Parent root = loader.load();
-
             AddSportController addSportController = loader.getController();
             addSportController.setAdminController(this);
-
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
             Stage stage = new Stage();
             stage.setTitle("New event");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
