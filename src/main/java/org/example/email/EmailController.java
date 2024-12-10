@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.ConfigReader;
+import org.example.Factory;
+import org.example.user.UserDAO;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
@@ -29,20 +31,57 @@ public class EmailController {
     @FXML
     private TextField emailField;
 
+    private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+
 
     @FXML
     void confirmEmail(ActionEvent event) throws SQLException {
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
-            String email = emailField.getText();
-            String foundEmail = create.select(USERS.EMAIL).from(USERS).where(USERS.EMAIL.eq(email)).fetchOneInto(String.class);
+        String email = emailField.getText();
+        String foundEmail = userDAO.findEmail(email);
 
-            if (foundEmail == null) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Pozor!");
-                alert.setHeaderText("Email neexistuje!");
+        if (foundEmail == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Pozor!");
+            alert.setHeaderText("Email neexistuje!");
+            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+            alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                }
+            });
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
+            alert.showAndWait();
+        } else {
+            String token = TokenGenerator.generateToken();
+            String subject = "Resetovanie hesla";
+            String messageContent = "Použite tento token na resetovanie hesla: " + token + "\nŠťastné a veselé Vianoce prajú Štefan Malik a Lukáš Varga.";
+
+            try {
+                EmailSender.sendEmail(email, subject, messageContent);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Výborne!");
+                alert.setHeaderText("Email bol odoslaný!");
+                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue) {
+                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                    }
+                });
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
+                alert.showAndWait();
+                Stage currentStage = (Stage) emailField.getScene().getWindow();
+                currentStage.close();
+                openTokenWindow(token, email);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Chyba!");
+                alert.setHeaderText("Email sa nepodarilo odoslať.");
                 alert.getDialogPane().setStyle("-fx-background-color: #303030;");
                 alert.showingProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
@@ -54,47 +93,6 @@ public class EmailController {
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
                 alert.showAndWait();
                 alert.showAndWait();
-            } else {
-                String token = TokenGenerator.generateToken();
-                String subject = "Resetovanie hesla";
-                String messageContent = "Použite tento token na resetovanie hesla: " + token + "\nŠťastné a veselé Vianoce prajú Štefan Malik a Lukáš Varga.";
-
-                try {
-                    EmailSender.sendEmail(email, subject, messageContent);
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Výborne!");
-                    alert.setHeaderText("Email bol odoslaný!");
-                    alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                    alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue) {
-                            alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                            alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                        }
-                    });
-                    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                    stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-                    alert.showAndWait();
-                    Stage currentStage = (Stage) emailField.getScene().getWindow();
-                    currentStage.close();
-                    openTokenWindow(token, email);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Chyba!");
-                    alert.setHeaderText("Email sa nepodarilo odoslať.");
-                    alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                    alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                        if (newValue) {
-                            alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                            alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                        }
-                    });
-                    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                    stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-                    alert.showAndWait();
-                    alert.showAndWait();
-                }
             }
         }
     }
@@ -104,8 +102,8 @@ public class EmailController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tokenView.fxml"));
             Parent root = loader.load();
             TokenController tokenController = loader.getController();
-            tokenController.email=email;
-            tokenController.token=token;
+            tokenController.email = email;
+            tokenController.token = token;
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
             Stage stage = new Stage();
@@ -131,7 +129,6 @@ public class EmailController {
             return UUID.randomUUID().toString();
         }
     }
-
 
 
 }

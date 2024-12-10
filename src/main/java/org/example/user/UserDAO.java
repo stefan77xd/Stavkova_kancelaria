@@ -32,4 +32,8 @@ public class UserDAO {
                 .set(USERS.ROLE, "user")
                 .execute();
     }
+
+    public String findEmail(String email) {
+        return dslContext.select(USERS.EMAIL).from(USERS).where(USERS.EMAIL.eq(email)).fetchOneInto(String.class);
+    }
 }

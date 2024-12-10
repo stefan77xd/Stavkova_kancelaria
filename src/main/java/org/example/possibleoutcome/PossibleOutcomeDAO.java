@@ -50,4 +50,12 @@ public class PossibleOutcomeDAO {
 
         return outcomes;
     }
+
+    public List<String> fetchAllWinningOutcomes(int eventID) {
+        return dslContext.select(POSSIBLE_OUTCOMES.RESULT_NAME)
+                .from(POSSIBLE_OUTCOMES)
+                .where(POSSIBLE_OUTCOMES.EVENT_ID.eq(eventID))
+                .and(POSSIBLE_OUTCOMES.STATUS.eq(StatusForOutcomes.winning.name()))
+                .fetch(POSSIBLE_OUTCOMES.RESULT_NAME);
+    }
 }
