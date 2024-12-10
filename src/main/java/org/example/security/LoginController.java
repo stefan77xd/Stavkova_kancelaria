@@ -1,5 +1,4 @@
 package org.example.security;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.Setter;
+import org.example.Factory;
 import org.example.admin.AdminController;
 import org.example.Controller;
 import org.example.email.EmailController;
@@ -36,7 +36,7 @@ public class LoginController {
     @FXML
     private TextField usernameTextField;
 
-    private final AuthDao AuthDao = new SQLiteAuthDAO();
+    private final AuthDao AuthDao = Factory.INSTANCE.getSqLiteAuthDAO();
 
     @Setter
     private Controller mainController;
@@ -95,14 +95,8 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/adminView.fxml"));
             Parent root = loader.load();
 
-            // Get the LoginController from the loader
             AdminController adminController = loader.getController();
-
-
-
-            // Create a new scene with the root node
             Scene scene = new Scene(root);
-
 
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
@@ -118,14 +112,6 @@ public class LoginController {
     }
 
 
-
-    private void closeLoginView(ActionEvent event) {
-        // Get the current stage from the event source and close it
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-
-
     public void closeAllWindows() {
         for (Window window : Window.getWindows()) {
             if (window instanceof Stage) {
@@ -138,15 +124,9 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/registryView.fxml"));
             Parent root = loader.load();
 
-            // Get the LoginController from the loader
             RegistryController registryController = loader.getController();
-
-            // Pass the main controller to the login controller
             registryController.setLoginController(this);
-
-            // Create a new scene with the root node
             Scene scene = new Scene(root);
-
 
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
 
@@ -181,8 +161,6 @@ public class LoginController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/emailView.fxml"));
                 Parent root = loader.load();
-
-                // Get the LoginController from the loader
                 EmailController emailController = loader.getController();
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());

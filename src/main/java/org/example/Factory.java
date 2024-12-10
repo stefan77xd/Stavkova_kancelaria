@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.possibleoutcome.PossibleOutcomeDAO;
+import org.example.security.SQLiteAuthDAO;
 import org.example.sportevent.SportEventDAO;
 import org.example.statistics.StatisticsDAO;
 import org.example.ticket.TicketDAO;
@@ -22,6 +23,7 @@ public enum Factory {
     private volatile TicketDAO ticketDAO;
     private volatile StatisticsDAO statisticsDAO;
     private volatile UserDAO userDAO;
+    private volatile SQLiteAuthDAO sqLiteAuthDAO;
 
     private final Object lock = new Object();
     private volatile DSLContext dslContext;
@@ -108,6 +110,17 @@ public enum Factory {
             }
         }
         return userDAO;
+    }
+
+    public SQLiteAuthDAO getSqLiteAuthDAO() {
+        if (sqLiteAuthDAO == null) {
+            synchronized (lock) {
+                if (sqLiteAuthDAO == null) {
+                    sqLiteAuthDAO = new SQLiteAuthDAO(getSQLiteDSLContext());
+                }
+            }
+        }
+        return sqLiteAuthDAO;
     }
 }
 

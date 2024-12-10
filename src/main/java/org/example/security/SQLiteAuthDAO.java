@@ -20,21 +20,16 @@ import static org.jooq.codegen.maven.example.Tables.*;
 
 public class SQLiteAuthDAO implements AuthDao {
 
-    private final String dbUrl;
+    private final DSLContext dslContext;
 
-    public SQLiteAuthDAO() {
-
-        Properties config = ConfigReader.loadProperties("config.properties");
-        this.dbUrl = config.getProperty("db.url");
+    public SQLiteAuthDAO(DSLContext dslContext) {
+        this.dslContext = dslContext;
     }
 
     @Override
     public Principal authenticate(String usernameOrEmail, String password) throws AuthenticationException {
         PrincipalWithPassword principalWithPassword = null;
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            DSLContext create = DSL.using(connection);
-            Record record = (Record) create.select(USERS.USER_ID, USERS.EMAIL, USERS.USERNAME, USERS.ROLE, USERS.PASSWORD, USERS.BALANCE)
+            Record record = dslContext.select(USERS.USER_ID, USERS.EMAIL, USERS.USERNAME, USERS.ROLE, USERS.PASSWORD, USERS.BALANCE)
                     .from(USERS)
                     .where(USERS.USERNAME.eq(usernameOrEmail).or(USERS.EMAIL.eq(usernameOrEmail))).fetchOne();
             if (record == null) {
@@ -51,17 +46,11 @@ public class SQLiteAuthDAO implements AuthDao {
             principalWithPassword = new PrincipalWithPassword();
             principalWithPassword.setPrincipal(principal);
             principalWithPassword.setPassword(record.getValue(USERS.PASSWORD));
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to authenticate user: " + e.getMessage(), e);
-        }
 
         //Verify password
         if (!BCrypt.checkpw(password, principalWithPassword.getPassword())) {
             throw new AuthenticationException("Invalid credentials.");
         }
-        System.out.println("GREAT SUCCESS");
-
-
         return principalWithPassword.getPrincipal();
     }
 

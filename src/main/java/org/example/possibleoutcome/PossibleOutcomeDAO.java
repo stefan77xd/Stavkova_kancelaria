@@ -14,16 +14,12 @@ import static org.jooq.codegen.maven.example.Tables.*;
 public class PossibleOutcomeDAO {
     private final DSLContext dslContext;
 
-    // Constructor to accept DSLContext
     public PossibleOutcomeDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
 
     public List<PossibleOutcome> getPossibleOutcomesByEventId(long eventId) {
         List<PossibleOutcome> outcomes = new ArrayList<>();
-
-        try {
-            // Query the possible_outcomes table for outcomes matching the eventId
             Result<Record5<Integer, Integer, String, BigDecimal, String>> result =
                     dslContext.select(
                                     POSSIBLE_OUTCOMES.OUTCOME_ID,
@@ -44,9 +40,6 @@ public class PossibleOutcomeDAO {
                 outcome.setStatusForOutcomes(StatusForOutcomes.valueOf(record.getValue(POSSIBLE_OUTCOMES.STATUS)));
                 outcomes.add(outcome);
             }
-        } catch (Exception e) {
-            System.err.println("Failed to fetch possible outcomes: " + e.getMessage());
-        }
 
         return outcomes;
     }
