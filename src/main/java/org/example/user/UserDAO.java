@@ -86,7 +86,6 @@ public class UserDAO {
                 .set(USERS.BALANCE, USERS.BALANCE.plus(stake.multiply(odds)))
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
-
     }
 
     public void updateWinRateAndTotalWinnings(BigDecimal roundedWinRate, BigDecimal totalWinnings, int userID) {
