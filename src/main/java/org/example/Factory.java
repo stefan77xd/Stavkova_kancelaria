@@ -29,16 +29,17 @@ public enum Factory {
         if (dslContext == null) {
             synchronized (lock) {
                 if (dslContext == null) {
-                    // Load the configuration properties from config.properties
-                    Properties config = ConfigReader.loadProperties("config.properties");
-                    String dbUrl = config.getProperty("db.url");
+                    try {
+                        // Load configuration properties from config.properties
+                        Properties config = ConfigReader.loadProperties("config.properties");
+                        String dbUrl = config.getProperty("db.url");
 
-                    // Establish a connection using DriverManager and the SQLite DB URL
-                    try (Connection connection = DriverManager.getConnection(dbUrl)) {
-                        // Initialize the jOOQ DSLContext for SQLite
+                        // Establish a connection using DriverManager
+                        Connection connection = DriverManager.getConnection(dbUrl);
+
+                        // Store the DSLContext for reuse (do not close the connection here)
                         dslContext = DSL.using(connection, SQLDialect.SQLITE);
                     } catch (SQLException e) {
-                        // Handle SQL exceptions, e.g., logging or rethrowing
                         throw new RuntimeException("Error connecting to the database", e);
                     }
                 }
@@ -47,12 +48,13 @@ public enum Factory {
         return dslContext;
     }
 
+
     // Method to get SportEventDAO using SQLite DSLContext
     public SportEventDAO getSportEventDAO() {
         if (sportEventDAO == null) {
             synchronized (lock) {
                 if (sportEventDAO == null) {
-                    sportEventDAO = new SportEventDAO();
+                    sportEventDAO = new SportEventDAO(getSQLiteDSLContext());
                 }
             }
         }
@@ -64,7 +66,7 @@ public enum Factory {
         if (possibleOutcomeDAO == null) {
             synchronized (lock) {
                 if (possibleOutcomeDAO == null) {
-                    possibleOutcomeDAO = new PossibleOutcomeDAO();
+                    possibleOutcomeDAO = new PossibleOutcomeDAO(getSQLiteDSLContext());
                 }
             }
         }
@@ -76,7 +78,7 @@ public enum Factory {
         if (ticketDAO == null) {
             synchronized (lock) {
                 if (ticketDAO == null) {
-                    ticketDAO = new TicketDAO();
+                    ticketDAO = new TicketDAO(getSQLiteDSLContext());
                 }
             }
         }
@@ -88,7 +90,7 @@ public enum Factory {
         if (statisticsDAO == null) {
             synchronized (lock) {
                 if (statisticsDAO == null) {
-                    statisticsDAO = new StatisticsDAO();
+                    statisticsDAO = new StatisticsDAO(getSQLiteDSLContext());
                 }
             }
         }

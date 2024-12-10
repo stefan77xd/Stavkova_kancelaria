@@ -1,38 +1,30 @@
 package org.example.ticket;
 
-
-import org.example.ConfigReader;
 import org.jooq.DSLContext;
-import org.jooq.Name;
 import org.jooq.Record11;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static org.jooq.codegen.maven.example.Tables.*;
 
 public class TicketDAO {
+    private final DSLContext dslContext;
+
+    // Constructor to accept DSLContext
+    public TicketDAO(DSLContext dslContext) {
+        this.dslContext = dslContext;
+    }
+
     public List<Ticket> getUsersTickets(Integer userId) {
         List<Ticket> tickets = new ArrayList<>();
 
-        // Load configuration from config.properties
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            // Use jOOQ with SQLite connection
-            DSLContext create = DSL.using(connection);
-
-            // Fetch data from the SQLite sport_events table
-            Result<Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String>> result = create.select(
+        try {
+            // Fetch data from the SQLite tickets table
+            Result<Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(
                             TICKETS.TICKET_ID,
                             TICKETS.USER_ID,
                             TICKETS.OUTCOME_ID,
@@ -57,7 +49,7 @@ public class TicketDAO {
                 ticket.setTicketId(record.get(TICKETS.TICKET_ID));
                 ticket.setUserId(record.get(TICKETS.USER_ID));
                 ticket.setOutcomeId(record.get(TICKETS.OUTCOME_ID));
-                ticket.setStatus(StatusForTicket.valueOf((String) record.get("ticket_status")));
+                ticket.setStatus(StatusForTicket.valueOf(String.valueOf(record.get("ticket_status"))));
                 ticket.setStake(record.get(TICKETS.STAKE).doubleValue());
 
                 ticket.setResultName(String.valueOf(record.get("outcome_name")));
@@ -66,7 +58,7 @@ public class TicketDAO {
                 tickets.add(ticket);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Failed to fetch tickets: " + e.getMessage());
         }
 

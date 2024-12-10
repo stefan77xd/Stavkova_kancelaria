@@ -1,35 +1,29 @@
 package org.example.statistics;
 
-import org.example.ConfigReader;
 import org.jooq.DSLContext;
 import org.jooq.Record6;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class StatisticsDAO {
+    private final DSLContext dslContext;
+
+    // Constructor to accept DSLContext
+    public StatisticsDAO(DSLContext dslContext) {
+        this.dslContext = dslContext;
+    }
+
     public List<Statistics> getUsersStats(Integer userId) {
         List<Statistics> stats = new ArrayList<>();
 
-        // Load configuration from config.properties
-        Properties config = ConfigReader.loadProperties("config.properties");
-        String dbUrl = config.getProperty("db.url");
-
-        try (Connection connection = DriverManager.getConnection(dbUrl)) {
-            // Use jOOQ with SQLite connection
-            DSLContext create = DSL.using(connection);
-
+        try {
             // Fetch statistics from the users table
-            Result<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> result = create.select(
+            Result<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> result = dslContext.select(
                             USERS.TOTAL_BETS,
                             USERS.TOTAL_STAKES,
                             USERS.TOTAL_WINNINGS,
@@ -53,8 +47,7 @@ public class StatisticsDAO {
                 stats.add(stat);
             }
 
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("Failed to fetch user statistics: " + e.getMessage());
         }
 

@@ -15,6 +15,7 @@ import org.example.security.Auth;
 import org.example.security.LoginController;
 import org.example.sportevent.MatchController;
 import org.example.sportevent.SportEvent;
+import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.user.AddBalanceControler;
 import org.jooq.DSLContext;
@@ -34,6 +35,8 @@ public class Controller {
 
     @FXML
     private TabPane sportTabPane;
+
+    private SportEventDAO sportEventDAO;
 
 
     @FXML
@@ -255,6 +258,7 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        sportEventDAO = Factory.INSTANCE.getSportEventDAO();
         sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
@@ -332,7 +336,7 @@ public class Controller {
     public void updateEvents(Enum<StatusForEvent> status) {
         sportTabPane.getTabs().clear();
 
-        List<SportEvent> sportEvents = Factory.INSTANCE.getSportEventDAO().getAllSportEvents();
+        List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
         List<SportEvent> Events = new ArrayList<>();
         for (SportEvent sportEvent : sportEvents) {
             if (sportEvent.getStatus() == status) {
