@@ -18,6 +18,7 @@ import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 import org.example.user.AddBalanceControler;
+import org.example.user.ProfileController;
 import org.example.user.UserDAO;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class Controller {
 
 
     @FXML
-    private Button loginoruser;
+    public Button loginoruser;
     Stage stage;
 
     public void onLoginSuccess() {
@@ -79,6 +80,9 @@ public class Controller {
                 stage.setScene(ticketScene);
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
+                ProfileController profileController = loader.getController();
+                profileController.controller = this;
+                profileController.stage = stage;
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }

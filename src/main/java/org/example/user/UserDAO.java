@@ -2,6 +2,7 @@ package org.example.user;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import org.mindrot.jbcrypt.BCrypt;
 
 import static org.jooq.codegen.maven.example.Tables.USERS;
 
@@ -91,5 +92,31 @@ public class UserDAO {
                 .set(USERS.TOTAL_WINNINGS, totalWinnings)
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
+    }
+
+    public void deleteUser(String username) {
+        dslContext.deleteFrom(USERS).where(USERS.USERNAME.eq(username)).execute();
+    }
+
+    public void changeUsername(int userID, String username) {
+        dslContext.update(USERS)
+                .set(USERS.USERNAME, username)
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+    }
+
+    public void changePassword(int userID, String password) {
+        dslContext.update(USERS)
+                .set(USERS.PASSWORD, BCrypt.hashpw(password, BCrypt.gensalt()))
+                .where(USERS.USER_ID.eq(userID))
+                .execute();
+    }
+
+    public boolean menoExists(String text) {
+        return dslContext.fetchExists(
+                DSL.selectOne()
+                        .from(USERS)
+                        .where(USERS.USERNAME.eq(text)))
+                ;
     }
 }

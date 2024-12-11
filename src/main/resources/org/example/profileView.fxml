@@ -4,13 +4,14 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.user.ProfileController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="385.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.user.ProfileController">
    <children>
       <GridPane layoutX="70.0" layoutY="22.0" prefHeight="60.0" style="-fx-background-color: #212121;" styleClass="headerPanel" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -25,6 +26,16 @@
       </GridPane>
       <VBox alignment="CENTER" layoutX="129.0" layoutY="126.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
+            <TextField fx:id="menoHeslo1" disable="true" maxWidth="-Infinity" promptText="meno/heslo">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="menoHeslo2" disable="true" maxWidth="-Infinity" promptText="meno/heslo">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </TextField>
             <Button mnemonicParsing="false" onAction="#changeUsername" styleClass="profileButton" text="Zmena používateľského mena">
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -44,6 +55,11 @@
                </cursor>
                <VBox.margin>
                   <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="tlacidloPotvrd" disable="true" mnemonicParsing="false" onAction="#submit" text="Potvrď">
+               <VBox.margin>
+                  <Insets top="30.0" />
                </VBox.margin>
             </Button>
          </children>
