@@ -3,9 +3,7 @@ package org.example.ticket;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.example.ticket.StatusForTicket;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter

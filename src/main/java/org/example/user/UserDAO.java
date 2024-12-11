@@ -2,9 +2,6 @@ package org.example.user;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.math.BigDecimal;
 
 import static org.jooq.codegen.maven.example.Tables.USERS;
 

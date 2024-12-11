@@ -4,7 +4,6 @@ import org.jooq.DSLContext;
 import org.jooq.Record6;
 import org.jooq.Result;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

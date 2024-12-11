@@ -3,8 +3,6 @@ package org.example.security;
 import lombok.Data;
 import org.example.user.Role;
 
-import java.math.BigDecimal;
-
 @Data
 public class Principal {
 

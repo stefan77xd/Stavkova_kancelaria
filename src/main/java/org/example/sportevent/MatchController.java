@@ -10,30 +10,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
-import org.example.ConfigReader;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcome;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.security.Auth;
 import org.example.security.Principal;
-import org.example.ticket.StatusForTicket;
 import org.example.ticket.TicketDAO;
 import org.example.user.UserDAO;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
-
-import static org.jooq.codegen.maven.example.Tables.TICKETS;
-import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class MatchController {
 

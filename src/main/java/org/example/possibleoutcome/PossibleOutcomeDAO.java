@@ -5,11 +5,10 @@ import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.jooq.codegen.maven.example.Tables.*;
+import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
 
 public class PossibleOutcomeDAO {
     private final DSLContext dslContext;

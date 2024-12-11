@@ -11,7 +11,6 @@ import org.example.Factory;
 import org.example.user.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
 
-
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

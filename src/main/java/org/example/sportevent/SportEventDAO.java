@@ -1,21 +1,15 @@
 package org.example.sportevent;
 
-import org.example.ConfigReader;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.codegen.maven.example.Tables;
-import org.jooq.impl.DSL;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import static org.jooq.codegen.maven.example.Tables.*;
+
 import static org.jooq.codegen.maven.example.tables.SportEvents.SPORT_EVENTS;
 
 public class SportEventDAO {

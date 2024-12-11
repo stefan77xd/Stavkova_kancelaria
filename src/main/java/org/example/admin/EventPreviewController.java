@@ -12,31 +12,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
-import org.example.ConfigReader;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
-import org.example.sportevent.StatusForEvent;
 import org.example.ticket.StatusForTicket;
-import org.example.ticket.Ticket;
 import org.example.ticket.TicketDAO;
 import org.example.user.UserDAO;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.codegen.maven.example.tables.records.TicketsRecord;
-import org.jooq.impl.DSL;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
-import static org.jooq.codegen.maven.example.Tables.*;
+import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
 
 public class EventPreviewController {
 

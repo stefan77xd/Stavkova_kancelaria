@@ -5,23 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import lombok.Setter;
-import org.example.ConfigReader;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.security.Auth;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javafx.stage.Stage;
-
-import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class AddBalanceControler {
 

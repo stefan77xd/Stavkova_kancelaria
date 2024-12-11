@@ -1,4 +1,5 @@
 package org.example.security;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,9 +14,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.Setter;
+import org.example.Controller;
 import org.example.Factory;
 import org.example.admin.AdminController;
-import org.example.Controller;
 import org.example.email.EmailController;
 import org.example.exceptions.AuthenticationException;
 import org.example.user.Role;

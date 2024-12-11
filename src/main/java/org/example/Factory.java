@@ -28,20 +28,14 @@ public enum Factory {
     private final Object lock = new Object();
     private volatile DSLContext dslContext;
 
-    // Method to get SQLite DSLContext
     public DSLContext getSQLiteDSLContext() {
         if (dslContext == null) {
             synchronized (lock) {
                 if (dslContext == null) {
                     try {
-                        // Load configuration properties from config.properties
                         Properties config = ConfigReader.loadProperties("config.properties");
                         String dbUrl = config.getProperty("db.url");
-
-                        // Establish a connection using DriverManager
                         Connection connection = DriverManager.getConnection(dbUrl);
-
-                        // Store the DSLContext for reuse (do not close the connection here)
                         dslContext = DSL.using(connection, SQLDialect.SQLITE);
                     } catch (SQLException e) {
                         throw new RuntimeException("Error connecting to the database", e);
@@ -53,7 +47,6 @@ public enum Factory {
     }
 
 
-    // Method to get SportEventDAO using SQLite DSLContext
     public SportEventDAO getSportEventDAO() {
         if (sportEventDAO == null) {
             synchronized (lock) {
@@ -65,7 +58,6 @@ public enum Factory {
         return sportEventDAO;
     }
 
-    // Method to get PossibleOutcomeDAO using SQLite DSLContext
     public PossibleOutcomeDAO getPossibleOutcomeDAO() {
         if (possibleOutcomeDAO == null) {
             synchronized (lock) {
@@ -77,7 +69,6 @@ public enum Factory {
         return possibleOutcomeDAO;
     }
 
-    // Method to get TicketDAO using SQLite DSLContext
     public TicketDAO getTicketDAO() {
         if (ticketDAO == null) {
             synchronized (lock) {
@@ -89,7 +80,6 @@ public enum Factory {
         return ticketDAO;
     }
 
-    // Method to get StatisticsDAO using SQLite DSLContext
     public StatisticsDAO getStatisticsDAO() {
         if (statisticsDAO == null) {
             synchronized (lock) {

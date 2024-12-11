@@ -5,7 +5,6 @@ import org.jooq.Record11;
 import org.jooq.Result;
 import org.jooq.codegen.maven.example.tables.records.TicketsRecord;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

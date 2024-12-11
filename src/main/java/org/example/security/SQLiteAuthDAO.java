@@ -1,22 +1,12 @@
 package org.example.security;
 
-import org.example.ConfigReader;
 import org.example.exceptions.AuthenticationException;
 import org.example.user.Role;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.impl.DSL;
 import org.mindrot.jbcrypt.BCrypt;
 
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Locale;
-import java.util.Properties;
-
-import static org.jooq.codegen.maven.example.Tables.*;
+import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class SQLiteAuthDAO implements AuthDao {
 

@@ -10,21 +10,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.example.ConfigReader;
 import org.example.Factory;
 import org.example.user.UserDAO;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.UUID;
-
-import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class EmailController {
 

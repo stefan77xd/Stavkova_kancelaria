@@ -3,22 +3,11 @@ package org.example.admin;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import org.example.ConfigReader;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
-import org.example.possibleoutcome.StatusForOutcomes;
 import org.example.sportevent.SportEvent;
-import org.example.sportevent.SportEventDAO;
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
-
-import static org.jooq.codegen.maven.example.Tables.POSSIBLE_OUTCOMES;
 
 public class ResultMatchController {
 
