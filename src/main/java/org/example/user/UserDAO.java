@@ -19,6 +19,15 @@ public class UserDAO {
     }
 
     public void insertUser(String username, String hashedPassword, String email) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatné používateľské meno");
+        }
+        if (hashedPassword == null || hashedPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatné heslo");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatný email");
+        }
         dslContext.insertInto(USERS)
                 .set(USERS.USERNAME, username)
                 .set(USERS.PASSWORD, hashedPassword)
@@ -29,10 +38,19 @@ public class UserDAO {
     }
 
     public String findEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatný email");
+        }
         return dslContext.select(USERS.EMAIL).from(USERS).where(USERS.EMAIL.eq(email)).fetchOneInto(String.class);
     }
 
     public void updatePassword(String newPassword, String email) {
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatné heslo");
+        }
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Neplatný email");
+        }
         dslContext.update(USERS).set(USERS.PASSWORD, newPassword).where(USERS.EMAIL.eq(email)).execute();
     }
 
@@ -49,6 +67,9 @@ public class UserDAO {
     }
 
     public void updateBalanceAndStat(int userID, Double betAmount) {
+        if (betAmount == null) {
+            throw new IllegalArgumentException("Neplatná suma");
+        }
         dslContext.update(USERS)
                 .set(USERS.BALANCE, USERS.BALANCE.minus(betAmount))
                 .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
@@ -62,6 +83,9 @@ public class UserDAO {
     }
 
     public void addBalance(int userID, Double amountValue) {
+        if (amountValue == null) {
+            throw new IllegalArgumentException("Neplatná suma");
+        }
         dslContext.update(USERS)
                 .set(USERS.BALANCE, USERS.BALANCE.plus(amountValue))
                 .where(USERS.USER_ID.eq(userID))

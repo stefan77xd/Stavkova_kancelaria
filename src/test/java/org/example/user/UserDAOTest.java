@@ -48,14 +48,14 @@ class UserDAOTest {
                 .column(USERS.USERNAME, SQLDataType.VARCHAR(50).nullable(false))
                 .column(USERS.PASSWORD, SQLDataType.VARCHAR(60).nullable(false))
                 .column(USERS.EMAIL, SQLDataType.VARCHAR(100).nullable(false))
-                .column(USERS.BALANCE, SQLDataType.NUMERIC(10, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
+                .column(USERS.BALANCE, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
                 .column(USERS.ROLE, SQLDataType.VARCHAR(10).nullable(false).defaultValue(DSL.field("'user'", SQLDataType.VARCHAR)))
                 .column(USERS.TOTAL_BETS, SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)))
-                .column(USERS.TOTAL_STAKES, SQLDataType.NUMERIC(10, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
-                .column(USERS.TOTAL_WINNINGS, SQLDataType.NUMERIC(10, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
-                .column(USERS.WIN_RATE, SQLDataType.NUMERIC(3, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
-                .column(USERS.AVERAGE_BET, SQLDataType.NUMERIC(10, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
-                .column(USERS.MAX_BET, SQLDataType.NUMERIC(10, 2).nullable(false).defaultValue(DSL.field("0", SQLDataType.NUMERIC)))
+                .column(USERS.TOTAL_STAKES, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
+                .column(USERS.TOTAL_WINNINGS, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
+                .column(USERS.WIN_RATE, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
+                .column(USERS.AVERAGE_BET, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
+                .column(USERS.MAX_BET, SQLDataType.DOUBLE.nullable(false).defaultValue(DSL.field("0", SQLDataType.DOUBLE)))
                 .constraints(
                         primaryKey(USERS.USER_ID),
                         unique(USERS.USERNAME),
@@ -64,6 +64,7 @@ class UserDAOTest {
                 )
                 .execute();
     }
+
 
     @Test
     void testUserExists() {
@@ -188,5 +189,145 @@ class UserDAOTest {
 
         assertEquals(BigDecimal.valueOf(0.75), winRate);
         assertEquals(BigDecimal.valueOf(1000.00), totalWinnings.setScale(1));
+    }
+
+    @Test
+    void testInsertUserWithEmptyUsername() {
+        // Trying to insert a user with an empty username
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.insertUser("", "hashedpassword", "test@example.com");
+        });
+    }
+
+    @Test
+    void testInsertUserWithEmptyEmail() {
+        // Trying to insert a user with an empty email
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.insertUser("jane_doe", "hashedpassword", "");
+        });
+    }
+
+    @Test
+    void testInsertUserWithNullUsername() {
+        // Trying to insert a user with a null username
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.insertUser(null, "hashedpassword", "test@example.com");
+        });
+    }
+
+    @Test
+    void testInsertUserWithNullEmail() {
+        // Trying to insert a user with a null email
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.insertUser("jane_doe", "hashedpassword", null);
+        });
+    }
+
+    @Test
+    void testUpdatePasswordWithEmptyUsername() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.updatePassword("newpassword", "");
+        });
+    }
+
+    @Test
+    void testUpdatePasswordWithNullUsername() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.updatePassword("newpassword", null);
+        });
+    }
+
+    @Test
+    void testUpdatePasswordWithEmptyEmail() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.updatePassword("newpassword", "");
+        });
+    }
+
+    @Test
+    void testUpdatePasswordWithNullEmail() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.updatePassword("newpassword", null);
+        });
+    }
+
+    @Test
+    void testUpdateBalanceWithZeroAmount() {
+        userDAO.insertUser("john_doe", "password", "john@example.com");
+
+        // Update balance to 0
+        userDAO.updateBalanceAndStat(1, 0.0);
+
+        Double balance = userDAO.getBalance(1);
+        assertEquals(0.0, balance);
+    }
+
+    @Test
+    void testUpdateBalanceWithEmptyAmount() {
+        userDAO.insertUser("john_doe", "password", "john@example.com");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.updateBalanceAndStat(1, null);
+        });
+    }
+
+    @Test
+    void testAddBalanceWithZeroAmount() {
+        userDAO.insertUser("john_doe", "password", "john@example.com");
+
+        // Add zero balance
+        userDAO.addBalance(1, 0.0);
+
+        Double balance = userDAO.getBalance(1);
+        assertEquals(0.0, balance);
+    }
+
+    @Test
+    void testAddBalanceWithNullAmount() {
+        userDAO.insertUser("john_doe", "password", "john@example.com");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.addBalance(1, null);
+        });
+    }
+
+    @Test
+    void testFindEmailWithEmptyEmail() {
+        // Trying to find a user by an empty email
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.findEmail("");
+        });
+    }
+
+    @Test
+    void testFindEmailWithNullEmail() {
+        // Trying to find a user by a null email
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.findEmail(null);
+        });
+    }
+
+    @Test
+    void testUserExistsWithEmptyUsernameAndEmail() {
+        assertFalse(userDAO.userExists("", ""));
+    }
+
+    @Test
+    void testUserExistsWithNullUsernameAndEmail() {
+        assertFalse(userDAO.userExists(null, null));
+    }
+
+    private void assertInvalidInputForInsertUser(String username, String password, String email) {
+        assertThrows(IllegalArgumentException.class, () -> {
+            userDAO.insertUser(username, password, email);
+        });
+    }
+
+    @Test
+    void testInsertUserWithEmptyInputs() {
+        assertInvalidInputForInsertUser("", "hashedpassword", "test@example.com");
+        assertInvalidInputForInsertUser("username", "hashedpassword", "");
+        assertInvalidInputForInsertUser("username", "hashedpassword", null);
+        assertInvalidInputForInsertUser(null, "hashedpassword", "test@example.com");
     }
 }
