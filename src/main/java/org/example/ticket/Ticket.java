@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @ToString
@@ -18,8 +17,6 @@ public class Ticket {
     private String resultName;
     private String eventName;
     private LocalDateTime eventStartTime;
-
-
     @Override
     public String toString() {
         return eventName + ", " + resultName + ", "

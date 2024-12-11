@@ -12,11 +12,11 @@ public class EmailSender {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com"); // SMTP server
+        properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         Properties config = ConfigReader.loadProperties("config.properties");
-        String myEmail = config.getProperty("email"); // Nahradiť svojou e-mailovou adresou
-        String myPassword = config.getProperty("password");    // Nahradiť svojim heslom alebo App Password (odporúčané)
+        String myEmail = config.getProperty("email");
+        String myPassword = config.getProperty("password");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override

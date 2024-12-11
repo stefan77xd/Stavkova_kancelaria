@@ -7,28 +7,19 @@ import org.example.Factory;
 import org.example.security.Auth;
 
 import java.util.List;
-
 public class StatController {
-
     @FXML
     private VBox statBox;
-
     private final StatisticsDAO statisticsDAO = Factory.INSTANCE.getStatisticsDAO();
-
     @FXML
     private Label mainLabel;
-
     @FXML
     public void initialize() {
-        // Check if the user is authenticated
         if (Auth.INSTANCE.getPrincipal() != null) {
-            // Assume Auth.INSTANCE.getPrincipal() returns a User object or userId
             Integer userId = Auth.INSTANCE.getPrincipal().getId().intValue();
 
-            // Fetch statistics for the user
             List<Statistics> stats = statisticsDAO.getUsersStats(userId);
 
-            // Display the statistics in the VBox
             for (Statistics stat : stats) {
                 Label totalBetsLabel = new Label("Total Bets: " + stat.getTotalBets());
                 totalBetsLabel.setStyle("-fx-font-size: 16px");
@@ -43,7 +34,6 @@ public class StatController {
                 Label maxBetLabel = new Label("Max Bet: " + stat.getMaxBet());
                 maxBetLabel.setStyle("-fx-font-size: 16px");
 
-                // Add labels to the VBox
                 statBox.getChildren().addAll(
                         totalBetsLabel,
                         totalStakesLabel,

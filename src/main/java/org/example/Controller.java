@@ -24,21 +24,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class Controller {
-
     @FXML
     private TabPane sportTabPane;
-
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
-
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
-
-
     @FXML
     private Button loginoruser;
     Stage stage;
-
     public void onLoginSuccess() {
         loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
 
@@ -80,7 +73,7 @@ public class Controller {
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             } catch (IOException e) {
-                System.err.println(e.getMessage());
+                System.err.println("Nepodarilo sa otvoriť profile view: " + e.getMessage());
             }
         }
     }
@@ -105,7 +98,6 @@ public class Controller {
                 System.err.println(e.getMessage());
             }
         }
-
     }
 
     public void updateBalance() {
@@ -193,7 +185,6 @@ public class Controller {
         }
     }
 
-
     @FXML
     public void initialize() {
         sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -203,7 +194,6 @@ public class Controller {
         });
         showOdds();
     }
-
 
     private void setupListView(ListView<SportEvent> listView, List<SportEvent> sportEvents) {
         listView.setItems(FXCollections.observableArrayList(sportEvents));
@@ -261,7 +251,6 @@ public class Controller {
         updateEvents(StatusForEvent.upcoming);
     }
 
-
     public void updateEvents(Enum<StatusForEvent> status) {
         sportTabPane.getTabs().clear();
         List<SportEvent> sportEvents = sportEventDAO.getAllSportEvents();
@@ -310,7 +299,7 @@ public class Controller {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Nepodarilo sa otvoriť štatistiku: " + e.getMessage());
         }
     }
 }

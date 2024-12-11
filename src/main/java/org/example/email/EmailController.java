@@ -27,7 +27,7 @@ public class EmailController {
 
 
     @FXML
-    void confirmEmail(ActionEvent event) throws SQLException {
+    void confirmEmail() {
         String email = emailField.getText();
         String foundEmail = userDAO.findEmail(email);
 

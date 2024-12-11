@@ -10,29 +10,21 @@ import lombok.Setter;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.security.Auth;
-
 public class AddBalanceControler {
-
     @FXML
     private TextField amount;
     public Integer UserID;
     @FXML
     private TextField bonusCode;
-
     @Setter
     private Controller mainController;
-
     @FXML
     private Label balanceLabel;
-
     boolean pridanie = false;
-
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
-
     @FXML
     public void initialize() {
         balanceLabel.setText("Pridajte prostriedky pre " + Auth.INSTANCE.getPrincipal().getUsername());
-
         amount.addEventFilter(KeyEvent.KEY_TYPED, event -> {
             String input = amount.getText() + event.getCharacter();
             if (!input.matches("\\d*(\\.\\d{0,2})?") || input.startsWith(".")) {
@@ -42,7 +34,7 @@ public class AddBalanceControler {
     }
 
     @FXML
-    void submit(ActionEvent event) {
+    void submit() {
         if (!pridanie) {
             Double amountValue = Double.valueOf(amount.getText());
             if (amountValue > 0) {
@@ -52,10 +44,8 @@ public class AddBalanceControler {
                 if (bonusCode.getText().equals("SK10")) {
                     amountValue = amountValue * 10;
                 }
-
                 userDAO.addBalance((UserID), amountValue);
                 pridanie = true;
-
                 if (mainController != null) {
                     mainController.updateBalance();
                 }

@@ -14,27 +14,18 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
 public class RegistryController {
-
     @FXML
     private TextField RegistryEmailTextField;
-
     @FXML
     private TextField RegistryPassword1TextField;
-
     @FXML
     private TextField RegistryPassword2TextField;
-
     @FXML
     private TextField RegistryUsernameTextField;
-
     @Setter
     private LoginController loginController;
-
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
-
     @FXML
     void SubmitValues() {
         String username = RegistryUsernameTextField.getText().trim();
@@ -68,7 +59,6 @@ public class RegistryController {
         closeRegistryView();
     }
 
-
     private void showAlert(String title, String message) {
         Alert.AlertType alertType = title.equals("Výborne") ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING;
         Alert alert = new Alert(alertType);
@@ -88,7 +78,6 @@ public class RegistryController {
         if (title.equals("Výborne")) {
             stage.close();
         }
-
     }
 
     private void closeRegistryView() {

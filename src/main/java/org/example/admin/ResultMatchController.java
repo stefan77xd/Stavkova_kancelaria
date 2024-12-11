@@ -21,14 +21,11 @@ public class ResultMatchController {
 
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
 
-    // Set the sport event, fetch outcomes and populate VBox
     public void setSportEvent(SportEvent sportEvent) {
         this.sportEvent = sportEvent;
         eventName.setText(sportEvent.getEventName());
-            // Fetch all winning outcomes for the event
-            List<String> resultNames = possibleOutcomeDAO.fetchAllWinningOutcomes((int) sportEvent.getEventId());
+            List<String> resultNames = possibleOutcomeDAO.fetchAllWinningOutcomes( sportEvent.getEventId());
 
-            // Dynamically add Labels for each result
             for (String resultName : resultNames) {
                 Label outcomeLabel = new Label(resultName);
                 outcomeContainer.getChildren().add(outcomeLabel);

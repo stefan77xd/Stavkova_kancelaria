@@ -11,7 +11,6 @@ public class SportEvent {
     private LocalDateTime startTime;
     private String sportType;
     private StatusForEvent status;
-
     @Override
     public String toString() {
         return eventName + ", " + sportType + ", "

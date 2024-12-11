@@ -25,20 +25,14 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class LoginController {
-
     @FXML
     private TextField passwordTextField;
-
     @FXML
     private Label recoverMail;
-
     int countOfAttempts = 0;
-
     @FXML
     private TextField usernameTextField;
-
     private final AuthDao AuthDao = Factory.INSTANCE.getSqLiteAuthDAO();
-
     @Setter
     private Controller mainController;
 
@@ -46,7 +40,6 @@ public class LoginController {
     void Login() {
         var usernameOrEmail = usernameTextField.getText();
         var password = passwordTextField.getText();
-
         Principal principal;
         try {
             principal = AuthDao.authenticate(usernameOrEmail, password);
@@ -58,11 +51,10 @@ public class LoginController {
             recoverMail.setStyle("-fx-text-fill: #d22424;");
             return;
         }
-
         var role = principal.getRole();
         Auth.INSTANCE.setPrincipal(principal);
 
-        Stage stage = (Stage) usernameTextField.getScene().getWindow();  // Get Stage from the TextField's Scene
+        Stage stage = (Stage) usernameTextField.getScene().getWindow();
         if (role == Role.user) {
             if (mainController != null) {
                 mainController.onLoginSuccess();
@@ -79,13 +71,11 @@ public class LoginController {
     void initialize() {
         passwordTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                // Trigger the login when Enter key is pressed
                 Login();
             }
         });
         usernameTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                // Trigger the login when Enter key is pressed
                 Login();
             }
         });
@@ -95,12 +85,9 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/adminView.fxml"));
             Parent root = loader.load();
-
             AdminController adminController = loader.getController();
             Scene scene = new Scene(root);
-
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
             Stage stage = new Stage();
             stage.setTitle("Admin");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
@@ -111,7 +98,6 @@ public class LoginController {
             System.err.println(e.getMessage());
         }
     }
-
 
     public void closeAllWindows() {
         for (Window window : Window.getWindows()) {
@@ -124,13 +110,10 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/registryView.fxml"));
             Parent root = loader.load();
-
             RegistryController registryController = loader.getController();
             registryController.setLoginController(this);
             Scene scene = new Scene(root);
-
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
             Stage stage = new Stage();
             stage.setTitle("Register");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -157,7 +140,7 @@ public class LoginController {
         alert.showAndWait();
     }
     @FXML
-    void openRecoverWindow(MouseEvent event) {
+    void openRecoverWindow() {
         if (countOfAttempts>=1){
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/emailView.fxml"));
@@ -165,7 +148,6 @@ public class LoginController {
                 EmailController emailController = loader.getController();
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
-
                 Stage stage = new Stage();
                 stage.setTitle("Email");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));

@@ -81,12 +81,10 @@ public class TokenController {
                 alert.showAndWait();
             }
         }
-
-
     }
 
     @FXML
-    void submitPasswords(ActionEvent event) throws SQLException {
+    void submitPasswords() {
         if (newPassword1.getText().equals(newPassword2.getText())) {
             if (newPassword1.getText() != null && newPassword1.getText().length() >= 8) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

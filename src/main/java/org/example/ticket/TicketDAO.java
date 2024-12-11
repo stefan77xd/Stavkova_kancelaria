@@ -13,16 +13,11 @@ import static org.jooq.codegen.maven.example.Tables.*;
 
 public class TicketDAO {
     private final DSLContext dslContext;
-
-    // Constructor to accept DSLContext
     public TicketDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
-
     public List<Ticket> getUsersTickets(Integer userId) {
         List<Ticket> tickets = new ArrayList<>();
-
-            // Fetch data from the SQLite tickets table
             Result<Record11<Integer, Integer, Integer, String, Double, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(
                             TICKETS.TICKET_ID,
                             TICKETS.USER_ID,

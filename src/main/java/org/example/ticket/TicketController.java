@@ -10,18 +10,12 @@ import org.example.security.Auth;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 public class TicketController {
-
     private final TicketDAO UserTicketDAO = Factory.INSTANCE.getTicketDAO();
-
     @FXML
     private TabPane ticketPane;
-
     @FXML
     private Label testLabel;
-
     @FXML
     public void initialize() {
         StatusForTicket[] orderedStatuses = {
@@ -30,18 +24,14 @@ public class TicketController {
                 StatusForTicket.lost
         };
 
-        // Create tabs in the defined order
         if (Auth.INSTANCE.getPrincipal() != null) {
             for (StatusForTicket status : orderedStatuses) {
                 String capitalizedLabel = capitalizeFirstLetter(status.name());
                 Tab tab = new Tab(capitalizedLabel);
-
                 ListView<Ticket> listView = new ListView<>();
-
                 VBox vbox = new VBox(listView);
                 vbox.setFillWidth(true);
                 tab.setContent(vbox);
-
                 ticketPane.getTabs().add(tab);
             }
         }
@@ -52,12 +42,9 @@ public class TicketController {
             for (Tab tab : ticketPane.getTabs()) {
                 String lowercaseTabName = tab.getText().toLowerCase();
                 StatusForTicket status = StatusForTicket.valueOf(lowercaseTabName);
-
                 List<Ticket> filteredTickets = filterTicketsByStatus(userTickets, status);
-
                 ListView<Ticket> listView = new ListView<>();
                 setupListView(listView, filteredTickets);
-
                 VBox vbox = new VBox(listView);
                 vbox.setFillWidth(true);
                 tab.setContent(vbox);
@@ -108,5 +95,4 @@ public class TicketController {
             }
         });
     }
-
 }

@@ -9,13 +9,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import static org.jooq.codegen.maven.example.Tables.USERS;
 
 public class SQLiteAuthDAO implements AuthDao {
-
     private final DSLContext dslContext;
-
     public SQLiteAuthDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
-
     @Override
     public Principal authenticate(String usernameOrEmail, String password) throws AuthenticationException {
         PrincipalWithPassword principalWithPassword = null;
@@ -37,7 +34,6 @@ public class SQLiteAuthDAO implements AuthDao {
             principalWithPassword.setPrincipal(principal);
             principalWithPassword.setPassword(record.getValue(USERS.PASSWORD));
 
-        //Verify password
         if (!BCrypt.checkpw(password, principalWithPassword.getPassword())) {
             throw new AuthenticationException("Invalid credentials.");
         }

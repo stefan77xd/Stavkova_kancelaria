@@ -23,30 +23,20 @@ public class AddSportController {
 
     @FXML
     private DatePicker DatePicker;
-
     @FXML
     private TextField eventName;
-
-
     @FXML
     private TextField sportType;
-
     @FXML
     private TextField time;
-
     @Setter
     public AdminController adminController;
-
     @FXML
     private VBox resultFieldsContainer;
-
     @FXML
     private VBox oddsFieldsContainer;
-
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
-
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
-
     public void initialize() {
         resultFieldsContainer.setSpacing(10);
         oddsFieldsContainer.setSpacing(10);
@@ -66,27 +56,23 @@ public class AddSportController {
         oddsFieldsContainer.getChildren().add(oddsField);
 
         oddsField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Allow digits and only one decimal point
             if (!newValue.matches("\\d*\\.?\\d*")) {
                 oddsField.setText(newValue.replaceAll("[^\\d.]", ""));
             }
 
-            // Ensure only one decimal point is allowed
             if (newValue.indexOf('.') != newValue.lastIndexOf('.')) {
-                oddsField.setText(oldValue);  // Restore the old value if more than one decimal point
+                oddsField.setText(oldValue);
             }
 
-            // Ensure only two digits after the decimal point
             if (newValue.contains(".") && newValue.substring(newValue.indexOf(".") + 1).length() > 2) {
-                oddsField.setText(oldValue);  // Restore the old value if there are more than two digits after the decimal point
+                oddsField.setText(oldValue);
             }
         });
 
-        // Add listener to check when the field is filled
         resultField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.trim().isEmpty()) {
                 if (isLastResultField(resultField)) {
-                    addNewResultAndOddsField(); // Add new field when the current one is filled
+                    addNewResultAndOddsField();
                 }
             }
         });
