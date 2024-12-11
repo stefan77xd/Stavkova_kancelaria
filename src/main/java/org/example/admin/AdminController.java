@@ -22,23 +22,17 @@ import org.example.sportevent.SportEvent;
 import org.example.sportevent.SportEventDAO;
 import org.example.sportevent.StatusForEvent;
 
-
 public class AdminController {
-
     @FXML
     private Label welcomeSign;
-
     @FXML
     private TabPane tabPane;
-
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
-
 
     @FXML
     private void logout() {
         try {
             Auth.INSTANCE.setPrincipal(null);
-
             Stage currentStage = (Stage) welcomeSign.getScene().getWindow();
             currentStage.close();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view.fxml"));
@@ -51,7 +45,7 @@ public class AdminController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.err.println("Error during logout: " + e.getMessage());
+            System.err.println("Chyba pri odhlasovani: " + e.getMessage());
         }
     }
 
@@ -87,7 +81,7 @@ public class AdminController {
                     try {
                         openEventPreviewWindow(selectedEvent);
                     } catch (IOException e) {
-                        System.err.println("Error opening event preview: " + e.getMessage());
+                        System.err.println("Error pri otvarani event preview: " + e.getMessage());
                     }
                 } else if (selectedEvent.getStatus() == StatusForEvent.finished) {
                     hideEvent(selectedEvent);
@@ -120,7 +114,7 @@ public class AdminController {
                     try {
                         openEventPreviewWindow(selectedEvent);
                     } catch (IOException e) {
-                        System.err.println("Error opening event preview: " + e.getMessage());
+                        System.err.println("Error pri otvarani event preview: " + e.getMessage());
                     }
                 }
             });
@@ -134,7 +128,7 @@ public class AdminController {
 
     private void openEventPreviewWindow(SportEvent sportEvent) throws IOException {
         if (sportEvent == null) {
-            System.err.println("SportEvent is null. Cannot open preview window.");
+            System.err.println("SportEvent je null.");
             return;
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/eventPreview.fxml"));
@@ -152,12 +146,10 @@ public class AdminController {
         stage.show();
     }
 
-
     @FXML
-    void AddSportEvent(ActionEvent event) {
+    void AddSportEvent() {
         openAddSportWindow();
     }
-
 
     private void openAddSportWindow() {
         try {
@@ -195,9 +187,9 @@ public class AdminController {
 
     public void hideEvent(SportEvent selectedEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Hide Event");
-        alert.setHeaderText("Are you sure you want to hide this event?");
-        alert.setContentText("This action will make the event no longer visible.");
+        alert.setTitle("Skryť Event");
+        alert.setHeaderText("Ste si istý, že chcete skryť tento event?");
+        alert.setContentText("Tento krok skryje event.");
         alert.getDialogPane().setStyle("-fx-background-color: #303030;");
 
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
@@ -207,8 +199,8 @@ public class AdminController {
             }
         });
 
-        ButtonType yesButton = new ButtonType("Yes");
-        ButtonType noButton = new ButtonType("No");
+        ButtonType yesButton = new ButtonType("Áno");
+        ButtonType noButton = new ButtonType("Nie");
         alert.getButtonTypes().setAll(yesButton, noButton);
 
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
@@ -232,9 +224,7 @@ public class AdminController {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == yesButton) {
-                sportEventDAO.hideEvent((int) selectedEvent.getEventId());
-            } else {
-                System.out.println("Event visibility not changed.");
+                sportEventDAO.hideEvent(selectedEvent.getEventId());
             }
         });
     }

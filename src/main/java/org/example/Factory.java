@@ -46,7 +46,6 @@ public enum Factory {
         return dslContext;
     }
 
-
     public SportEventDAO getSportEventDAO() {
         if (sportEventDAO == null) {
             synchronized (lock) {

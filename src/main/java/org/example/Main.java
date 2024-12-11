@@ -15,17 +15,9 @@ public class Main extends Application {
         var loader = new FXMLLoader(getClass().getResource("view.fxml"));
         Parent rootPane = loader.load();
         var scene = new Scene(rootPane);
-
-        // Set the title of the application window
         stage.setTitle("Stávková kancelária");
-
-        // Set the scene
         stage.setScene(scene);
-
-        // Load and set the application icon (Make sure the icon is placed in the resources folder)
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png"))));
-
-        // Show the stage
         stage.show();
     }
 

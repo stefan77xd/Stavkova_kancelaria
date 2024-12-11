@@ -48,73 +48,53 @@ public class EventPreviewController {
 
     @FXML
     void Action(ActionEvent event) throws SQLException {
-
             possibleOutcomeDAO.setOutcomesToLoosing((int) sportEvent.getEventId());
-
             for (var node : checkboxContainer.getChildren()) {
                 if (node instanceof HBox hBox) {
                     CheckBox checkBox = (CheckBox) hBox.getChildren().get(0);
                     Integer outcomeId = (Integer) checkBox.getUserData();
-
                     if (outcomeId != null && checkBox.isSelected()) {
                         possibleOutcomeDAO.setOutcomeToWinning(outcomeId);
                     }
                 }
             }
+            sportEventDAO.updateEventStatus(sportEvent.getEventId());
+            var tickets = ticketDAO.fetchTicketsRealtedToEvent(sportEvent.getEventId());
 
-            sportEventDAO.updateEventStatus((int) sportEvent.getEventId());
-
-
-            var tickets = ticketDAO.fetchTicketsRealtedToEvent((int) sportEvent.getEventId());
-
-            // Collect affected user IDs
             Set<Integer> affectedUserIds = new HashSet<>();
 
-            // Process each ticket based on outcome status
             for (var ticket : tickets) {
                 var outcome = possibleOutcomeDAO.processTicket(ticket.getOutcomeId());
-
                 if (outcome == null) {
-                    System.out.println("Outcome not found for ticket: " + ticket.getTicketId());
                     continue;
                 }
-
-                // Add the affected user to the set
                 affectedUserIds.add(ticket.getUserId());
 
-                // Determine if the outcome was winning or losing
                 if (Objects.equals(outcome.getStatus(), StatusForOutcomes.winning.name())) {
                     ticketDAO.updateTicketStatusToWon(ticket.getTicketId());
-
                     userDAO.updateBalanceWithTicket(ticket.getStake(), outcome.getOdds(), ticket.getUserId());
-
                 } else {
                     ticketDAO.updateTicketStatusToLost(ticket.getTicketId());
                 }
             }
 
-            // Call method to calculate and update user stats
             updateUserStats(affectedUserIds);
 
-            // Show success alert and close window after alert is dismissed
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Process Completed");
+                alert.setTitle("Proces bol vykonaný");
                 alert.setHeaderText(null);
                 alert.setContentText("Výsledky boli úspešne zapísané!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;"); // Style the background color of the dialog
+                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
 
-                // Style the content text to be white
                 alert.getDialogPane().lookup(".content").setStyle("-fx-text-fill: white;");
 
-                // Style the header and label (if header exists)
                 alert.showingProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
                         Node header = alert.getDialogPane().lookup(".header");
                         if (header != null) {
                             header.setStyle("-fx-background-color: #303030;");
                         }
-
                         Node label = alert.getDialogPane().lookup(".header .label");
                         if (label != null) {
                             label.setStyle("-fx-text-fill: white;");
@@ -122,13 +102,10 @@ public class EventPreviewController {
                     }
                 });
 
-
                 Stage stage1 = (Stage) alert.getDialogPane().getScene().getWindow();
                 stage1.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
 
-                // Wait for the alert to close, then close the current window and call updateTabs
                 alert.showAndWait().ifPresent(response -> {
-                    // Close the current window
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                     stage.close();
                     adminController.updateTabs();
@@ -137,26 +114,22 @@ public class EventPreviewController {
     }
 
 
-    public void updateUserStats(Set<Integer> userIds) throws SQLException {
+    public void updateUserStats(Set<Integer> userIds) {
         for (Integer userId : userIds) {
-
             var userTickets = ticketDAO.fetchTicketsForUser(userId);
 
-            Double totalTickets = (double) userTickets.size();
-            Double wonTickets = 0.0;
-            Double totalWinnings = 0.0;
+            double totalTickets = userTickets.size();
+            double wonTickets = 0.0;
+            double totalWinnings = 0.0;
             for (var ticket : userTickets) {
                 if (ticket.getStatus().equals(StatusForTicket.won.name())) {
-                    wonTickets++; // Store the result of add
+                    wonTickets++;
                     var outcome = possibleOutcomeDAO.getTicketOutcome(ticket.getOutcomeId());
                     totalWinnings += ticket.getStake() * outcome.getOdds();
                 }
             }
-            Double winRate = (totalTickets > 0) ? wonTickets=wonTickets/totalTickets : 0.0;
-
-            // Round win rate to 2 decimal places
+            double winRate = (totalTickets > 0) ? wonTickets/totalTickets : 0.0;
             Double roundedWinRate = Math.round(winRate * 100.0) / 100.0;
-
             userDAO.updateWinRateAndTotalWinnings(roundedWinRate, totalWinnings, userId);
         }
     }
@@ -170,27 +143,21 @@ public class EventPreviewController {
 
     private void loadPossibleOutcomes() {
         if (sportEvent == null) {
-            System.err.println("SportEvent is null. Cannot load outcomes.");
+            System.err.println("SportEvent je null.");
             return;
         }
 
-        int eventID = (int) sportEvent.getEventId();
+        int eventID = sportEvent.getEventId();
         var results = possibleOutcomeDAO.fetchOutcomesForEvent(eventID);
-
-        // Clear existing checkboxes
         checkboxContainer.getChildren().clear();
 
-        // Dynamically create checkboxes for each possible outcome
         for (var record : results) {
             HBox hBox = new HBox(10);
             CheckBox checkBox = new CheckBox();
             checkBox.setUserData(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID)); // Store outcome ID
             Label label = new Label(record.get(POSSIBLE_OUTCOMES.RESULT_NAME));
-
             hBox.getChildren().addAll(checkBox, label);
             checkboxContainer.getChildren().add(hBox);
         }
-
-
     }
 }

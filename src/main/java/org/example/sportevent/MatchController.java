@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class MatchController {
-
     @FXML
     private Label eventNameLabel;
-
     @FXML
     private VBox outcomeVBox;
     @FXML
@@ -36,16 +34,10 @@ public class MatchController {
     @FXML
     private Label userInfo;
     PossibleOutcome selectedOutcome;
-
     private SportEvent sportEvent;
-
-
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
-
     private final TicketDAO ticketDAO = Factory.INSTANCE.getTicketDAO();
-
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
-
     @Setter
     private Controller mainController;
 
@@ -55,47 +47,32 @@ public class MatchController {
             userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
         }
         if (sportEvent != null) {
-            // Set event name and make it responsive
             eventNameLabel.setText(sportEvent.getEventName());
-            eventNameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;"); // Adjust font size if needed
-            eventNameLabel.setWrapText(true);  // Allow text to wrap if too long
-
+            eventNameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;");
+            eventNameLabel.setWrapText(true);
             eventId = sportEvent.getEventId();
-
-
-            // Check if the event is finished
             loadPossibleOutcomes(sportEvent.getStatus().equals(StatusForEvent.finished));
         }
     }
 
-
-
     private void loadPossibleOutcomes(Boolean finished) {
-        // Clear any previous outcomes
         outcomeVBox.getChildren().clear();
-
-
-        // Set alignment of VBox to center the content vertically and horizontally
         outcomeVBox.setAlignment(Pos.CENTER);
-        outcomeVBox.setSpacing(10);  // Space between each row (HBox)
+        outcomeVBox.setSpacing(10);
 
         if (eventId > 0) {
             List<PossibleOutcome> possibleOutcomes = possibleOutcomeDAO.getPossibleOutcomesByEventId(eventId);
-
-            // Define a fixed width for all elements (adjust this value as needed)
             double fixedWidth = 200;
-            double maxWidth = 250;  // Max width for the outcome label
+            double maxWidth = 250;
 
-            // Variables to hold selected odds and bet amount
             final DoubleProperty selectedOdds = new SimpleDoubleProperty(0.0);
             final TextField betAmountField = new TextField();
             final Label eventualWinLabel = new Label("0.0");
 
-            // HBox to show selected odds and eventual win
             HBox oddsWinRow = new HBox();
             oddsWinRow.setSpacing(10);
             oddsWinRow.setAlignment(Pos.CENTER);
-            oddsWinRow.setVisible(false);  // Initially hidden
+            oddsWinRow.setVisible(false);
 
             Label selectedOddsLabel = new Label("Kurz: ");
             Label oddsValueLabel = new Label();
@@ -103,75 +80,54 @@ public class MatchController {
 
             oddsWinRow.getChildren().addAll(selectedOddsLabel, oddsValueLabel, new Label("EV. Výhra: "), eventualWinLabel);
 
-            // Add all outcomes with buttons
-            ToggleGroup toggleGroup = new ToggleGroup(); // To ensure single selection
-
+            ToggleGroup toggleGroup = new ToggleGroup();
             for (PossibleOutcome outcome : possibleOutcomes) {
-                // Create an HBox for each outcome
                 HBox outcomeRow = new HBox();
                 outcomeRow.setSpacing(10);
-                outcomeRow.setAlignment(Pos.CENTER);  // Center label and button horizontally in HBox
+                outcomeRow.setAlignment(Pos.CENTER);
 
-                // Create a label for the resultName
                 Label outcomeLabel = new Label(outcome.getResultName());
                 outcomeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-                outcomeLabel.setMaxWidth(maxWidth);  // Set max width
-                outcomeLabel.setWrapText(true);  // Allow text to wrap if too long
+                outcomeLabel.setMaxWidth(maxWidth);
+                outcomeLabel.setWrapText(true);
 
-                // Create a button for the odds
                 ToggleButton oddsButton = new ToggleButton(String.valueOf(outcome.getOdds()));
                 oddsButton.getStyleClass().add("odds-button");
                 oddsButton.setPrefWidth(100);
                 if (finished) {
                     oddsButton.setDisable(true);
-                }  // Set a fixed width for the button
-                oddsButton.setToggleGroup(toggleGroup);  // Ensure single selection
+                }
+                oddsButton.setToggleGroup(toggleGroup);
 
-                // Handle selection of odds
                 oddsButton.setOnAction(event -> {
-
                     selectedOdds.set(outcome.getOdds());
                     if (!finished) {
-                        oddsWinRow.setVisible(true);  // Show the HBox with odds and eventual win
+                        oddsWinRow.setVisible(true);
                     }
-                      selectedOutcome = outcome;
+                    selectedOutcome = outcome;
                     updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
                 });
-
-                // Add label and button to the HBox
                 outcomeRow.getChildren().addAll(outcomeLabel, oddsButton);
-
-                // Add the HBox to the VBox
                 outcomeVBox.getChildren().add(outcomeRow);
             }
-
-            // Create an HBox for the input field (bet amount)
             HBox inputRow = new HBox();
             inputRow.setSpacing(10);
             inputRow.setAlignment(Pos.CENTER);
 
-            // TextField for bet input
             betAmountField.setPromptText("Vklad");
-            betAmountField.setPrefWidth(fixedWidth);  // Set width to match label + button width
+            betAmountField.setPrefWidth(fixedWidth);
             inputRow.getChildren().add(betAmountField);
 
-            // Add listener to update eventual win when the bet amount is changed
             betAmountField.textProperty().addListener((observable, oldValue, newValue) -> {
-                // Allow digits and only one decimal point
                 if (!newValue.matches("\\d*\\.?\\d*")) {
                     betAmountField.setText(newValue.replaceAll("[^\\d.]", ""));
                 }
-
-                // Ensure only one decimal point is allowed
                 if (newValue.indexOf('.') != newValue.lastIndexOf('.')) {
-                    betAmountField.setText(oldValue);  // Restore the old value if more than one decimal point
+                    betAmountField.setText(oldValue);
                 }
-
-                // Ensure only two digits after the decimal point
                 if (newValue.contains(".") && newValue.substring(newValue.indexOf(".") + 1).length() > 2) {
-                    betAmountField.setText(oldValue);  // Restore the old value if there are more than two digits after the decimal point
+                    betAmountField.setText(oldValue);
                 }
-
                 updateEventualWin(betAmountField.getText(), selectedOdds.get(), eventualWinLabel);
             });
 
@@ -188,7 +144,7 @@ public class MatchController {
 
             placeBetButton.setOnAction(event -> {
                     if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
-                        Double betAmount = Double.valueOf(betAmountField.getText()); // Replace with your actual bet amount
+                        Double betAmount = Double.valueOf(betAmountField.getText());
                         Double balance = Auth.INSTANCE.getPrincipal().getBalance();
                         if (betAmount <= balance && betAmount >= 0) {
                             if (!LocalDateTime.now().isAfter(sportEvent.getStartTime())) {
@@ -205,29 +161,23 @@ public class MatchController {
                         }
                     }
             });
-
             if (Auth.INSTANCE.getPrincipal() == null) {
                 placeBetButton.setDisable(true);
             }
-
             buttonRow.getChildren().add(placeBetButton);
             outcomeVBox.getChildren().add(buttonRow);
             outcomeVBox.getChildren().add(oddsWinRow);
-
             if (finished) {
                 betAmountField.setVisible(false);
                 placeBetButton.setVisible(false);
                 oddsWinRow.setVisible(false);
             }
-        } else {
-            System.out.println("Invalid eventId.");
         }
     }
 
     private void placeBet(Double betAmount) throws SQLException {
         Principal principal = Auth.INSTANCE.getPrincipal();
         Integer userID = principal.getId();
-
             userDAO.updateBalanceAndStat(userID, betAmount);
             userDAO.updateStatistics();
             ticketDAO.insertTicket(userID, (int) selectedOutcome.getOutcomeId(), betAmount);
@@ -238,8 +188,6 @@ public class MatchController {
             mainController.updateBalance();
         }
     }
-
-
 
     private void updateEventualWin(String betAmount, double odds, Label eventualWinLabel) {
         try {

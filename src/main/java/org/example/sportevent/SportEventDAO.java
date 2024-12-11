@@ -14,14 +14,11 @@ import static org.jooq.codegen.maven.example.tables.SportEvents.SPORT_EVENTS;
 
 public class SportEventDAO {
     private final DSLContext dslContext;
-
     public SportEventDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
-
     public List<SportEvent> getAllSportEvents() {
         List<SportEvent> events = new ArrayList<>();
-        // Fetch data using the shared DSLContext
         Result<Record5<Integer, String, LocalDateTime, String, String>> result = dslContext
                 .select(SPORT_EVENTS.EVENT_ID, SPORT_EVENTS.EVENT_NAME, SPORT_EVENTS.START_TIME, SPORT_EVENTS.SPORT_TYPE, SPORT_EVENTS.STATUS)
                 .from(SPORT_EVENTS)
@@ -66,7 +63,5 @@ public class SportEventDAO {
                 .where(Tables.SPORT_EVENTS.EVENT_ID.eq(eventID))
                 .execute();
     }
-
-
 }
 

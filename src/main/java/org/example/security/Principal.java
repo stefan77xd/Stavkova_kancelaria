@@ -5,7 +5,6 @@ import org.example.user.Role;
 
 @Data
 public class Principal {
-
     private Integer id;
     private String email;
     private String username;

@@ -1,6 +1,5 @@
 package org.example.security;
 
-
 import lombok.Data;
 
 @Data

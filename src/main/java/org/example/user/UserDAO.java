@@ -5,14 +5,11 @@ import org.jooq.impl.DSL;
 import org.mindrot.jbcrypt.BCrypt;
 
 import static org.jooq.codegen.maven.example.Tables.USERS;
-
 public class UserDAO {
     private final DSLContext dslContext;
-
     public UserDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
-
     public boolean userExists(String username, String email) {
         return dslContext.fetchExists(
                 DSL.selectOne()
@@ -20,7 +17,6 @@ public class UserDAO {
                         .where(USERS.USERNAME.eq(username).or(USERS.EMAIL.eq(email)))
         );
     }
-
 
     public void insertUser(String username, String hashedPassword, String email) {
         dslContext.insertInto(USERS)

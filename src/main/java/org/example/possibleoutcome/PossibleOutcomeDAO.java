@@ -39,7 +39,6 @@ public class PossibleOutcomeDAO {
                 outcome.setStatusForOutcomes(StatusForOutcomes.valueOf(record.getValue(POSSIBLE_OUTCOMES.STATUS)));
                 outcomes.add(outcome);
             }
-
         return outcomes;
     }
 
