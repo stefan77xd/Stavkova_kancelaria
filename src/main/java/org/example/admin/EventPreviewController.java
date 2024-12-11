@@ -147,29 +147,30 @@ public class EventPreviewController {
     }
 
 
-    void updateUserStats(Set<Integer> userIds) throws SQLException {
+    public void updateUserStats(Set<Integer> userIds) throws SQLException {
         for (Integer userId : userIds) {
 
             var userTickets = ticketDAO.fetchTicketsForUser(userId);
 
-            int totalTickets = userTickets.size();
-            int wonTickets = 0;
+            BigDecimal totalTickets = new BigDecimal(userTickets.size());
+            System.out.println(userTickets.size());
+            BigDecimal wonTickets = BigDecimal.ZERO;
             BigDecimal totalWinnings = BigDecimal.ZERO;
-
+            int counter = 0;
             for (var ticket : userTickets) {
                 if (ticket.getStatus().equals(StatusForTicket.won.name())) {
-                    wonTickets++;
+                    wonTickets = wonTickets.add(BigDecimal.ONE); // Store the result of add
                     var outcome = possibleOutcomeDAO.getTicketOutcome(ticket.getOutcomeId());
-
+                    counter++;
                     totalWinnings = totalWinnings.add(ticket.getStake().multiply(outcome.getOdds()));
                 }
             }
-
+            System.out.println(counter);
             // Calculate win rate
-            double winRate = (totalTickets > 0) ? (double) wonTickets / totalTickets : 0.0;
+            BigDecimal winRate = (totalTickets.compareTo(BigDecimal.ZERO) > 0) ? wonTickets.divide(totalTickets, 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
 
             // Round win rate to 2 decimal places
-            BigDecimal roundedWinRate = BigDecimal.valueOf(winRate).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal roundedWinRate = winRate.setScale(2, RoundingMode.HALF_UP);
 
             userDAO.updateWinRateAndTotalWinnings(roundedWinRate, totalWinnings, userId);
         }

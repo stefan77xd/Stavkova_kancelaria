@@ -2,13 +2,15 @@ package org.example.user;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class User {
-    private long userId;
+    private Integer userId;
     private String username;
     private String password;
     private String email;
-    private double balance;
+    private BigDecimal balance;
     private Role role;
     }
 

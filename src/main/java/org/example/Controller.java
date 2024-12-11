@@ -115,10 +115,10 @@ public class Controller {
             return;
         }
 
-        var userId = Auth.INSTANCE.getPrincipal().getId().intValue();
+        var userId = Auth.INSTANCE.getPrincipal().getId();
                 BigDecimal currentBalance = userDAO.getBalance(userId);
                 if (currentBalance != null) {
-                    Auth.INSTANCE.getPrincipal().setBalance(currentBalance.doubleValue()); // Aktualizácia balansu v Auth
+                    Auth.INSTANCE.getPrincipal().setBalance(currentBalance); // Aktualizácia balansu v Auth
                     loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
                 } else {
                     loginoruser.setText("Nepodarilo sa načítať zostatok.");

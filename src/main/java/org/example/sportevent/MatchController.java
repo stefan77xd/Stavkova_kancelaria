@@ -199,8 +199,9 @@ public class MatchController {
 
             placeBetButton.setOnAction(event -> {
                     if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
-                        double betAmount = Double.parseDouble(betAmountField.getText());
-                        if (betAmount <= Auth.INSTANCE.getPrincipal().getBalance() && betAmount != 0) {
+                        BigDecimal betAmount = new BigDecimal(betAmountField.getText()); // Replace with your actual bet amount
+                        BigDecimal balance = Auth.INSTANCE.getPrincipal().getBalance();
+                        if (betAmount.compareTo(balance) <= 0 && betAmount.compareTo(BigDecimal.ZERO) != 0) {
                             if (!LocalDateTime.now().isAfter(sportEvent.getStartTime())) {
                                 try {
                                     placeBet(betAmount);
@@ -234,15 +235,15 @@ public class MatchController {
         }
     }
 
-    private void placeBet(double betAmount) throws SQLException {
+    private void placeBet(BigDecimal betAmount) throws SQLException {
         Principal principal = Auth.INSTANCE.getPrincipal();
-        Long userID = principal.getId();
+        Integer userID = principal.getId();
 
-            userDAO.updateBalanceAndStat(userID.intValue(), betAmount);
+            userDAO.updateBalanceAndStat(userID, betAmount);
             userDAO.updateStatistics();
-            ticketDAO.insertTicket(userID.intValue(), (int) selectedOutcome.getOutcomeId(), betAmount);
+            ticketDAO.insertTicket(userID, (int) selectedOutcome.getOutcomeId(), betAmount);
 
-        Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance() - betAmount);
+        Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance().subtract(betAmount));
         userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
         if (mainController != null) {
             mainController.updateBalance();

@@ -50,7 +50,7 @@ public class TicketDAO {
                 ticket.setUserId(record.get(TICKETS.USER_ID));
                 ticket.setOutcomeId(record.get(TICKETS.OUTCOME_ID));
                 ticket.setStatus(StatusForTicket.valueOf(String.valueOf(record.get("ticket_status"))));
-                ticket.setStake(record.get(TICKETS.STAKE).doubleValue());
+                ticket.setStake(record.get(TICKETS.STAKE));
 
                 ticket.setResultName(String.valueOf(record.get("outcome_name")));
                 ticket.setEventName(String.valueOf(record.get("event_name")));
@@ -60,11 +60,11 @@ public class TicketDAO {
         return tickets;
     }
 
-    public void insertTicket(int userID, int outcomeID, double betAmount) {
+    public void insertTicket(int userID, int outcomeID, BigDecimal betAmount) {
         dslContext.insertInto(TICKETS)
                 .set(TICKETS.USER_ID, userID)
                 .set(TICKETS.OUTCOME_ID, outcomeID)
-                .set(TICKETS.STAKE, BigDecimal.valueOf(betAmount))
+                .set(TICKETS.STAKE, betAmount)
                 .set(TICKETS.STATUS, StatusForTicket.pending.name())
                 .execute();
     }
@@ -78,7 +78,7 @@ public class TicketDAO {
 
     public void updateTicketStatusToLost(int ticketID) {
         dslContext.update(TICKETS)
-                .set(TICKETS.STATUS, StatusForTicket.won.name())
+                .set(TICKETS.STATUS, StatusForTicket.lost.name())
                 .where(TICKETS.TICKET_ID.eq(ticketID))
                 .execute();
     }

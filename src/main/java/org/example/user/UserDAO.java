@@ -54,20 +54,20 @@ public class UserDAO {
                 .execute();
     }
 
-    public void updateBalanceAndStat(int userID, double betAmount) {
+    public void updateBalanceAndStat(int userID, BigDecimal betAmount) {
         dslContext.update(USERS)
-                .set(USERS.BALANCE, USERS.BALANCE.minus(BigDecimal.valueOf(betAmount)))
+                .set(USERS.BALANCE, USERS.BALANCE.minus(betAmount))
                 .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
                 .set(USERS.MAX_BET,
-                        DSL.when(USERS.MAX_BET.lessThan(BigDecimal.valueOf(betAmount)), BigDecimal.valueOf(betAmount))
+                        DSL.when(USERS.MAX_BET.lessThan(betAmount), betAmount)
                                 .otherwise(USERS.MAX_BET))
-                .set(USERS.TOTAL_STAKES, USERS.TOTAL_STAKES.plus(BigDecimal.valueOf(betAmount)))
+                .set(USERS.TOTAL_STAKES, USERS.TOTAL_STAKES.plus(betAmount))
 
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
     }
 
-    public void addBalance(int userID, double amountValue) {
+    public void addBalance(int userID, BigDecimal amountValue) {
         dslContext.update(USERS)
                 .set(USERS.BALANCE, USERS.BALANCE.plus(amountValue))
                 .where(USERS.USER_ID.eq(userID))

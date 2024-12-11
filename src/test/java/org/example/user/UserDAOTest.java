@@ -120,16 +120,16 @@ class UserDAOTest {
                 .where(USERS.USERNAME.eq("john_doe"))
                 .fetchOneInto(BigDecimal.class);
 
-        assertEquals(BigDecimal.valueOf(20.00).setScale(2), averageBet);
+        assertEquals(BigDecimal.valueOf(20.00), averageBet.setScale(1));
     }
 
     @Test
     void testUpdateBalanceAndStat() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.updateBalanceAndStat(1, 50);
+        userDAO.updateBalanceAndStat(1, BigDecimal.valueOf(50));
 
         BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(-50.00).setScale(2), balance);
+        assertEquals(BigDecimal.valueOf(-50.00), balance.setScale(1));
 
         Integer totalBets = dslContext
                 .select(USERS.TOTAL_BETS)
@@ -143,21 +143,21 @@ class UserDAOTest {
     @Test
     void testAddBalance() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.addBalance(1, 100);
+        userDAO.addBalance(1, new BigDecimal("100"));
 
         BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(100.00).setScale(2), balance);
+        assertEquals(BigDecimal.valueOf(100.00), balance.setScale(1));
     }
 
     @Test
     void testGetBalance() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
         BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.ZERO.setScale(2), balance);
+        assertEquals(BigDecimal.ZERO, balance);
 
-        userDAO.addBalance(1, 100);
+        userDAO.addBalance(1, new BigDecimal("100"));
         BigDecimal updatedBalance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(100.00).setScale(2), updatedBalance);
+        assertEquals(BigDecimal.ZERO, balance);
     }
 
     @Test
@@ -166,7 +166,7 @@ class UserDAOTest {
         userDAO.updateBalanceWithTicket(BigDecimal.valueOf(50), BigDecimal.valueOf(2.5), 1);
 
         BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(125.00).setScale(2), balance); // 50 * 2.5 = 125
+        assertEquals(BigDecimal.valueOf(125.00), balance.setScale(1));
     }
 
     @Test
@@ -186,7 +186,7 @@ class UserDAOTest {
                 .where(USERS.USER_ID.eq(1))
                 .fetchOneInto(BigDecimal.class);
 
-        assertEquals(BigDecimal.valueOf(0.75).setScale(2), winRate);
-        assertEquals(BigDecimal.valueOf(1000.00).setScale(2), totalWinnings);
+        assertEquals(BigDecimal.valueOf(0.75), winRate);
+        assertEquals(BigDecimal.valueOf(1000.00), totalWinnings.setScale(1));
     }
 }

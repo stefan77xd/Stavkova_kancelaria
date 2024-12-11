@@ -37,11 +37,11 @@ public class SQLiteAuthDAO implements AuthDao {
             }
             String role = record.getValue(USERS.ROLE);
             Principal principal = new Principal();
-            principal.setId(Long.valueOf(record.getValue(USERS.USER_ID)));
+            principal.setId((record.getValue(USERS.USER_ID)));
             principal.setEmail(record.getValue(USERS.EMAIL));
             principal.setUsername(record.getValue(USERS.USERNAME));
             principal.setRole(Role.valueOf(role.toLowerCase()));
-            principal.setBalance(record.getValue(USERS.BALANCE).doubleValue());
+            principal.setBalance(record.getValue(USERS.BALANCE));
 
             principalWithPassword = new PrincipalWithPassword();
             principalWithPassword.setPrincipal(principal);

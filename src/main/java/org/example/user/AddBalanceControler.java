@@ -13,6 +13,7 @@ import org.example.security.Auth;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ public class AddBalanceControler {
 
     @FXML
     private TextField amount;
-    public long UserID;
+    public Integer UserID;
     @FXML
     private TextField bonusCode;
 
@@ -55,13 +56,13 @@ public class AddBalanceControler {
     @FXML
     void submit(ActionEvent event) {
         if (!pridanie) {
-            double amountValue = Double.parseDouble(amount.getText());
-            if (amountValue > 0) {
+            BigDecimal amountValue = new BigDecimal(amount.getText());
+            if (amountValue.compareTo(BigDecimal.ZERO) > 0) {
                 if (bonusCode.getText().equals("lukas10")) {
-                    amountValue = amountValue * 1.1;
+                    amountValue = amountValue.multiply(new BigDecimal("1.1"));
                 }
                 if (bonusCode.getText().equals("SK10")) {
-                    amountValue = amountValue * 10;
+                    amountValue = amountValue.multiply(new BigDecimal("10"));
                 }
 
                 userDAO.addBalance(((int) UserID), amountValue);
