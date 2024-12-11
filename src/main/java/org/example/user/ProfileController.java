@@ -89,11 +89,11 @@ public class ProfileController {
                     menoHeslo1.setDisable(true);
                     menoHeslo2.setDisable(true);
                     tlacidloPotvrd.setDisable(true);
-                    menoHeslo2.clear();
-                    menoHeslo1.clear();
                     Auth.INSTANCE.getPrincipal().setUsername(menoHeslo1.getText());
                     userName.setText(Auth.INSTANCE.getPrincipal().getUsername());
                     controller.onLoginSuccess();
+                    menoHeslo2.clear();
+                    menoHeslo1.clear();
                 }
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
