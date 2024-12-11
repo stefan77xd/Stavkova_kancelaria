@@ -152,25 +152,20 @@ public class EventPreviewController {
 
             var userTickets = ticketDAO.fetchTicketsForUser(userId);
 
-            BigDecimal totalTickets = new BigDecimal(userTickets.size());
-            System.out.println(userTickets.size());
-            BigDecimal wonTickets = BigDecimal.ZERO;
-            BigDecimal totalWinnings = BigDecimal.ZERO;
-            int counter = 0;
+            Double totalTickets = (double) userTickets.size();
+            Double wonTickets = 0.0;
+            Double totalWinnings = 0.0;
             for (var ticket : userTickets) {
                 if (ticket.getStatus().equals(StatusForTicket.won.name())) {
-                    wonTickets = wonTickets.add(BigDecimal.ONE); // Store the result of add
+                    wonTickets++; // Store the result of add
                     var outcome = possibleOutcomeDAO.getTicketOutcome(ticket.getOutcomeId());
-                    counter++;
-                    totalWinnings = totalWinnings.add(ticket.getStake().multiply(outcome.getOdds()));
+                    totalWinnings += ticket.getStake() * outcome.getOdds();
                 }
             }
-            System.out.println(counter);
-            // Calculate win rate
-            BigDecimal winRate = (totalTickets.compareTo(BigDecimal.ZERO) > 0) ? wonTickets.divide(totalTickets, 2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+            Double winRate = (totalTickets > 0) ? wonTickets=wonTickets/totalTickets : 0.0;
 
             // Round win rate to 2 decimal places
-            BigDecimal roundedWinRate = winRate.setScale(2, RoundingMode.HALF_UP);
+            Double roundedWinRate = Math.round(winRate * 100.0) / 100.0;
 
             userDAO.updateWinRateAndTotalWinnings(roundedWinRate, totalWinnings, userId);
         }

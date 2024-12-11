@@ -12,6 +12,6 @@ public class Principal {
     private String email;
     private String username;
     private Role role;
-    private BigDecimal balance;
+    private Double balance;
 
 }

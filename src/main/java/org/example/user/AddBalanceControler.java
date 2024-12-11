@@ -56,16 +56,16 @@ public class AddBalanceControler {
     @FXML
     void submit(ActionEvent event) {
         if (!pridanie) {
-            BigDecimal amountValue = new BigDecimal(amount.getText());
-            if (amountValue.compareTo(BigDecimal.ZERO) > 0) {
+            Double amountValue = Double.valueOf(amount.getText());
+            if (amountValue > 0) {
                 if (bonusCode.getText().equals("lukas10")) {
-                    amountValue = amountValue.multiply(new BigDecimal("1.1"));
+                    amountValue = amountValue * 1.1;
                 }
                 if (bonusCode.getText().equals("SK10")) {
-                    amountValue = amountValue.multiply(new BigDecimal("10"));
+                    amountValue = amountValue * 10;
                 }
 
-                userDAO.addBalance(((int) UserID), amountValue);
+                userDAO.addBalance((UserID), amountValue);
                 pridanie = true;
 
                 if (mainController != null) {

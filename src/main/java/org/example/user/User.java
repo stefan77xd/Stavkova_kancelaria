@@ -10,7 +10,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private BigDecimal balance;
+    private Double balance;
     private Role role;
     }
 

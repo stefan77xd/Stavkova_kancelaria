@@ -20,7 +20,7 @@ public class PossibleOutcomeDAO {
 
     public List<PossibleOutcome> getPossibleOutcomesByEventId(long eventId) {
         List<PossibleOutcome> outcomes = new ArrayList<>();
-            Result<Record5<Integer, Integer, String, BigDecimal, String>> result =
+            Result<Record5<Integer, Integer, String, Double, String>> result =
                     dslContext.select(
                                     POSSIBLE_OUTCOMES.OUTCOME_ID,
                                     POSSIBLE_OUTCOMES.EVENT_ID,
@@ -55,7 +55,7 @@ public class PossibleOutcomeDAO {
     public void createPossibleOutcome(int eventID, String resultField, String oddsField) {
         dslContext.insertInto(POSSIBLE_OUTCOMES)
                 .columns(POSSIBLE_OUTCOMES.EVENT_ID, POSSIBLE_OUTCOMES.RESULT_NAME, POSSIBLE_OUTCOMES.ODDS, POSSIBLE_OUTCOMES.STATUS)
-                .values(eventID, resultField, BigDecimal.valueOf(Double.parseDouble(oddsField)), StatusForOutcomes.upcoming.name())
+                .values(eventID, resultField, Double.valueOf(oddsField), StatusForOutcomes.upcoming.name())
                 .execute();
     }
 

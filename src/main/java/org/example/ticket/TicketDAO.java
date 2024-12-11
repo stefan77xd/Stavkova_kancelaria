@@ -24,7 +24,7 @@ public class TicketDAO {
         List<Ticket> tickets = new ArrayList<>();
 
             // Fetch data from the SQLite tickets table
-            Result<Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(
+            Result<Record11<Integer, Integer, Integer, String, Double, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(
                             TICKETS.TICKET_ID,
                             TICKETS.USER_ID,
                             TICKETS.OUTCOME_ID,
@@ -43,7 +43,7 @@ public class TicketDAO {
                     .where(TICKETS.USER_ID.eq(userId))
                     .fetch();
 
-            for (Record11<Integer, Integer, Integer, String, BigDecimal, String, Integer, String, LocalDateTime, String, String> record : result) {
+            for (Record11<Integer, Integer, Integer, String, Double, String, Integer, String, LocalDateTime, String, String> record : result) {
                 Ticket ticket = new Ticket();
 
                 ticket.setTicketId(record.get(TICKETS.TICKET_ID));
@@ -60,7 +60,7 @@ public class TicketDAO {
         return tickets;
     }
 
-    public void insertTicket(int userID, int outcomeID, BigDecimal betAmount) {
+    public void insertTicket(int userID, int outcomeID, Double betAmount) {
         dslContext.insertInto(TICKETS)
                 .set(TICKETS.USER_ID, userID)
                 .set(TICKETS.OUTCOME_ID, outcomeID)

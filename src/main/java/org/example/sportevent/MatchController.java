@@ -199,9 +199,9 @@ public class MatchController {
 
             placeBetButton.setOnAction(event -> {
                     if (selectedOdds.get()!= 0 && !betAmountField.getText().isEmpty() && !betAmountField.getText().equals(".")) {
-                        BigDecimal betAmount = new BigDecimal(betAmountField.getText()); // Replace with your actual bet amount
-                        BigDecimal balance = Auth.INSTANCE.getPrincipal().getBalance();
-                        if (betAmount.compareTo(balance) <= 0 && betAmount.compareTo(BigDecimal.ZERO) != 0) {
+                        Double betAmount = Double.valueOf(betAmountField.getText()); // Replace with your actual bet amount
+                        Double balance = Auth.INSTANCE.getPrincipal().getBalance();
+                        if (betAmount <= balance && betAmount >= 0) {
                             if (!LocalDateTime.now().isAfter(sportEvent.getStartTime())) {
                                 try {
                                     placeBet(betAmount);
@@ -235,7 +235,7 @@ public class MatchController {
         }
     }
 
-    private void placeBet(BigDecimal betAmount) throws SQLException {
+    private void placeBet(Double betAmount) throws SQLException {
         Principal principal = Auth.INSTANCE.getPrincipal();
         Integer userID = principal.getId();
 
@@ -243,7 +243,7 @@ public class MatchController {
             userDAO.updateStatistics();
             ticketDAO.insertTicket(userID, (int) selectedOutcome.getOutcomeId(), betAmount);
 
-        Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance().subtract(betAmount));
+        Auth.INSTANCE.getPrincipal().setBalance(Auth.INSTANCE.getPrincipal().getBalance() - betAmount);
         userInfo.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
         if (mainController != null) {
             mainController.updateBalance();

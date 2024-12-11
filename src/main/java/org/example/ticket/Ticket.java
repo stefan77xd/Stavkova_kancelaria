@@ -16,7 +16,7 @@ public class Ticket {
     private Integer userId;
     private Integer outcomeId;
     private StatusForTicket status;
-    private BigDecimal stake;
+    private Double stake;
     private String resultName;
     private String eventName;
     private LocalDateTime eventStartTime;

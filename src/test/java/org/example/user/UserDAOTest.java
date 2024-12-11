@@ -107,7 +107,7 @@ class UserDAOTest {
         // Update the total_bets and total_stakes using the dslContext
         dslContext.update(USERS)
                 .set(USERS.TOTAL_BETS, 10)
-                .set(USERS.TOTAL_STAKES, BigDecimal.valueOf(200))
+                .set(USERS.TOTAL_STAKES, 200.0)
                 .where(USERS.USERNAME.eq("john_doe"))
                 .execute();
 
@@ -126,10 +126,10 @@ class UserDAOTest {
     @Test
     void testUpdateBalanceAndStat() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.updateBalanceAndStat(1, BigDecimal.valueOf(50));
+        userDAO.updateBalanceAndStat(1, 50.0);
 
-        BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(-50.00), balance.setScale(1));
+        Double balance = userDAO.getBalance(1);
+        assertEquals(-50.00, balance);
 
         Integer totalBets = dslContext
                 .select(USERS.TOTAL_BETS)
@@ -143,36 +143,36 @@ class UserDAOTest {
     @Test
     void testAddBalance() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.addBalance(1, new BigDecimal("100"));
+        userDAO.addBalance(1, 100.0);
 
-        BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(100.00), balance.setScale(1));
+        Double balance = userDAO.getBalance(1);
+        assertEquals(100.00, balance);
     }
 
     @Test
     void testGetBalance() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.ZERO, balance);
+        Double balance = userDAO.getBalance(1);
+        assertEquals(0.0, balance);
 
-        userDAO.addBalance(1, new BigDecimal("100"));
-        BigDecimal updatedBalance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.ZERO, balance);
+        userDAO.addBalance(1, 100.0);
+        Double updatedBalance = userDAO.getBalance(1);
+        assertEquals(0.0, balance);
     }
 
     @Test
     void testUpdateBalanceWithTicket() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.updateBalanceWithTicket(BigDecimal.valueOf(50), BigDecimal.valueOf(2.5), 1);
+        userDAO.updateBalanceWithTicket(50.0, 2.5, 1);
 
-        BigDecimal balance = userDAO.getBalance(1);
-        assertEquals(BigDecimal.valueOf(125.00), balance.setScale(1));
+        Double balance = userDAO.getBalance(1);
+        assertEquals(125.00, balance);
     }
 
     @Test
     void testUpdateWinRateAndTotalWinnings() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-        userDAO.updateWinRateAndTotalWinnings(BigDecimal.valueOf(0.75), BigDecimal.valueOf(1000), 1);
+        userDAO.updateWinRateAndTotalWinnings(0.75, 1000.0, 1);
 
         BigDecimal winRate = dslContext
                 .select(USERS.WIN_RATE)

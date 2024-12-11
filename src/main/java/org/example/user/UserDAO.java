@@ -29,7 +29,7 @@ public class UserDAO {
                 .set(USERS.USERNAME, username)
                 .set(USERS.PASSWORD, hashedPassword)
                 .set(USERS.EMAIL, email)
-                .set(USERS.BALANCE, BigDecimal.ZERO)
+                .set(USERS.BALANCE, 0.0)
                 .set(USERS.ROLE, "user")
                 .execute();
     }
@@ -48,13 +48,13 @@ public class UserDAO {
                         DSL.case_()
                                 .when(USERS.TOTAL_BETS.isNotNull().and(USERS.TOTAL_BETS.gt(0)),
                                         DSL.round(
-                                                USERS.TOTAL_STAKES.cast(BigDecimal.class).divide(USERS.TOTAL_BETS.cast(BigDecimal.class))
+                                                USERS.TOTAL_STAKES.cast(Double.class).divide(USERS.TOTAL_BETS.cast(Double.class))
                                         ))
-                                .otherwise(DSL.val(BigDecimal.ZERO)))
+                                .otherwise(DSL.val(0.0)))
                 .execute();
     }
 
-    public void updateBalanceAndStat(int userID, BigDecimal betAmount) {
+    public void updateBalanceAndStat(int userID, Double betAmount) {
         dslContext.update(USERS)
                 .set(USERS.BALANCE, USERS.BALANCE.minus(betAmount))
                 .set(USERS.TOTAL_BETS, USERS.TOTAL_BETS.plus(1))
@@ -67,28 +67,28 @@ public class UserDAO {
                 .execute();
     }
 
-    public void addBalance(int userID, BigDecimal amountValue) {
+    public void addBalance(int userID, Double amountValue) {
         dslContext.update(USERS)
                 .set(USERS.BALANCE, USERS.BALANCE.plus(amountValue))
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
     }
 
-    public BigDecimal getBalance(int userID) {
+    public Double getBalance(int userID) {
         return dslContext.select(USERS.BALANCE)
                 .from(USERS)
                 .where(USERS.USER_ID.eq(userID))
-                .fetchOneInto(BigDecimal.class);
+                .fetchOneInto(Double.class);
     }
 
-    public void updateBalanceWithTicket(BigDecimal stake, BigDecimal odds, int userID) {
+    public void updateBalanceWithTicket(Double stake, Double odds, int userID) {
         dslContext.update(USERS)
-                .set(USERS.BALANCE, USERS.BALANCE.plus(stake.multiply(odds)))
+                .set(USERS.BALANCE, USERS.BALANCE.plus(stake * odds))
                 .where(USERS.USER_ID.eq(userID))
                 .execute();
     }
 
-    public void updateWinRateAndTotalWinnings(BigDecimal roundedWinRate, BigDecimal totalWinnings, int userID) {
+    public void updateWinRateAndTotalWinnings(Double roundedWinRate, Double totalWinnings, int userID) {
         dslContext.update(USERS)
                 .set(USERS.WIN_RATE, roundedWinRate)
                 .set(USERS.TOTAL_WINNINGS, totalWinnings)
