@@ -4,6 +4,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record11;
 import org.jooq.Result;
 import org.jooq.codegen.maven.example.tables.records.TicketsRecord;
+import org.jooq.impl.DSL;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,12 +56,31 @@ public class TicketDAO {
     }
 
     public void insertTicket(int userID, int outcomeID, Double betAmount) {
-        dslContext.insertInto(TICKETS)
-                .set(TICKETS.USER_ID, userID)
-                .set(TICKETS.OUTCOME_ID, outcomeID)
-                .set(TICKETS.STAKE, betAmount)
-                .set(TICKETS.STATUS, StatusForTicket.pending.name())
-                .execute();
+        boolean userExists = dslContext.fetchExists(
+                DSL.selectOne()
+                        .from(USERS)
+                        .where(USERS.USER_ID.eq(userID))
+        );
+
+        boolean outcomeExists = dslContext.fetchExists(
+                DSL.selectOne()
+                        .from(POSSIBLE_OUTCOMES)
+                        .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
+        );
+
+        if (userExists && outcomeExists) {
+            dslContext.insertInto(TICKETS)
+                    .set(TICKETS.USER_ID, userID)
+                    .set(TICKETS.OUTCOME_ID, outcomeID)
+                    .set(TICKETS.STAKE, betAmount)
+                    .set(TICKETS.STATUS, StatusForTicket.pending.name())
+                    .execute();
+        } else {
+            if (!userExists) {
+                throw new IllegalArgumentException("User s týmto ID neexistuje.");
+            }
+            throw new IllegalArgumentException("Outcome s týmto ID neexistuje.");
+        }
     }
 
     public void updateTicketStatusToWon(int ticketID) {
@@ -77,7 +97,7 @@ public class TicketDAO {
                 .execute();
     }
 
-    public Result<TicketsRecord> fetchTicketsRealtedToEvent(int evnetID) {
+    public Result<TicketsRecord> fetchTicketsRelatedToEvent(int evnetID) {
         return dslContext.select(TICKETS.fields())
                 .from(TICKETS)
                 .join(POSSIBLE_OUTCOMES)

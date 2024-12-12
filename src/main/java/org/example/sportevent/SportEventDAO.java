@@ -5,8 +5,10 @@ import org.jooq.Record;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.codegen.maven.example.Tables;
+import org.jooq.impl.DSL;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,17 +49,41 @@ public class SportEventDAO {
     }
 
     public int createEvent(String eventName, String startTime, String sportType) {
-        return dslContext.insertInto(Tables.SPORT_EVENTS)
-                .set(Tables.SPORT_EVENTS.EVENT_NAME, eventName)
-                .set(Tables.SPORT_EVENTS.START_TIME, LocalDateTime.parse(startTime))
-                .set(Tables.SPORT_EVENTS.SPORT_TYPE, sportType)
-                .set(Tables.SPORT_EVENTS.STATUS, StatusForEvent.upcoming.name())
-                .returning(Tables.SPORT_EVENTS.EVENT_ID)
-                .fetchOne()
-                .getValue(Tables.SPORT_EVENTS.EVENT_ID);
+        if (eventName == null || eventName.isEmpty()) {
+            throw new IllegalArgumentException("Neplatný názov eventu");
+        }
+        if (startTime == null || startTime.isEmpty()) {
+            throw new IllegalArgumentException("Neplatný čas eventu");
+        }
+        if (sportType == null || sportType.isEmpty()) {
+            throw new IllegalArgumentException("Neplatný športový typ");
+        }
+
+        try {
+            LocalDateTime parsedStartTime = LocalDateTime.parse(startTime);
+            return dslContext.insertInto(Tables.SPORT_EVENTS)
+                    .set(Tables.SPORT_EVENTS.EVENT_NAME, eventName)
+                    .set(Tables.SPORT_EVENTS.START_TIME, parsedStartTime)
+                    .set(Tables.SPORT_EVENTS.SPORT_TYPE, sportType)
+                    .set(Tables.SPORT_EVENTS.STATUS, StatusForEvent.upcoming.name())
+                    .returning(Tables.SPORT_EVENTS.EVENT_ID)
+                    .fetchOne()
+                    .getValue(Tables.SPORT_EVENTS.EVENT_ID);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Neplatný formát dátumu", e);
+        }
     }
 
     public void updateEventStatus(int eventID) {
+        boolean eventExists = dslContext.fetchExists(
+                DSL.selectOne().from(Tables.SPORT_EVENTS)
+                        .where(Tables.SPORT_EVENTS.EVENT_ID.eq(eventID))
+        );
+
+        if (!eventExists) {
+            throw new IllegalArgumentException("Event nebol nájdený");
+        }
+
         dslContext.update(Tables.SPORT_EVENTS)
                 .set(Tables.SPORT_EVENTS.STATUS, StatusForEvent.finished.name())
                 .where(Tables.SPORT_EVENTS.EVENT_ID.eq(eventID))

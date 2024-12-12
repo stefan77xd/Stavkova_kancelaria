@@ -59,7 +59,7 @@ public class EventPreviewController {
                 }
             }
             sportEventDAO.updateEventStatus(sportEvent.getEventId());
-            var tickets = ticketDAO.fetchTicketsRealtedToEvent(sportEvent.getEventId());
+            var tickets = ticketDAO.fetchTicketsRelatedToEvent(sportEvent.getEventId());
 
             Set<Integer> affectedUserIds = new HashSet<>();
 

@@ -105,14 +105,12 @@ class UserDAOTest {
     void testUpdateStatistics() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
 
-        // Update the total_bets and total_stakes using the dslContext
         dslContext.update(USERS)
                 .set(USERS.TOTAL_BETS, 10)
                 .set(USERS.TOTAL_STAKES, 200.0)
                 .where(USERS.USERNAME.eq("john_doe"))
                 .execute();
 
-        // Call updateStatistics to calculate and update average_bet
         userDAO.updateStatistics();
 
         BigDecimal averageBet = dslContext
@@ -158,7 +156,7 @@ class UserDAOTest {
 
         userDAO.addBalance(1, 100.0);
         Double updatedBalance = userDAO.getBalance(1);
-        assertEquals(0.0, balance);
+        assertEquals(100.0, updatedBalance);
     }
 
     @Test
@@ -193,7 +191,6 @@ class UserDAOTest {
 
     @Test
     void testInsertUserWithEmptyUsername() {
-        // Trying to insert a user with an empty username
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.insertUser("", "hashedpassword", "test@example.com");
         });
@@ -201,7 +198,6 @@ class UserDAOTest {
 
     @Test
     void testInsertUserWithEmptyEmail() {
-        // Trying to insert a user with an empty email
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.insertUser("jane_doe", "hashedpassword", "");
         });
@@ -209,7 +205,6 @@ class UserDAOTest {
 
     @Test
     void testInsertUserWithNullUsername() {
-        // Trying to insert a user with a null username
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.insertUser(null, "hashedpassword", "test@example.com");
         });
@@ -217,7 +212,6 @@ class UserDAOTest {
 
     @Test
     void testInsertUserWithNullEmail() {
-        // Trying to insert a user with a null email
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.insertUser("jane_doe", "hashedpassword", null);
         });
@@ -255,7 +249,6 @@ class UserDAOTest {
     void testUpdateBalanceWithZeroAmount() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
 
-        // Update balance to 0
         userDAO.updateBalanceAndStat(1, 0.0);
 
         Double balance = userDAO.getBalance(1);
@@ -275,7 +268,6 @@ class UserDAOTest {
     void testAddBalanceWithZeroAmount() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
 
-        // Add zero balance
         userDAO.addBalance(1, 0.0);
 
         Double balance = userDAO.getBalance(1);
@@ -285,7 +277,6 @@ class UserDAOTest {
     @Test
     void testAddBalanceWithNullAmount() {
         userDAO.insertUser("john_doe", "password", "john@example.com");
-
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.addBalance(1, null);
         });
@@ -293,7 +284,6 @@ class UserDAOTest {
 
     @Test
     void testFindEmailWithEmptyEmail() {
-        // Trying to find a user by an empty email
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.findEmail("");
         });
@@ -301,7 +291,6 @@ class UserDAOTest {
 
     @Test
     void testFindEmailWithNullEmail() {
-        // Trying to find a user by a null email
         assertThrows(IllegalArgumentException.class, () -> {
             userDAO.findEmail(null);
         });
