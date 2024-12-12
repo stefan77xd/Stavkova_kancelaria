@@ -36,12 +36,12 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </TextField>
-            <Button mnemonicParsing="false" onAction="#changeUsername" styleClass="profileButton" text="Zmena používateľského mena">
+            <Button fx:id="changeUsernameButton" mnemonicParsing="false" onAction="#changeUsername" styleClass="profileButton" text="Zmena používateľského mena">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button mnemonicParsing="false" onAction="#changePassword" styleClass="profileButton" text="Zmena hesla">
+            <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#changePassword" styleClass="profileButton" text="Zmena hesla">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -49,7 +49,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#deleteAccount" styleClass="profileButton" text="Zmazať účet">
+            <Button fx:id="deleteAccountButton" mnemonicParsing="false" onAction="#deleteAccount" styleClass="profileButton" text="Zmazať účet">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

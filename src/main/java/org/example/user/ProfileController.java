@@ -17,12 +17,23 @@ public class ProfileController {
 
     public Controller controller;
 
+    @FXML
+    private Button changePasswordButton;
+
+    @FXML
+    private Button changeUsernameButton;
+
+    @FXML
+    private Button deleteAccountButton;
 
     @FXML
     void changePassword(ActionEvent event) {
+        deleteAccountButton.setDisable(true);
+        changeUsernameButton.setDisable(true);
         menoHeslo1.setDisable(false);
         menoHeslo2.setDisable(false);
         tlacidloPotvrd.setDisable(false);
+
         meno = false;
 
     }
@@ -40,6 +51,8 @@ public class ProfileController {
 
     @FXML
     void changeUsername(ActionEvent event) {
+        deleteAccountButton.setDisable(true);
+        changePasswordButton.setDisable(true);
         menoHeslo1.setDisable(false);
         menoHeslo2.setDisable(false);
         tlacidloPotvrd.setDisable(false);
@@ -74,6 +87,9 @@ public class ProfileController {
 
     @FXML
     void submit(ActionEvent event) {
+        changePasswordButton.setDisable(false);
+        changeUsernameButton.setDisable(false);
+        deleteAccountButton.setDisable(false);
         if (meno) {
             if (menoHeslo1.getText().equals(menoHeslo2.getText())) {
                 int userID = Auth.INSTANCE.getPrincipal().getId();
