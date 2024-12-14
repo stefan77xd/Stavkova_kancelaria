@@ -6,10 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.sportevent.SportEventDAO;
@@ -17,7 +17,6 @@ import org.example.sportevent.SportEventDAO;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 public class AddSportController {
 
@@ -37,6 +36,7 @@ public class AddSportController {
     private VBox oddsFieldsContainer;
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
     private final PossibleOutcomeDAO possibleOutcomeDAO = Factory.INSTANCE.getPossibleOutcomeDAO();
+    private final AlertFactory A = new AlertFactory();
     public void initialize() {
         resultFieldsContainer.setSpacing(10);
         oddsFieldsContainer.setSpacing(10);
@@ -86,9 +86,17 @@ public class AddSportController {
     void Add(ActionEvent event) {
             LocalDate date = DatePicker.getValue();
             if (date == null) {
-                throw new IllegalArgumentException("Dátum nesmie byť prázdny.");
+                A.showAlert("Upozornenie", "Dátum nesmie byť prázdny.", "warning", Alert.AlertType.WARNING);
+                return;
+            }
+            if (time.getText() == null || time.getText().isEmpty()) {
+                A.showAlert("Upozornenie", "Čas nesmie byť prázdny", "warning", Alert.AlertType.WARNING);
+                return;
             }
             LocalTime parsedTime = parseTime(time.getText());
+            if (parsedTime == null) {
+                return;
+            }
             String startTime = date.atTime(parsedTime).toString();
 
             int eventId = sportEventDAO.createEvent(eventName.getText(), startTime, sportType.getText());
@@ -101,20 +109,7 @@ public class AddSportController {
                     possibleOutcomeDAO.createPossibleOutcome(eventId, resultField.getText(), oddsField.getText());
                 }
             }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Informácia");
-            alert.setHeaderText("Športová udalosť bola pridaná.");
-
-            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-            alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                }
-            });
-            Stage stage1 = (Stage) alert.getDialogPane().getScene().getWindow();
-            stage1.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-            alert.showAndWait();
+        A.showAlert("Informácia", "Športová udalosť bola úspešne pridaná", "success", Alert.AlertType.INFORMATION);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
@@ -129,7 +124,9 @@ public class AddSportController {
         try {
             return LocalTime.parse(timeText, DateTimeFormatter.ofPattern("HH:mm"));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Čas musí byť vo formáte HH:mm (napr. 14:30).");
+            A.showAlert("Upozornenie", "Čas musí byť vo formáte HH:mm.", "warning", Alert.AlertType.WARNING);
+            return null;
         }
     }
+
 }

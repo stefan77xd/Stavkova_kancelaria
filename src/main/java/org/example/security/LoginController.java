@@ -14,6 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.Setter;
+import org.example.AlertFactory;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.admin.AdminController;
@@ -35,6 +36,7 @@ public class LoginController {
     private final AuthDao AuthDao = Factory.INSTANCE.getSqLiteAuthDAO();
     @Setter
     private Controller mainController;
+    private final AlertFactory A = new AlertFactory();
 
     @FXML
     void Login() {
@@ -45,7 +47,6 @@ public class LoginController {
             principal = AuthDao.authenticate(usernameOrEmail, password);
         } catch (AuthenticationException e) {
             countOfAttempts++;
-            System.out.println(countOfAttempts);
             javafx.application.Platform.runLater(this::showAlert);
             recoverMail.setText("Zabudli ste heslo? Obnovte si heslo cez email tu.");
             recoverMail.setStyle("-fx-text-fill: #d22424;");
@@ -125,19 +126,7 @@ public class LoginController {
         }
     }
     private void showAlert() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Pozor!");
-        alert.setHeaderText("Zlé použivateľské meno alebo heslo!");
-        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-            }
-        });
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-        alert.showAndWait();
+        A.showAlert("Pozor", "Zlé používateľské meno, alebo heslo.", "warning", Alert.AlertType.WARNING);
     }
     @FXML
     void openRecoverWindow() {

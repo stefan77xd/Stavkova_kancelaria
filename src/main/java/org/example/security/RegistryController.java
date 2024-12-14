@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.user.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
@@ -26,6 +27,7 @@ public class RegistryController {
     @Setter
     private LoginController loginController;
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+    private final AlertFactory A = new AlertFactory();
     @FXML
     void SubmitValues() {
         String username = RegistryUsernameTextField.getText().trim();
@@ -34,50 +36,29 @@ public class RegistryController {
         String password2 = RegistryPassword2TextField.getText();
 
         if (username.isEmpty() || email.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
-            showAlert("Chyba", "Vyplnte všetky polia");
+            A.showAlert("Chyba", "Vyplnte všetky polia.", "warning", Alert.AlertType.WARNING);
             return;
         }
         if (!isValidEmail(email)) {
-            showAlert("Chyba", "Zadajte platnú e-mailovú adresu.");
+            A.showAlert("Chyba", "Zadajte platnú emailovú adresu.", "warning", Alert.AlertType.WARNING);
             return;
         }
         if (password1.length() < 8) {
-            showAlert("Chyba", "Heslo musí mat najmenej 8 znakov.");
+            A.showAlert("Chyba", "Heslo musí mať aspoň 8 znakov.", "warning", Alert.AlertType.WARNING);
             return;
         }
         if (!password1.equals(password2)) {
-            showAlert("Chyba", "Heslá sa nezhodujú.");
+            A.showAlert("Chyba", "Heslá sa nezhodujú.", "warning", Alert.AlertType.WARNING);
             return;
         }
         if (userDAO.userExists(username, email)) {
-            showAlert("Pozor", "Toto uzivatelske meno alebo email uz existuje.");
+            A.showAlert("Chyba", "Toto používateľské meno, alebo email už existuje.", "warning", Alert.AlertType.WARNING);
             return;
         }
         String hashedPassword = BCrypt.hashpw(password1, BCrypt.gensalt());
         userDAO.insertUser(username, hashedPassword, email);
-        showAlert("Výborne", "Registrácia prebehla v poriadku!");
+        A.showAlert("Výborne", "Registrácia prebehla v poriadku.", "success", Alert.AlertType.INFORMATION);
         closeRegistryView();
-    }
-
-    private void showAlert(String title, String message) {
-        Alert.AlertType alertType = title.equals("Výborne") ? Alert.AlertType.INFORMATION : Alert.AlertType.WARNING;
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(message);
-        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-            }
-        });
-        Stage stage = (Stage) RegistryPassword2TextField.getScene().getWindow();
-        String iconPath = title.equals("Výborne") ? "/icons/success.png" : "/icons/warning.png";
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(iconPath))));
-        alert.showAndWait();
-        if (title.equals("Výborne")) {
-            stage.close();
-        }
     }
 
     private void closeRegistryView() {

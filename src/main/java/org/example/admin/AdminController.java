@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.security.Auth;
 import org.example.sportevent.SportEvent;
@@ -28,6 +29,7 @@ public class AdminController {
     @FXML
     private TabPane tabPane;
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
+    private final AlertFactory A = new AlertFactory();
 
     @FXML
     private void logout() {

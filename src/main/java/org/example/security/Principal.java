@@ -10,5 +10,4 @@ public class Principal {
     private String username;
     private Role role;
     private Double balance;
-
 }

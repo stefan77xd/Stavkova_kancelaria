@@ -1,21 +1,22 @@
+/* TabPane background */
 .tab-pane {
-    -fx-background-color: #303030; /* Dark background for the TabPane */
+    -fx-background-color: #f0f0f0; /* Light background for the TabPane */
 }
 
 .tab-header-background {
-    -fx-background-color: #303030; /* Dark background for the tab headers */
+    -fx-background-color: #e0e0e0; /* Light background for the tab headers */
 }
 
 /* Styling for individual tabs */
 .tab {
-    -fx-background-color: #212121; /* Tab background */
-    -fx-text-base-color: white; /* Text color for tabs */
+    -fx-background-color: #d3d3d3; /* Lighter tab background */
+    -fx-text-base-color: black; /* Dark text color for tabs */
 }
 
 /* Style for the selected tab */
 .tab:selected {
-    -fx-background-color: #121212; /* Tab background color when selected */
-    -fx-border-color: #121212; /* Custom border for selected tab */
+    -fx-background-color: #b0b0b0; /* Lighter background color when selected */
+    -fx-border-color: #b0b0b0; /* Custom border for selected tab */
     -fx-border-width: 1; /* Border width */
     -fx-border-radius: 5;
 }
@@ -24,7 +25,7 @@
 .tab:selected:focused {
     -fx-focus-color: transparent; /* Remove blue focus border */
     -fx-faint-focus-color: transparent; /* Remove faint focus glow */
-    -fx-border-color: #121212; /* Maintain custom border color */
+    -fx-border-color: #b0b0b0; /* Maintain custom border color */
     -fx-border-width: 1; /* Maintain border width */
     -fx-border-radius: 5;
 }
@@ -39,7 +40,7 @@
 
 /* Additional hover styling for tabs */
 .tab:hover {
-    -fx-background-color: #121212; /* Slightly darker background on hover */
+    -fx-background-color: #a0a0a0; /* Slightly darker background on hover */
 }
 
 /* Remove focus styling from the tab header area */
@@ -52,23 +53,22 @@
 
 /* ListView styling */
 .list-view {
-    -fx-background-color: #303030; /* Dark background for the ListView */
-    -fx-control-inner-background: #303030; /* Ensure inner background is also dark */
-    -fx-text-fill: white; /* White text for list items */
+    -fx-background-color: #f9f9f9; /* Light background for the ListView */
+    -fx-control-inner-background: #f9f9f9; /* Ensure inner background is also light */
+    -fx-text-fill: black; /* Black text for list items */
 }
 
 /* ListCell styling */
 .list-cell {
-    -fx-background-color: #303030; /* Match app background */
-    -fx-text-fill: white; /* White text for list cells */
+    -fx-background-color: #f9f9f9; /* Match app background */
+    -fx-text-fill: black; /* Black text for list cells */
     -fx-cursor: hand;
 }
 
 /* Change background on hover for list cells */
 .list-cell:hover {
-    -fx-background-color: #212121; /* Slightly lighter background on hover */
+    -fx-background-color: #e0e0e0; /* Slightly lighter background on hover */
 }
-
 
 .root {
     -fx-focus-color: transparent; /* Removes the blue focus color globally */
@@ -76,8 +76,8 @@
 }
 
 .root {
-    -fx-background-color: #303030;
-    -fx-text-fill: white;
+    -fx-background-color: #f9f9f9; /* Light background for the root */
+    -fx-text-fill: black; /* Black text for the root */
 }
 
 .root .scroll-bar {
@@ -85,26 +85,26 @@
 }
 
 .root .scroll-bar .thumb {
-    -fx-background-color: #212121;
+    -fx-background-color: #a0a0a0;
     -fx-cursor: hand;
 }
 
 .root .scroll-bar .thumb:hover {
-    -fx-background-color: #121212;
+    -fx-background-color: #888888;
 }
 
 .root .scroll-bar .increment-button,
 .root .scroll-bar .decrement-button {
-    -fx-background-color: #212121;
+    -fx-background-color: #a0a0a0;
     -fx-cursor: hand;
 }
 
 .scroll-bar:vertical .thumb {
-    -fx-background-color: #212121; /* Dark background for the vertical thumb */
+    -fx-background-color: #a0a0a0; /* Lighter background for the vertical thumb */
 }
 
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: #212121; /* Dark background for the horizontal thumb */
+    -fx-background-color: #a0a0a0; /* Lighter background for the horizontal thumb */
 }
 
 .scroll-bar {
@@ -112,14 +112,14 @@
 }
 
 .button {
-    -fx-background-color: #212121;
-    -fx-text-fill: white;
+    -fx-background-color: #d3d3d3; /* Lighter button background */
+    -fx-text-fill: black; /* Dark text color for buttons */
     -fx-cursor: hand;
 }
 
 .text-field {
-    -fx-background-color: #212121;
-    -fx-text-fill: white;
+    -fx-background-color: #e0e0e0; /* Light background for text fields */
+    -fx-text-fill: black; /* Black text color for text fields */
 }
 
 #invalidLogin {
@@ -127,7 +127,7 @@
 }
 
 #panel {
-    -fx-background-color: #212121;
+    -fx-background-color: #e0e0e0; /* Light background for the panel */
 }
 
 #register {
@@ -139,26 +139,26 @@
 }
 
 .label {
-    -fx-text-fill: white;
+    -fx-text-fill: black; /* Dark text for labels */
 }
 
 .odds-button {
-    -fx-background-color: #212121;
-    -fx-text-fill: white;
+    -fx-background-color: #d3d3d3;
+    -fx-text-fill: black;
     -fx-cursor: hand;
 }
 
 .odds-button:hover {
-    -fx-background-color: #121212;
-    -fx-text-fill: white;
+    -fx-background-color: #b0b0b0;
+    -fx-text-fill: black;
 }
 
 .odds-button:selected {
-    -fx-background-color: #121212; /* Example of a custom style for selected odds */
+    -fx-background-color: #b0b0b0;
 }
 
 .bet-button {
-    -fx-background-color: #56bf5c;
+    -fx-background-color: #56bf5c; /* Green background for bet button */
 }
 
 .bet-button:hover {
@@ -166,7 +166,7 @@
 }
 
 .dropdown-menu {
-    -fx-background-color: #212121;
+    -fx-background-color: #d3d3d3; /* Light background for the dropdown */
 }
 
 .dropdown-item {
@@ -174,43 +174,42 @@
 }
 
 .dropdown-item:hover {
-    -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
 .dropdown-item:selected {
-    -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
 .dropdown-item:focused {
-    -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
 .tab-pane .tab-down-button {
-    -fx-background-color: #212121; /* Change the background color */
-    -fx-text-fill: white; /* Change the text color */
+    -fx-background-color: #d3d3d3; /* Lighter background for the tab-down button */
+    -fx-text-fill: black;
 }
 
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu {
- -fx-background-color: #212121;
+    -fx-background-color: #d3d3d3;
     -fx-cursor: hand;
 }
 
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:hover {
- -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:selected {
-    -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu .radio-menu-item:focused {
-    -fx-background-color: #303030;
+    -fx-background-color: #e0e0e0;
 }
 
-.creditCard{
-    -fx-background-color: #212121;
+.creditCard {
+    -fx-background-color: #e0e0e0; /* Light background for the credit card */
     -fx-background-radius: 15px;
-
 }
 
 .cardPane {
@@ -218,7 +217,7 @@
 }
 
 .cardInput {
-    -fx-background-color: #303030;
+    -fx-background-color: #f9f9f9; /* Light background for card input */
 }
 
 .balanceLabel {
@@ -230,14 +229,12 @@
 }
 
 .profileButton {
-    -fx-text-fill: white;
-    -fx-background-color: #212121;
+    -fx-text-fill: black; /* Dark text color for profile button */
+    -fx-background-color: #d3d3d3;
     -fx-cursor: hand;
 }
 
 .profileButton:hover {
-    -fx-background-color: #121212;
+    -fx-background-color: #b0b0b0;
     -fx-cursor: hand;
 }
-
-

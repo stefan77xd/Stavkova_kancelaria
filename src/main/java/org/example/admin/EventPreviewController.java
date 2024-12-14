@@ -21,7 +21,6 @@ import org.example.ticket.StatusForTicket;
 import org.example.ticket.TicketDAO;
 import org.example.user.UserDAO;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -47,8 +46,8 @@ public class EventPreviewController {
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
 
     @FXML
-    void Action(ActionEvent event) throws SQLException {
-            possibleOutcomeDAO.setOutcomesToLoosing((int) sportEvent.getEventId());
+    void Action(ActionEvent event) {
+            possibleOutcomeDAO.setOutcomesToLoosing(sportEvent.getEventId());
             for (var node : checkboxContainer.getChildren()) {
                 if (node instanceof HBox hBox) {
                     CheckBox checkBox = (CheckBox) hBox.getChildren().get(0);
@@ -154,7 +153,7 @@ public class EventPreviewController {
         for (var record : results) {
             HBox hBox = new HBox(10);
             CheckBox checkBox = new CheckBox();
-            checkBox.setUserData(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID)); // Store outcome ID
+            checkBox.setUserData(record.get(POSSIBLE_OUTCOMES.OUTCOME_ID));
             Label label = new Label(record.get(POSSIBLE_OUTCOMES.RESULT_NAME));
             hBox.getChildren().addAll(checkBox, label);
             checkboxContainer.getChildren().add(hBox);

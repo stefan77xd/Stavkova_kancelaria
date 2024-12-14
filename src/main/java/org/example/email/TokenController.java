@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.user.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
@@ -18,7 +19,6 @@ public class TokenController {
 
     @FXML
     Button passwords;
-
 
     @FXML
     private TextField tokenField;
@@ -38,6 +38,7 @@ public class TokenController {
     private boolean verified = false;
 
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+    private final AlertFactory A = new AlertFactory();
 
     @FXML
     void SubmitAction(ActionEvent event) {
@@ -46,19 +47,7 @@ public class TokenController {
                 verified = true;
                 tokenField.setDisable(true);
                 submitButton.setDisable(true);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Výborne!");
-                alert.setHeaderText("Tokeny sa rovnajú, teraz zadajte nove heslo!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-                alert.showAndWait();
+                A.showAlert("Výborne", "Tokeny sa rovnajú, teraz zadajte heslo.", "success", Alert.AlertType.INFORMATION);
                 newPassword1.setEditable(true);
                 newPassword1.setDisable(false);
                 newPassword2.setEditable(true);
@@ -66,19 +55,7 @@ public class TokenController {
                 passwords.setDisable(false);
                 tokenField.setText(null);
             } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Pozor!");
-                alert.setHeaderText("Tokeny sa nezhodujú!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-                alert.showAndWait();
+                A.showAlert("Pozor", "Tokeny sa nezhodujú.", "warning", Alert.AlertType.WARNING);
             }
         }
     }
@@ -89,52 +66,17 @@ public class TokenController {
             if (newPassword1.getText() != null && newPassword1.getText().length() >= 8) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 userDAO.updatePassword(BCrypt.hashpw(newPassword1.getText(), BCrypt.gensalt()), email);
-                alert.setTitle("Výborne!");
-                alert.setHeaderText("Zmenili ste heslo!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-                alert.showAndWait();
+                A.showAlert("Výborne", "Zmenili ste heslo.", "success", Alert.AlertType.INFORMATION);
                 Stage currentStage = (Stage) submitButton.getScene().getWindow();
                 currentStage.close();
 
 
             } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Pozor!");
-                alert.setHeaderText("Heslo musi byt dlhsie ako 8 znakov!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-                alert.showAndWait();
+                A.showAlert("Pozor", "Heslo musí byť dlhšie, ako 8 znakov.", "warning", Alert.AlertType.WARNING);
             }
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Pozor!");
-            alert.setHeaderText("Heslá sa nezhodujú!");
-            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-            alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                }
-            });
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-            alert.showAndWait();
+            A.showAlert("Pozor", "Heslá sa nezhodujú.", "warning", Alert.AlertType.WARNING);
         }
     }
 }

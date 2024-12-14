@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.AlertFactory;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcome;
@@ -40,6 +41,7 @@ public class MatchController {
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
     @Setter
     private Controller mainController;
+    private final AlertFactory A = new AlertFactory();
 
     public void setSportEvent(SportEvent sportEvent) {
         this.sportEvent = sportEvent;
@@ -154,10 +156,10 @@ public class MatchController {
                                     throw new RuntimeException(e);
                                 }
                             } else {
-                                showAlert("Zápas už začal");
+                                A.showAlert("Chyba", "Zápas sa už začal.", "warning", Alert.AlertType.WARNING);
                             }
                         } else {
-                            showAlert("Nedostatok prostriedkov");
+                            A.showAlert("Chyba", "Nedostatok prostriedkov.", "warning", Alert.AlertType.WARNING);
                         }
                     }
             });
@@ -197,21 +199,5 @@ public class MatchController {
         } catch (NumberFormatException e) {
             eventualWinLabel.setText("0.0");
         }
-    }
-
-    private void showAlert(String text) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Pozor!");
-        alert.setHeaderText(text);
-        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-        alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-            }
-        });
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-        alert.showAndWait();
     }
 }

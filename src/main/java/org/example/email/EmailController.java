@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.user.UserDAO;
 
@@ -24,6 +25,7 @@ public class EmailController {
     private TextField emailField;
 
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+    private final AlertFactory A = new AlertFactory();
 
 
     @FXML
@@ -32,19 +34,7 @@ public class EmailController {
         String foundEmail = userDAO.findEmail(email);
 
         if (foundEmail == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Pozor!");
-            alert.setHeaderText("Email neexistuje!");
-            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-            alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                }
-            });
-            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-            alert.showAndWait();
+            A.showAlert("Pozor", "Email neexistuje.", "warning", Alert.AlertType.WARNING);
         } else {
             String token = TokenGenerator.generateToken();
             String subject = "Resetovanie hesla";
@@ -52,39 +42,14 @@ public class EmailController {
 
             try {
                 EmailSender.sendEmail(email, subject, messageContent);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Výborne!");
-                alert.setHeaderText("Email bol odoslaný!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/success.png"))));
-                alert.showAndWait();
+                A.showAlert("Výborne", "Email bol odoslaný.", "success", Alert.AlertType.INFORMATION);
                 Stage currentStage = (Stage) emailField.getScene().getWindow();
                 currentStage.close();
                 openTokenWindow(token, email);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Chyba!");
-                alert.setHeaderText("Email sa nepodarilo odoslať.");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
-                alert.showingProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue) {
-                        alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                        alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
-                    }
-                });
-                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warning.png"))));
-                alert.showAndWait();
-                alert.showAndWait();
+                A.showAlert("Chyba", "Email sa nepodarilo odoslať.", "warning", Alert.AlertType.WARNING);
             }
         }
     }
