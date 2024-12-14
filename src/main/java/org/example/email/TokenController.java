@@ -5,15 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.example.AlertFactory;
 import org.example.Factory;
 import org.example.user.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
-
-import java.sql.SQLException;
-import java.util.Objects;
 
 public class TokenController {
 

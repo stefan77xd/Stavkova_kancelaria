@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -17,6 +18,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.example.AlertFactory;
+import org.example.AppThemeConfig;
+import org.example.ConfigReader;
 import org.example.Factory;
 import org.example.security.Auth;
 import org.example.sportevent.SportEvent;
@@ -32,6 +35,11 @@ public class AdminController {
     private final AlertFactory A = new AlertFactory();
 
     @FXML
+    private Button themeButton;
+
+    String theme = AppThemeConfig.getTheme();
+
+    @FXML
     private void logout() {
         try {
             Auth.INSTANCE.setPrincipal(null);
@@ -41,7 +49,7 @@ public class AdminController {
             Parent root = loader.load();
             Stage stage = new Stage();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             stage.setTitle("Stávková kancelária");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/icon.png"))));
             stage.setScene(scene);
@@ -55,6 +63,23 @@ public class AdminController {
     public void initialize() {
         welcomeSign.setText("Vitaj " + Auth.INSTANCE.getPrincipal().getUsername());
         loadSportsIntoTabs("upcoming");
+        if (theme.equals("/css/dark-theme.css")) {
+            Image icon = new Image("icons/sun.png");
+            ImageView imageView = new ImageView(icon);
+
+            imageView.setFitWidth(16);
+            imageView.setFitHeight(16);
+
+            themeButton.setGraphic(imageView);
+        } else {
+            Image icon = new Image("icons/theme.png");
+            ImageView imageView = new ImageView(icon);
+
+            imageView.setFitWidth(16);
+            imageView.setFitHeight(16);
+
+            themeButton.setGraphic(imageView);
+        }
     }
 
     private void loadSportsIntoTabs(String eventStatus) {
@@ -139,7 +164,7 @@ public class AdminController {
         eventPreviewController.setSportEvent(sportEvent);
         eventPreviewController.setAdminController(this);
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
         Stage stage = new Stage();
         stage.setTitle("Event Preview");
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -160,7 +185,7 @@ public class AdminController {
             AddSportController addSportController = loader.getController();
             addSportController.setAdminController(this);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("New event");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
@@ -192,12 +217,24 @@ public class AdminController {
         alert.setTitle("Skryť Event");
         alert.setHeaderText("Ste si istý, že chcete skryť tento event?");
         alert.setContentText("Tento krok skryje event.");
-        alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+
+        if (theme.equals("/css/dark-theme.css")) {
+            alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+        } else {
+            alert.getDialogPane().setStyle("-fx-background-color: #f9f9f9;");
+        }
+
+
 
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
-                alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                if (theme.equals("/css/dark-theme.css")) {
+                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #303030;");
+                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: white;");
+                } else {
+                    alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #f9f9f9;");
+                    alert.getDialogPane().lookup(".header-panel .label").setStyle("-fx-text-fill: black;");
+                }
             }
         });
 
@@ -208,16 +245,31 @@ public class AdminController {
         alert.showingProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 Button yes = (Button) alert.getDialogPane().lookupButton(yesButton);
-                yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
+                if (theme.equals("/css/dark-theme.css")) {
+                    yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
 
-                yes.setOnMouseEntered(event -> yes.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
-                yes.setOnMouseExited(event -> yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+                    yes.setOnMouseEntered(event -> yes.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
+                    yes.setOnMouseExited(event -> yes.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+                } else {
+                    yes.setStyle("-fx-background-color: #d3d3d3; -fx-text-fill: black; -fx-cursor: hand");
+
+                    yes.setOnMouseEntered(event -> yes.setStyle("-fx-background-color: #e0e0e0; -fx-text-fill: black; -fx-cursor: hand"));
+                    yes.setOnMouseExited(event -> yes.setStyle("-fx-background-color: #d3d3d3; -fx-text-fill: black; -fx-cursor: hand"));
+                }
+
 
                 Button no = (Button) alert.getDialogPane().lookupButton(noButton);
-                no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
+                if (theme.equals("/css/dark-theme.css")) {
+                    no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand");
 
-                no.setOnMouseEntered(event -> no.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
-                no.setOnMouseExited(event -> no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+                    no.setOnMouseEntered(event -> no.setStyle("-fx-background-color: #121212; -fx-text-fill: white; -fx-cursor: hand"));
+                    no.setOnMouseExited(event -> no.setStyle("-fx-background-color: #212121; -fx-text-fill: white; -fx-cursor: hand"));
+                } else {
+                    no.setStyle("-fx-background-color: #d3d3d3; -fx-text-fill: black; -fx-cursor: hand");
+
+                    no.setOnMouseEntered(event -> no.setStyle("-fx-background-color: #e0e0e0; -fx-text-fill: black; -fx-cursor: hand"));
+                    no.setOnMouseExited(event -> no.setStyle("-fx-background-color: #d3d3d3; -fx-text-fill: black; -fx-cursor: hand"));
+                }
             }
         });
 
@@ -229,6 +281,39 @@ public class AdminController {
                 sportEventDAO.hideEvent(selectedEvent.getEventId());
             }
         });
+    }
+
+    @FXML
+    public void changeTheme() {
+        String newTheme;
+        String themeIconPath;
+
+        if ("/css/dark-theme.css".equals(theme)) {
+            newTheme = "/css/light-theme.css";
+            themeIconPath = "icons/theme.png";
+        } else {
+            newTheme = "/css/dark-theme.css";
+            themeIconPath = "icons/sun.png";
+        }
+
+        AppThemeConfig.setTheme(newTheme);
+        theme = AppThemeConfig.getTheme();
+
+        Image icon = new Image(themeIconPath);
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitWidth(16);
+        imageView.setFitHeight(16);
+        themeButton.setGraphic(imageView);
+
+        applyThemeToScene(newTheme);
+    }
+
+    private void applyThemeToScene(String themePath) {
+        Scene scene = themeButton.getScene();
+        if (scene != null) {
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(themePath);
+        }
     }
 }
 

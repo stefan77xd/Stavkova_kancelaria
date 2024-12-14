@@ -5,10 +5,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.AlertFactory;
 import org.example.Controller;
@@ -23,7 +21,6 @@ import org.example.user.UserDAO;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 public class MatchController {
     @FXML
@@ -50,7 +47,7 @@ public class MatchController {
         }
         if (sportEvent != null) {
             eventNameLabel.setText(sportEvent.getEventName());
-            eventNameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;");
+            eventNameLabel.setStyle("-fx-font-size: 14;");
             eventNameLabel.setWrapText(true);
             eventId = sportEvent.getEventId();
             loadPossibleOutcomes(sportEvent.getStatus().equals(StatusForEvent.finished));
@@ -89,7 +86,7 @@ public class MatchController {
                 outcomeRow.setAlignment(Pos.CENTER);
 
                 Label outcomeLabel = new Label(outcome.getResultName());
-                outcomeLabel.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
+                outcomeLabel.setStyle("-fx-font-size: 16;");
                 outcomeLabel.setMaxWidth(maxWidth);
                 outcomeLabel.setWrapText(true);
 

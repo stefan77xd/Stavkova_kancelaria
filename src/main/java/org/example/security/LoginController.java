@@ -9,12 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import lombok.Setter;
 import org.example.AlertFactory;
+import org.example.AppThemeConfig;
 import org.example.Controller;
 import org.example.Factory;
 import org.example.admin.AdminController;
@@ -37,6 +37,7 @@ public class LoginController {
     @Setter
     private Controller mainController;
     private final AlertFactory A = new AlertFactory();
+    String theme = AppThemeConfig.getTheme();
 
     @FXML
     void Login() {
@@ -88,7 +89,7 @@ public class LoginController {
             Parent root = loader.load();
             AdminController adminController = loader.getController();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("Admin");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
@@ -114,7 +115,7 @@ public class LoginController {
             RegistryController registryController = loader.getController();
             registryController.setLoginController(this);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("Register");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -136,7 +137,7 @@ public class LoginController {
                 Parent root = loader.load();
                 EmailController emailController = loader.getController();
                 Scene scene = new Scene(root);
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
                 Stage stage = new Stage();
                 stage.setTitle("Email");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));

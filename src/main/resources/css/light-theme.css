@@ -1,10 +1,10 @@
 /* TabPane background */
 .tab-pane {
-    -fx-background-color: #f0f0f0; /* Light background for the TabPane */
+    -fx-background-color: #f9f9f9; /* Light background for the TabPane */
 }
 
 .tab-header-background {
-    -fx-background-color: #e0e0e0; /* Light background for the tab headers */
+    -fx-background-color: #f9f9f9; /* Light background for the tab headers */
 }
 
 /* Styling for individual tabs */
@@ -237,4 +237,8 @@
 .profileButton:hover {
     -fx-background-color: #b0b0b0;
     -fx-cursor: hand;
+}
+
+.mainMenuBar {
+    -fx-background-color: #d3d3d3;
 }

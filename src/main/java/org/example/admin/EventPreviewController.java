@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.example.AppThemeConfig;
 import org.example.Factory;
 import org.example.possibleoutcome.PossibleOutcomeDAO;
 import org.example.possibleoutcome.StatusForOutcomes;
@@ -44,6 +45,7 @@ public class EventPreviewController {
     private final SportEventDAO sportEventDAO = Factory.INSTANCE.getSportEventDAO();
     private final TicketDAO ticketDAO = Factory.INSTANCE.getTicketDAO();
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
+    private String theme = AppThemeConfig.getTheme();
 
     @FXML
     void Action(ActionEvent event) {
@@ -84,19 +86,33 @@ public class EventPreviewController {
                 alert.setTitle("Proces bol vykonaný");
                 alert.setHeaderText(null);
                 alert.setContentText("Výsledky boli úspešne zapísané!");
-                alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+                if (theme.equals("/css/dark-theme.css")) {
+                    alert.getDialogPane().setStyle("-fx-background-color: #303030;");
+                    alert.getDialogPane().lookup(".content").setStyle("-fx-text-fill: white;");
+                } else {
+                    alert.getDialogPane().setStyle("-fx-background-color: #f9f9f9;");
+                    alert.getDialogPane().lookup(".content").setStyle("-fx-text-fill: black;");
+                }
 
-                alert.getDialogPane().lookup(".content").setStyle("-fx-text-fill: white;");
 
                 alert.showingProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue) {
                         Node header = alert.getDialogPane().lookup(".header");
                         if (header != null) {
-                            header.setStyle("-fx-background-color: #303030;");
+                            if (theme.equals("/css/dark-theme.css")) {
+                                header.setStyle("-fx-background-color: #303030;");
+                            } else {
+                                header.setStyle("-fx-background-color: #f9f9f9;");
+                            }
                         }
                         Node label = alert.getDialogPane().lookup(".header .label");
                         if (label != null) {
-                            label.setStyle("-fx-text-fill: white;");
+                            if (theme.equals("/css/dark-theme.css")) {
+                                label.setStyle("-fx-text-fill: white;");
+                            } else {
+                                label.setStyle("-fx-text-fill: black;");
+                            }
+
                         }
                     }
                 });

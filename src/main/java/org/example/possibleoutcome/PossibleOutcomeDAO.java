@@ -65,6 +65,15 @@ public class PossibleOutcomeDAO {
     }
 
     public void setOutcomeToWinning(int outcomeID) {
+        boolean outcomeExists = dslContext.selectOne()
+                .from(POSSIBLE_OUTCOMES)
+                .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))
+                .fetchOne() != null;
+
+        if (!outcomeExists) {
+            throw new IllegalArgumentException("Neplatné outcome ID.");
+        }
+
         dslContext.update(POSSIBLE_OUTCOMES)
                 .set(POSSIBLE_OUTCOMES.STATUS, StatusForOutcomes.winning.name())
                 .where(POSSIBLE_OUTCOMES.OUTCOME_ID.eq(outcomeID))

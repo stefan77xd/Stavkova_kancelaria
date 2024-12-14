@@ -1,6 +1,5 @@
 package org.example.email;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,11 +10,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.AlertFactory;
+import org.example.AppThemeConfig;
 import org.example.Factory;
 import org.example.user.UserDAO;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,6 +25,8 @@ public class EmailController {
 
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
     private final AlertFactory A = new AlertFactory();
+
+    String theme = AppThemeConfig.getTheme();
 
 
     @FXML
@@ -62,7 +63,7 @@ public class EmailController {
             tokenController.email = email;
             tokenController.token = token;
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("Token");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));

@@ -7,9 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Getter;
 import org.example.admin.ResultMatchController;
 import org.example.security.Auth;
 import org.example.security.LoginController;
@@ -32,6 +34,12 @@ public class Controller {
     private final UserDAO userDAO = Factory.INSTANCE.getUserDAO();
     @FXML
     public Button loginoruser;
+
+    @FXML
+    private Button themeButton;
+
+    @Getter
+    public String theme;
     Stage stage;
     public void onLoginSuccess() {
         loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\n Zostatok: " + Auth.INSTANCE.getPrincipal().getBalance());
@@ -66,7 +74,7 @@ public class Controller {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/profileView.fxml"));
                 Parent root = loader.load();
                 Scene ticketScene = new Scene(root);
-                ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
                 Stage stage = new Stage();
                 stage.setTitle("Profil");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/admin.png"))));
@@ -91,7 +99,7 @@ public class Controller {
                 addBalanceControler.UserID = Auth.INSTANCE.getPrincipal().getId();
                 addBalanceControler.setMainController(this);
                 Scene scene = new Scene(root);
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
                 stage = new Stage();
                 stage.setTitle("Pridajte prostriedky");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/card.png"))));
@@ -113,7 +121,7 @@ public class Controller {
         var userId = Auth.INSTANCE.getPrincipal().getId();
                 Double currentBalance = userDAO.getBalance(userId);
                 if (currentBalance != null) {
-                    Auth.INSTANCE.getPrincipal().setBalance(currentBalance); // Aktualizácia balansu v Auth
+                    Auth.INSTANCE.getPrincipal().setBalance(currentBalance);
                     loginoruser.setText(Auth.INSTANCE.getPrincipal().getUsername() + "\nZostatok: " + currentBalance);
                 } else {
                     loginoruser.setText("Nepodarilo sa načítať zostatok.");
@@ -133,7 +141,7 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ticketView.fxml"));
             Parent root = loader.load();
             Scene ticketScene = new Scene(root);
-            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("Tikety");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ticket.png"))));
@@ -155,7 +163,7 @@ public class Controller {
                 LoginController loginController = loader.getController();
                 loginController.setMainController(this);
                 Scene scene = new Scene(root);
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
                 stage = new Stage();
                 stage.setTitle("Login");
                 stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/login.png"))));
@@ -180,7 +188,7 @@ public class Controller {
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
             matchController.setMainController(this);
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             stage.setScene(scene);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
@@ -191,9 +199,27 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        theme = AppThemeConfig.getTheme();
+        if (theme.equals("/css/dark-theme.css")) {
+            Image icon = new Image("icons/sun.png");
+            ImageView imageView = new ImageView(icon);
+
+            imageView.setFitWidth(16);
+            imageView.setFitHeight(16);
+
+            themeButton.setGraphic(imageView);
+        } else {
+            Image icon = new Image("icons/theme.png");
+            ImageView imageView = new ImageView(icon);
+
+            imageView.setFitWidth(16);
+            imageView.setFitHeight(16);
+
+            themeButton.setGraphic(imageView);
+        }
         sportTabPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+                newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             }
         });
         showOdds();
@@ -236,12 +262,12 @@ public class Controller {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/ResultView.fxml"));
         Parent root = loader.load();
         ResultMatchController resultMatchController = loader.getController();
-        resultMatchController.setSportEvent(selectedEvent); // Pass the event to the controller
+        resultMatchController.setSportEvent(selectedEvent);
         Stage stage = new Stage();
         stage.setTitle("Ukončený zápas");
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/match.png"))));
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
         stage.setScene(scene);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
@@ -295,7 +321,7 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/statView.fxml"));
             Parent root = loader.load();
             Scene ticketScene = new Scene(root);
-            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/dark-theme.css")).toExternalForm());
+            ticketScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(theme)).toExternalForm());
             Stage stage = new Stage();
             stage.setTitle("Štatistika");
             stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/statistics.png"))));
@@ -304,6 +330,39 @@ public class Controller {
             stage.show();
         } catch (IOException e) {
             System.err.println("Nepodarilo sa otvoriť štatistiku: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void changeTheme() {
+        String newTheme;
+        String themeIconPath;
+
+        if ("/css/dark-theme.css".equals(theme)) {
+            newTheme = "/css/light-theme.css";
+            themeIconPath = "icons/theme.png";
+        } else {
+            newTheme = "/css/dark-theme.css";
+            themeIconPath = "icons/sun.png";
+        }
+
+        AppThemeConfig.setTheme(newTheme);
+        theme = AppThemeConfig.getTheme();
+
+        Image icon = new Image(themeIconPath);
+        ImageView imageView = new ImageView(icon);
+        imageView.setFitWidth(16);
+        imageView.setFitHeight(16);
+        themeButton.setGraphic(imageView);
+
+        applyThemeToScene(newTheme);
+    }
+
+    private void applyThemeToScene(String themePath) {
+        Scene scene = themeButton.getScene();
+        if (scene != null) {
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(themePath);
         }
     }
 }

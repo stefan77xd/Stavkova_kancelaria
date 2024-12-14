@@ -240,4 +240,8 @@
     -fx-cursor: hand;
 }
 
+.mainMenuBar {
+    -fx-background-color: #212121;
+}
+
 

@@ -39,5 +39,4 @@ public class SQLiteAuthDAO implements AuthDao {
         }
         return principalWithPassword.getPrincipal();
     }
-
 }
