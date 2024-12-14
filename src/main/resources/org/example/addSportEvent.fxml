@@ -22,12 +22,12 @@
    <children>
       <VBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
          <children>
-            <TextField fx:id="sportType" alignment="CENTER" promptText="sport type">
+            <TextField fx:id="eventName" alignment="CENTER" promptText="event name">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </TextField>
-            <TextField fx:id="eventName" alignment="CENTER" prefHeight="21.0" prefWidth="300.0" promptText="event name">
+            <TextField fx:id="sportType" alignment="CENTER" promptText="sport type">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
