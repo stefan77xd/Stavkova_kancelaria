@@ -1,78 +1,69 @@
 .tab-pane {
-    -fx-background-color: #303030; /* Dark background for the TabPane */
+    -fx-background-color: #303030;
 }
 
 .tab-header-background {
-    -fx-background-color: #303030; /* Dark background for the tab headers */
+    -fx-background-color: #303030;
 }
 
-/* Styling for individual tabs */
 .tab {
-    -fx-background-color: #212121; /* Tab background */
-    -fx-text-base-color: white; /* Text color for tabs */
+    -fx-background-color: #212121;
+    -fx-text-base-color: white;
 }
 
-/* Style for the selected tab */
 .tab:selected {
-    -fx-background-color: #121212; /* Tab background color when selected */
-    -fx-border-color: #121212; /* Custom border for selected tab */
-    -fx-border-width: 1; /* Border width */
+    -fx-background-color: #121212;
+    -fx-border-color: #121212;
+    -fx-border-width: 1;
     -fx-border-radius: 5;
 }
 
-/* Remove blue focus border on the selected tab */
 .tab:selected:focused {
-    -fx-focus-color: transparent; /* Remove blue focus border */
-    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
-    -fx-border-color: #121212; /* Maintain custom border color */
-    -fx-border-width: 1; /* Maintain border width */
-    -fx-border-radius: 5;
-}
-
-/* Remove focus border for all tabs */
-.tab:focused {
-    -fx-focus-color: transparent; /* Remove focus color */
-    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
-    -fx-border-color: transparent; /* No border when focused */
-    -fx-border-width: 0; /* Eliminate focus border */
-}
-
-/* Additional hover styling for tabs */
-.tab:hover {
-    -fx-background-color: #121212; /* Slightly darker background on hover */
-}
-
-/* Remove focus styling from the tab header area */
-.tab-header-area .tab:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-border-color: transparent; /* Fully transparent focus border */
+    -fx-border-color: #121212;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
     -fx-border-width: 0;
 }
 
-/* ListView styling */
-.list-view {
-    -fx-background-color: #303030; /* Dark background for the ListView */
-    -fx-control-inner-background: #303030; /* Ensure inner background is also dark */
-    -fx-text-fill: white; /* White text for list items */
+.tab:hover {
+    -fx-background-color: #121212;
 }
 
-/* ListCell styling */
+.tab-header-area .tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.list-view {
+    -fx-background-color: #303030;
+    -fx-control-inner-background: #303030;
+    -fx-text-fill: white;
+}
+
 .list-cell {
-    -fx-background-color: #303030; /* Match app background */
-    -fx-text-fill: white; /* White text for list cells */
+    -fx-background-color: #303030;
+    -fx-text-fill: white;
     -fx-cursor: hand;
 }
 
-/* Change background on hover for list cells */
 .list-cell:hover {
-    -fx-background-color: #212121; /* Slightly lighter background on hover */
+    -fx-background-color: #212121;
 }
 
 
 .root {
-    -fx-focus-color: transparent; /* Removes the blue focus color globally */
-    -fx-faint-focus-color: transparent; /* Removes faint focus glow globally */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .root {
@@ -100,15 +91,15 @@
 }
 
 .scroll-bar:vertical .thumb {
-    -fx-background-color: #212121; /* Dark background for the vertical thumb */
+    -fx-background-color: #212121;
 }
 
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: #212121; /* Dark background for the horizontal thumb */
+    -fx-background-color: #212121;
 }
 
 .scroll-bar {
-    -fx-padding: 0; /* Adjust padding of the scrollbars */
+    -fx-padding: 0;
 }
 
 .button {
@@ -154,7 +145,7 @@
 }
 
 .odds-button:selected {
-    -fx-background-color: #121212; /* Example of a custom style for selected odds */
+    -fx-background-color: #121212;
 }
 
 .bet-button {
@@ -186,8 +177,8 @@
 }
 
 .tab-pane .tab-down-button {
-    -fx-background-color: #212121; /* Change the background color */
-    -fx-text-fill: white; /* Change the text color */
+    -fx-background-color: #212121;
+    -fx-text-fill: white;
 }
 
 .tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .context-menu {

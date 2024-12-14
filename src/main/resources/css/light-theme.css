@@ -1,83 +1,73 @@
-/* TabPane background */
 .tab-pane {
-    -fx-background-color: #f9f9f9; /* Light background for the TabPane */
+    -fx-background-color: #f9f9f9;
 }
 
 .tab-header-background {
-    -fx-background-color: #f9f9f9; /* Light background for the tab headers */
+    -fx-background-color: #f9f9f9;
 }
 
-/* Styling for individual tabs */
 .tab {
-    -fx-background-color: #d3d3d3; /* Lighter tab background */
-    -fx-text-base-color: black; /* Dark text color for tabs */
+    -fx-background-color: #d3d3d3;
+    -fx-text-base-color: black;
 }
 
-/* Style for the selected tab */
 .tab:selected {
-    -fx-background-color: #b0b0b0; /* Lighter background color when selected */
-    -fx-border-color: #b0b0b0; /* Custom border for selected tab */
-    -fx-border-width: 1; /* Border width */
+    -fx-background-color: #b0b0b0;
+    -fx-border-color: #b0b0b0;
+    -fx-border-width: 1;
     -fx-border-radius: 5;
 }
 
-/* Remove blue focus border on the selected tab */
 .tab:selected:focused {
-    -fx-focus-color: transparent; /* Remove blue focus border */
-    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
-    -fx-border-color: #b0b0b0; /* Maintain custom border color */
-    -fx-border-width: 1; /* Maintain border width */
-    -fx-border-radius: 5;
-}
-
-/* Remove focus border for all tabs */
-.tab:focused {
-    -fx-focus-color: transparent; /* Remove focus color */
-    -fx-faint-focus-color: transparent; /* Remove faint focus glow */
-    -fx-border-color: transparent; /* No border when focused */
-    -fx-border-width: 0; /* Eliminate focus border */
-}
-
-/* Additional hover styling for tabs */
-.tab:hover {
-    -fx-background-color: #a0a0a0; /* Slightly darker background on hover */
-}
-
-/* Remove focus styling from the tab header area */
-.tab-header-area .tab:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
-    -fx-border-color: transparent; /* Fully transparent focus border */
+    -fx-border-color: #b0b0b0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
     -fx-border-width: 0;
 }
 
-/* ListView styling */
-.list-view {
-    -fx-background-color: #f9f9f9; /* Light background for the ListView */
-    -fx-control-inner-background: #f9f9f9; /* Ensure inner background is also light */
-    -fx-text-fill: black; /* Black text for list items */
+.tab:hover {
+    -fx-background-color: #a0a0a0;
 }
 
-/* ListCell styling */
+.tab-header-area .tab:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.list-view {
+    -fx-background-color: #f9f9f9;
+    -fx-control-inner-background: #f9f9f9;
+    -fx-text-fill: black;
+}
+
 .list-cell {
-    -fx-background-color: #f9f9f9; /* Match app background */
-    -fx-text-fill: black; /* Black text for list cells */
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: black;
     -fx-cursor: hand;
 }
 
-/* Change background on hover for list cells */
 .list-cell:hover {
-    -fx-background-color: #e0e0e0; /* Slightly lighter background on hover */
+    -fx-background-color: #e0e0e0;
 }
 
 .root {
-    -fx-focus-color: transparent; /* Removes the blue focus color globally */
-    -fx-faint-focus-color: transparent; /* Removes faint focus glow globally */
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .root {
-    -fx-background-color: #f9f9f9; /* Light background for the root */
-    -fx-text-fill: black; /* Black text for the root */
+    -fx-background-color: #f9f9f9;
+    -fx-text-fill: black;
 }
 
 .root .scroll-bar {
@@ -100,26 +90,26 @@
 }
 
 .scroll-bar:vertical .thumb {
-    -fx-background-color: #a0a0a0; /* Lighter background for the vertical thumb */
+    -fx-background-color: #a0a0a0;
 }
 
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: #a0a0a0; /* Lighter background for the horizontal thumb */
+    -fx-background-color: #a0a0a0;
 }
 
 .scroll-bar {
-    -fx-padding: 0; /* Adjust padding of the scrollbars */
+    -fx-padding: 0;
 }
 
 .button {
-    -fx-background-color: #d3d3d3; /* Lighter button background */
-    -fx-text-fill: black; /* Dark text color for buttons */
+    -fx-background-color: #d3d3d3;
+    -fx-text-fill: black;
     -fx-cursor: hand;
 }
 
 .text-field {
-    -fx-background-color: #e0e0e0; /* Light background for text fields */
-    -fx-text-fill: black; /* Black text color for text fields */
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: black;
 }
 
 #invalidLogin {
@@ -127,7 +117,7 @@
 }
 
 #panel {
-    -fx-background-color: #e0e0e0; /* Light background for the panel */
+    -fx-background-color: #e0e0e0;
 }
 
 #register {
@@ -139,7 +129,7 @@
 }
 
 .label {
-    -fx-text-fill: black; /* Dark text for labels */
+    -fx-text-fill: black;
 }
 
 .odds-button {
@@ -158,7 +148,7 @@
 }
 
 .bet-button {
-    -fx-background-color: #56bf5c; /* Green background for bet button */
+    -fx-background-color: #56bf5c;
 }
 
 .bet-button:hover {
@@ -166,7 +156,7 @@
 }
 
 .dropdown-menu {
-    -fx-background-color: #d3d3d3; /* Light background for the dropdown */
+    -fx-background-color: #d3d3d3;
 }
 
 .dropdown-item {
@@ -186,7 +176,7 @@
 }
 
 .tab-pane .tab-down-button {
-    -fx-background-color: #d3d3d3; /* Lighter background for the tab-down button */
+    -fx-background-color: #d3d3d3;
     -fx-text-fill: black;
 }
 
@@ -208,7 +198,7 @@
 }
 
 .creditCard {
-    -fx-background-color: #e0e0e0; /* Light background for the credit card */
+    -fx-background-color: #e0e0e0;
     -fx-background-radius: 15px;
 }
 
@@ -217,7 +207,7 @@
 }
 
 .cardInput {
-    -fx-background-color: #f9f9f9; /* Light background for card input */
+    -fx-background-color: #f9f9f9;
 }
 
 .balanceLabel {
@@ -229,7 +219,7 @@
 }
 
 .profileButton {
-    -fx-text-fill: black; /* Dark text color for profile button */
+    -fx-text-fill: black;
     -fx-background-color: #d3d3d3;
     -fx-cursor: hand;
 }
