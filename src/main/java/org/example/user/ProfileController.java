@@ -74,8 +74,9 @@ public class ProfileController {
         alert.showAndWait().ifPresent(response -> {
             if (response == yesButton) {
                 String username = Auth.INSTANCE.getPrincipal().getUsername();
+                int userID = Auth.INSTANCE.getPrincipal().getId();
                 Auth.INSTANCE.setPrincipal(null);
-                userDAO.deleteUser(username);
+                userDAO.deleteUser(username, userID);
                 controller.loginoruser.setText("Login/Register");
                 alert.close();
                 stage.close();
