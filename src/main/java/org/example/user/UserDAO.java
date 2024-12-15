@@ -4,6 +4,7 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.mindrot.jbcrypt.BCrypt;
 
+import static org.jooq.codegen.maven.example.Tables.TICKETS;
 import static org.jooq.codegen.maven.example.Tables.USERS;
 public class UserDAO {
     private final DSLContext dslContext;
@@ -114,7 +115,9 @@ public class UserDAO {
                 .execute();
     }
 
-    public void deleteUser(String username) {
+    public void deleteUser(String username, int userID) {
+        dslContext.deleteFrom(TICKETS).where(TICKETS.USER_ID.eq(userID)).execute();
+
         dslContext.deleteFrom(USERS).where(USERS.USERNAME.eq(username)).execute();
     }
 
