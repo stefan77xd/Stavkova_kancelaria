@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lombok.Setter;
 import org.example.AlertFactory;
 import org.example.Controller;
@@ -186,6 +187,8 @@ public class MatchController {
         if (mainController != null) {
             mainController.updateBalance();
         }
+        Stage stage = (Stage) userInfo.getScene().getWindow();
+        stage.close();
     }
 
     private void updateEventualWin(String betAmount, double odds, Label eventualWinLabel) {
