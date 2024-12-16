@@ -38,13 +38,12 @@ class TicketDAOTest {
 
         dslContext.insertInto(SPORT_EVENTS)
                 .set(SPORT_EVENTS.EVENT_NAME, "Soccer Match")
-                .set(SPORT_EVENTS.START_TIME, LocalDateTime.now().plusDays(1))  // Tomorrow
+                .set(SPORT_EVENTS.START_TIME, LocalDateTime.now().plusDays(1))
                 .set(SPORT_EVENTS.SPORT_TYPE, "Soccer")
                 .set(SPORT_EVENTS.STATUS, "upcoming")
                 .set(SPORT_EVENTS.VISIBILITY, "visible")
                 .execute();
 
-        // Assuming users and outcomes already exist
         dslContext.insertInto(USERS)
                 .set(USERS.USERNAME, "john_doe")
                 .set(USERS.EMAIL, "john@example.com")
@@ -53,7 +52,7 @@ class TicketDAOTest {
 
         dslContext.insertInto(POSSIBLE_OUTCOMES)
                 .set(POSSIBLE_OUTCOMES.RESULT_NAME, "Win")
-                .set(POSSIBLE_OUTCOMES.EVENT_ID, 1)  // Linking to the sport event with EVENT_ID = 1
+                .set(POSSIBLE_OUTCOMES.EVENT_ID, 1)
                 .execute();
     }
 

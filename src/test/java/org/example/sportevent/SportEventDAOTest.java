@@ -25,7 +25,7 @@ class SportEventDAOTest {
         connection = dataSource.getConnection();
         dslContext = DSL.using(connection);
         sportEventDAO = new SportEventDAO(dslContext);
-        createSportEventTable();  // Using the provided schema
+        createSportEventTable();
     }
 
     @AfterEach
