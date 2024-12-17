@@ -36,6 +36,10 @@ class UserDAOTest {
         }
     }
 
+    // zdroj https://github.com/dropwizard/dropwizard/issues/1500
+    // https://www.sqlite.org/inmemorydb.html
+    // https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
+
     private DataSource createInMemoryDatabase() {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl("jdbc:sqlite::memory:");

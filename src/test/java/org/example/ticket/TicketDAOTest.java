@@ -25,6 +25,10 @@ class TicketDAOTest {
     private TicketDAO ticketDAO;
     private Connection connection;
 
+    // zdroj https://github.com/dropwizard/dropwizard/issues/1500
+    // https://www.sqlite.org/inmemorydb.html
+    // https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
+
     @BeforeEach
     void setUp() throws SQLException {
         DataSource dataSource = createInMemoryDatabase();

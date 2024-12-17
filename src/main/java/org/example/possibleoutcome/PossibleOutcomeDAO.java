@@ -17,6 +17,7 @@ public class PossibleOutcomeDAO {
         this.dslContext = dslContext;
     }
 
+    // zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     public List<PossibleOutcome> getPossibleOutcomesByEventId(long eventId) {
         List<PossibleOutcome> outcomes = new ArrayList<>();
             Result<Record5<Integer, Integer, String, Double, String>> result =

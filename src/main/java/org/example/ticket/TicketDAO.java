@@ -17,6 +17,8 @@ public class TicketDAO {
     public TicketDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
+
+    //zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     public List<Ticket> getUsersTickets(Integer userId) {
         List<Ticket> tickets = new ArrayList<>();
             Result<Record11<Integer, Integer, Integer, String, Double, String, Integer, String, LocalDateTime, String, String>> result = dslContext.select(

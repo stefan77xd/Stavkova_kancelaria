@@ -106,6 +106,7 @@
                         <driver>org.sqlite.JDBC</driver>
                         <url>jdbc:sqlite:stavkova.db</url>
                     </jdbc>
+                    <!--https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/jooq-in-7-steps-step3/-->
                     <generator>
                         <database>
                             <name>org.jooq.meta.sqlite.SQLiteDatabase</name>

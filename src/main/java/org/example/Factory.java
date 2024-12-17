@@ -28,6 +28,8 @@ public enum Factory {
     private final Object lock = new Object();
     private volatile DSLContext dslContext;
 
+    // zdroj https://gitlab.science.upjs.sk/paz1c-2024/attender/-/blob/c09/src/main/java/sk/upjs/ics/Factory.java?ref_type=heads
+
     public DSLContext getSQLiteDSLContext() {
         if (dslContext == null) {
             synchronized (lock) {

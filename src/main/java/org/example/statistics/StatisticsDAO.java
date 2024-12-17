@@ -13,6 +13,8 @@ public class StatisticsDAO {
     public StatisticsDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
+
+    // zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     public List<Statistics> getUsersStats(Integer userId) {
         List<Statistics> stats = new ArrayList<>();
         try {

@@ -13,6 +13,8 @@ public class SQLiteAuthDAO implements AuthDao {
     public SQLiteAuthDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
+
+    //zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     @Override
     public Principal authenticate(String usernameOrEmail, String password) throws AuthenticationException {
         PrincipalWithPassword principalWithPassword = null;

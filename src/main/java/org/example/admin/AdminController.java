@@ -82,6 +82,7 @@ public class AdminController {
         }
     }
 
+    //zdroj https://stackoverflow.com/questions/17429508/how-do-you-get-javafx-listview-to-be-the-height-of-its-items
     private void loadSportsIntoTabs(String eventStatus) {
         List<SportEvent> sportEvents;
         if ("upcoming".equals(eventStatus)) {

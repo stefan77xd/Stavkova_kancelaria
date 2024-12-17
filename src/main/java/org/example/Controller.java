@@ -225,6 +225,7 @@ public class Controller {
         showOdds();
     }
 
+    //zdroj https://stackoverflow.com/questions/17429508/how-do-you-get-javafx-listview-to-be-the-height-of-its-items
     private void setupListView(ListView<SportEvent> listView, List<SportEvent> sportEvents) {
         listView.setItems(FXCollections.observableArrayList(sportEvents));
         listView.setFixedCellSize(24);

@@ -9,6 +9,10 @@ import java.util.Properties;
 
 public class EmailSender {
 
+    //zdroj https://stackoverflow.com/questions/72930539/javax-mail-authenticationfailedexception-535-5-7-8-username-and-password-not-ac
+    // https://www.youtube.com/watch?v=A7HAB5whD6I
+    // https://www.youtube.com/watch?v=A7HAB5whD6I
+
     public static void sendEmail(String recipient, String subject, String messageContent) throws MessagingException {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", "true");

@@ -8,6 +8,8 @@ import static org.jooq.codegen.maven.example.Tables.TICKETS;
 import static org.jooq.codegen.maven.example.Tables.USERS;
 public class UserDAO {
     private final DSLContext dslContext;
+
+    //zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     public UserDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }

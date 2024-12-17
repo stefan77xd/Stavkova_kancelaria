@@ -19,6 +19,8 @@ public class SportEventDAO {
     public SportEventDAO(DSLContext dslContext) {
         this.dslContext = dslContext;
     }
+
+    //zdroj https://www.jooq.org/doc/latest/manual/getting-started/tutorials/jooq-in-7-steps/
     public List<SportEvent> getAllSportEvents() {
         List<SportEvent> events = new ArrayList<>();
         Result<Record5<Integer, String, LocalDateTime, String, String>> result = dslContext
